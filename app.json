@@ -4,7 +4,6 @@
     "slug": "88Chocolates_Frontend",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
     "scheme": "88chocolatesfrontend",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
