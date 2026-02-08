@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 
 
-export function Dashboard(){
+export default function Dashboard(){
     return(
         <View>
             <Text>Dashboard</Text>
