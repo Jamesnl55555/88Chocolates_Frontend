@@ -1,3 +1,4 @@
+import { useApp } from "@/contexts/AppContext";
 import React, { useEffect, useRef } from "react";
 import {
   Animated,
@@ -6,9 +7,14 @@ import {
   View
 } from "react-native";
 
+type Props = {
+  onFinish?: () => void;
+};
+
 const { width, height } = Dimensions.get("window");
 
-export default function Loading() {
+export default function Loading({ onFinish }: Props) {
+  const { setIsLoading } = useApp();
   // Pulse animation for logo
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
@@ -33,21 +39,22 @@ export default function Loading() {
     ).start();
 
     // Loader line animation
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(loadingAnim, {
-          toValue: 1,
-          duration: 1000,
-          useNativeDriver: false,
-        }),
-        Animated.timing(loadingAnim, {
-          toValue: 0,
-          duration: 1000,
-          useNativeDriver: false,
-        }),
-      ])
-    ).start();
-  }, []);
+    Animated.sequence([
+      Animated.timing(loadingAnim, {
+        toValue: 1,
+        duration: 1500,
+        useNativeDriver: false,
+      }),
+    ]).start();
+
+    // Auto finish after 2 seconds
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+      onFinish?.();
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [setIsLoading, onFinish]);
 
   const lineWidth = loadingAnim.interpolate({
     inputRange: [0, 1],
