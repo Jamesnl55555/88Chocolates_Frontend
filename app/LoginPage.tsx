@@ -1,44 +1,35 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import api from './services/api';
 
-const LoginPage: React.FC = () => {
+export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [pass, setPass] = useState('');
   const router = useRouter();
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-
+  // Define the mutation
   const loginMutation = useMutation({
-    mutationFn: ({ email, password }: { email: string; password: string }) => {
-      return api
-        .post('/api/login', { email, password, remember: false })
-        .then(res => res.data);
+    mutationFn: ({ email, pass }: { email: string; pass: string }) => {
+      return api.post('/api/login', { email, password: pass, remember: false }).then(res => res.data);
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       console.log('Logged in!', data);
-      // Navigate to app home / dashboard
-      router.replace('/'); // or wherever your app lands
+      // Store the token
+      if (data.token) {
+        await AsyncStorage.setItem('userToken', data.token);
+      }
+      router.push('/Dashboard');
     },
     onError: (error) => {
       console.error('Login failed', error);
-      alert('Invalid email or password');
-    },
-  });
-
-  const handleLogin = () => {
-    if (!email || !password) {
-      alert('Please fill in all fields');
-      return;
+      // Handle error, e.g., show alert
     }
-
-    loginMutation.mutate({ email, password });
-  };
+  });
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back</Text>
-
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -47,45 +38,29 @@ const LoginPage: React.FC = () => {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-
       <TextInput
         style={styles.input}
         placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
+        value={pass}
+        onChangeText={setPass}
         secureTextEntry
       />
-
       <Button
-        title={loginMutation.isPending ? 'Logging in...' : 'Login'}
-        onPress={handleLogin}
+        title={loginMutation.isPending ? "Logging in..." : "Login"}
+        onPress={() => loginMutation.mutate({ email, pass })}
         disabled={loginMutation.isPending}
       />
-
-      <Link href="/RegisterPage">
-        Don&apos;t have an account? Register
-      </Link>
-
-      {loginMutation.isError && (
-        <Text style={styles.error}>
-          Login failed. Please try again.
-        </Text>
-      )}
+      <Link href="/RegisterPage">Don't have an account? Register</Link>
+      {loginMutation.isError && <Text style={styles.error}>Login failed. Please try again.</Text>}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
   },
   input: {
     height: 40,
@@ -97,8 +72,5 @@ const styles = StyleSheet.create({
   error: {
     color: 'red',
     marginTop: 10,
-    textAlign: 'center',
   },
 });
-
-export default LoginPage;
