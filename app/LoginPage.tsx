@@ -1,15 +1,19 @@
+import EyeComponent from '@/components/EyeComponent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import api from './services/api';
 
 export default function LoginPage() {
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
   const router = useRouter();
-  // Define the mutation
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
   const loginMutation = useMutation({
     mutationFn: ({ email, pass }: { email: string; pass: string }) => {
       return api.post('/api/login', { email, password: pass, remember: false }).then(res => res.data);
@@ -29,7 +33,11 @@ export default function LoginPage() {
   });
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={100}
+    >
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -38,13 +46,19 @@ export default function LoginPage() {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={pass}
-        onChangeText={setPass}
-        secureTextEntry
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={pass}
+          onChangeText={setPass}
+          secureTextEntry={!passwordVisible}
+        />
+        <Pressable style={styles.eyeIcon} onPress={togglePasswordVisibility}>
+          <EyeComponent />
+        </Pressable>
+      </View>
+      
       <Button
         title={loginMutation.isPending ? "Logging in..." : "Login"}
         onPress={() => loginMutation.mutate({ email, pass })}
@@ -52,7 +66,7 @@ export default function LoginPage() {
       />
       <Link href="/RegisterPage">Don't have an account? Register</Link>
       {loginMutation.isError && <Text style={styles.error}>Login failed. Please try again.</Text>}
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -68,6 +82,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
+  },
+  passwordContainer: {
+    position: 'relative',
+    marginBottom: 10,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
   },
   error: {
     color: 'red',
