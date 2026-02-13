@@ -25,10 +25,6 @@ export default function Dashboard() {
     return (
         <>
         <Text>Dashboard</Text>
-
-        //loggout button
-        //logout mutation
-        //on success navigate to login page
         <Button title="Logout" onPress={() => {
             logoutMutation.mutate();
         }

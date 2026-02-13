@@ -1,8 +1,10 @@
+import EyeComponent from '@/components/EyeComponent';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import api from './services/api'; // Your Axios instance
+import axios from "axios";
 
 const RegisterPage: React.FC = () => {
   const router = useRouter();
@@ -10,6 +12,16 @@ const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setConfirmPasswordVisible(!confirmPasswordVisible);
+  };
 
   // Define the mutation
   const registerMutation = useMutation({
@@ -18,14 +30,30 @@ const RegisterPage: React.FC = () => {
     },
     onSuccess: (data) => {
       console.log('Registered!', data);
+      console.log("API URL:", process.env.EXPO_PUBLIC_API_URL);
+
       // Navigate to login page
       router.push('/LoginPage');
     },
-    onError: (error) => {
-      console.error('Registration failed', error);
-      // Handle error, e.g., show alert
-      alert('Registration failed. Please try again.');
-    }
+    onError: (error: unknown) => {
+    console.log("API URL:", process.env.EXPO_PUBLIC_API_URL);
+
+    if (axios.isAxiosError(error)) {
+    const status = error.response?.status;
+    const data = error.response?.data;
+
+    console.log("Status:", status);
+    console.log("Data:", data);
+
+    alert(
+      "Status: " + (status ?? "No status") +
+      "\nMessage: " + JSON.stringify(data ?? "No response data")
+    );
+  } else {
+    alert("Unexpected error occurred");
+  }
+  }
+
   });
 
   const handleRegister = () => {
@@ -43,7 +71,11 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={100}
+    >
       <Text style={styles.title}>Create Account</Text>
       
       <TextInput
@@ -61,20 +93,30 @@ const RegisterPage: React.FC = () => {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        secureTextEntry
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={!passwordVisible}
+        />
+        <Pressable style={styles.eyeIcon} onPress={togglePasswordVisibility}>
+          <EyeComponent />
+        </Pressable>
+      </View>
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry={!confirmPasswordVisible}
+        />
+        <Pressable style={styles.eyeIcon} onPress={toggleConfirmPasswordVisibility}>
+          <EyeComponent />
+        </Pressable>
+      </View>
       
       <Button
         title={registerMutation.isPending ? "Registering..." : "Register"}
@@ -83,7 +125,7 @@ const RegisterPage: React.FC = () => {
       />
       <Link href="/LoginPage">Already have an account? Login</Link>
       {registerMutation.isError && <Text style={styles.error}>Registration failed. Please try again.</Text>}
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -91,7 +133,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
+    padding: 60,
   },
   title: {
     fontSize: 24,
@@ -105,6 +147,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
+  },
+  passwordContainer: {
+    position: 'relative',
+    marginBottom: 10,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
   },
   error: {
     color: 'red',
