@@ -1,10 +1,10 @@
 import EyeComponent from '@/components/EyeComponent';
 import { useMutation } from '@tanstack/react-query';
+import axios from "axios";
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Button, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import api from './services/api'; // Your Axios instance
-import axios from "axios";
+import { Button, Image, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import api from './services/api';
 
 const RegisterPage: React.FC = () => {
   const router = useRouter();
@@ -15,6 +15,10 @@ const RegisterPage: React.FC = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
+  React.useEffect(() => {
+    alert("API URL: " + process.env.EXPO_PUBLIC_API_URL);
+  }, []);
+
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
@@ -23,41 +27,29 @@ const RegisterPage: React.FC = () => {
     setConfirmPasswordVisible(!confirmPasswordVisible);
   };
 
-  // Define the mutation
   const registerMutation = useMutation({
     mutationFn: ({ name, email, password, confirmPassword }: { name: string; email: string; password: string; confirmPassword: string }) => {
       return api.post('/api/register', { name, email, password, password_confirmation: confirmPassword, remember: false }).then(res => res.data);
     },
     onSuccess: (data) => {
       console.log('Registered!', data);
-      console.log("API URL:", process.env.EXPO_PUBLIC_API_URL);
-
-      // Navigate to login page
       router.push('/LoginPage');
     },
     onError: (error: unknown) => {
-    console.log("API URL:", process.env.EXPO_PUBLIC_API_URL);
-
-    if (axios.isAxiosError(error)) {
-    const status = error.response?.status;
-    const data = error.response?.data;
-
-    console.log("Status:", status);
-    console.log("Data:", data);
-
-    alert(
-      "Status: " + (status ?? "No status") +
-      "\nMessage: " + JSON.stringify(data ?? "No response data")
-    );
-  } else {
-    alert("Unexpected error occurred");
-  }
-  }
-
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+        const data = error.response?.data;
+        alert(
+          "Status: " + (status ?? "No status") +
+          "\nMessage: " + JSON.stringify(data ?? "No response data")
+        );
+      } else {
+        alert("Unexpected error occurred");
+      }
+    }
   });
 
   const handleRegister = () => {
-    // Basic validations
     if (!name || !email || !password || !confirmPassword) {
       alert('Please fill in all fields');
       return;
@@ -66,7 +58,6 @@ const RegisterPage: React.FC = () => {
       alert('Passwords do not match');
       return;
     }
-    
     registerMutation.mutate({ name, email, password, confirmPassword });
   };
 
@@ -76,55 +67,97 @@ const RegisterPage: React.FC = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={100}
     >
-      <Text style={styles.title}>Create Account</Text>
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
-        autoCapitalize="words"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <View style={styles.passwordContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={!passwordVisible}
-        />
-        <Pressable style={styles.eyeIcon} onPress={togglePasswordVisibility}>
-          <EyeComponent />
-        </Pressable>
+      {/* Logo badge */}
+      <View style={styles.logo}>
+        <View style={styles.badge}>
+          <Image source={require('../assets/images/logo.png')} style={styles.logoImage} resizeMode="contain" />
+        </View>
       </View>
-      <View style={styles.passwordContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry={!confirmPasswordVisible}
+
+      {/* Card */}
+      <View style={styles.card}>
+        <View style={styles.grab} />
+
+        {/* Username */}
+        <View style={styles.field}>
+          <Text style={styles.label}>Username:</Text>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              placeholder="user.user"
+              placeholderTextColor="#999"
+              value={name}
+              onChangeText={setName}
+            />
+          </View>
+        </View>
+
+        {/* Email */}
+        <View style={styles.field}>
+          <Text style={styles.label}>E-mail:</Text>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              placeholder="user@example.com"
+              placeholderTextColor="#999"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
+        </View>
+
+        {/* Password */}
+        <View style={styles.field}>
+          <Text style={styles.label}>Password:</Text>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your password"
+              placeholderTextColor="#999"
+              secureTextEntry={!passwordVisible}
+              value={password}
+              onChangeText={setPassword}
+            />
+            <Pressable style={styles.eyeIcon} onPress={togglePasswordVisibility}>
+              <EyeComponent />
+            </Pressable>
+          </View>
+        </View>
+
+        {/* Confirm Password */}
+        <View style={styles.field}>
+          <Text style={styles.label}>Confirm Password:</Text>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              placeholder="Confirm your password"
+              placeholderTextColor="#999"
+              secureTextEntry={!confirmPasswordVisible}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+            />
+            <Pressable style={styles.eyeIcon} onPress={toggleConfirmPasswordVisibility}>
+              <EyeComponent />
+            </Pressable>
+          </View>
+        </View>
+
+        {/* Register Button */}
+        <Button
+          title={registerMutation.isPending ? "Registering..." : "SIGN UP"}
+          onPress={handleRegister}
+          color="#f1dfcf"
         />
-        <Pressable style={styles.eyeIcon} onPress={toggleConfirmPasswordVisibility}>
-          <EyeComponent />
-        </Pressable>
+
+        {/* Footer */}
+        <Text style={styles.footer}>
+          Already have an account? <Link href="/LoginPage" style={styles.link}>Log In</Link>
+        </Text>
+
+        {registerMutation.isError && <Text style={styles.error}>Registration failed. Please try again.</Text>}
       </View>
-      
-      <Button
-        title={registerMutation.isPending ? "Registering..." : "Register"}
-        onPress={handleRegister}
-        disabled={registerMutation.isPending}
-      />
-      <Link href="/LoginPage">Already have an account? Login</Link>
-      {registerMutation.isError && <Text style={styles.error}>Registration failed. Please try again.</Text>}
     </KeyboardAvoidingView>
   );
 };
@@ -132,30 +165,83 @@ const RegisterPage: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f3e1d0',
     justifyContent: 'center',
-    padding: 60,
+    alignItems: 'center',
+    padding: 15,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
+  logo: {
+    marginBottom: -50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  badge: {
+    width: 160,
+    height: 96,
+    backgroundColor: '#f3e1d0',
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoImage: {
+    width: 140,
+    height: 80,
+  },
+  card: {
+    width: '100%',
+    maxWidth: 700,
+    backgroundColor: '#411C0E',
+    borderRadius: 50,
+    padding: 24,
+    paddingTop: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 24,
+    elevation: 5,
+  },
+  grab: {
+    width: 40,
+    height: 3,
+    backgroundColor: '#fff',
+    borderRadius: 999,
     marginBottom: 20,
+    alignSelf: 'center',
+  },
+  field: {
+    marginVertical: 10,
+  },
+  label: {
+    color: '#fff',
+    fontWeight: '700',
+    marginBottom: 8,
+    letterSpacing: 0.2,
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 24,
+    paddingHorizontal: 12,
   },
   input: {
+    flex: 1,
     height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-  },
-  passwordContainer: {
-    position: 'relative',
-    marginBottom: 10,
+    color: '#222',
   },
   eyeIcon: {
-    position: 'absolute',
-    right: 10,
-    top: 10,
+    padding: 6,
+    marginLeft: 6,
+  },
+  footer: {
+    marginTop: 12,
+    textAlign: 'center',
+    color: '#fff',
+    fontSize: 13,
+  },
+  link: {
+    color: '#6251FF',
+    fontWeight: '500',
   },
   error: {
     color: 'red',

@@ -7,14 +7,6 @@
       "env": {
         "EXPO_PUBLIC_API_URL": "https://group1-project-ispm-appdev-backend.onrender.com"
       }
-    },
-    "production": {
-      "android": {
-        "buildType": "apk"
-      },
-      "env": {
-        "EXPO_PUBLIC_API_URL": "https://group1-project-ispm-appdev-backend.onrender.com"
-      }
     }
   }
 }
