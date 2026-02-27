@@ -1,4 +1,5 @@
 import EyeComponent from '@/components/EyeComponent';
+import { useAuth } from '@/contexts/AuthContext';
 import { useMutation } from '@tanstack/react-query';
 import axios from "axios";
 import { Link, useRouter } from 'expo-router';
@@ -15,9 +16,13 @@ const RegisterPage: React.FC = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
+  const auth = useAuth();
+
   React.useEffect(() => {
-    alert("API URL: " + process.env.EXPO_PUBLIC_API_URL);
-  }, []);
+    if (!auth.restoring && auth.isAuthenticated) {
+      router.replace('/Dashboard');
+    }
+  }, [auth.restoring, auth.isAuthenticated]);
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);

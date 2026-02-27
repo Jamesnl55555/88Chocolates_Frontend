@@ -1,5 +1,6 @@
 import Loading from '@/components/Loader/Loading';
 import { AppProvider, useApp } from '@/contexts/AppContext';
+import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import SplashScreen from '@/screens/SplashScreen';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from "expo-router";
@@ -9,6 +10,9 @@ const queryClient = new QueryClient();
 
 function LayoutContent() {
   const { splashDone, isLoading } = useApp();
+  const { restoring } = useAuth();
+
+  if (restoring) return null;
 
   return (
     <View style={{ flex: 1 }}>
@@ -22,9 +26,11 @@ function LayoutContent() {
 export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AppProvider>
-        <LayoutContent />
-      </AppProvider>
+      <AuthProvider>
+        <AppProvider>
+          <LayoutContent />
+        </AppProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

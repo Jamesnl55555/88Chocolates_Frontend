@@ -1,8 +1,8 @@
 import EyeComponent from '@/components/EyeComponent';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '@/contexts/AuthContext';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useRouter } from 'expo-router';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Image,
@@ -21,6 +21,14 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
   const router = useRouter();
+  const auth = useAuth();
+
+  // Redirect if already authenticated
+  React.useEffect(() => {
+    if (!auth.restoring && auth.isAuthenticated) {
+      router.replace('/Dashboard');
+    }
+  }, [auth.restoring, auth.isAuthenticated]);
 
   const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
 
@@ -28,7 +36,12 @@ export default function LoginPage() {
     mutationFn: ({ email, pass }: { email: string; pass: string }) =>
       api.post('/api/login', { email, password: pass, remember: false }).then(res => res.data),
     onSuccess: async (data) => {
-      if (data.token) await AsyncStorage.setItem('userToken', data.token);
+      if (!data || !data.token) {
+        console.error('Login succeeded but no token returned', data);
+        return;
+      }
+      const serverUser = data.user ?? (data.email ? { email: data.email } : null);
+      await auth.signIn(data.token, serverUser);
       router.push('/Dashboard');
     },
     onError: (error) => console.error('Login failed', error),
