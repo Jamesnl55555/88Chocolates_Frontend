@@ -1,10 +1,11 @@
+import CheckboxComponent from '@/components/CheckboxComponent';
 import EyeComponent from '@/components/EyeComponent';
+import ForgotPassModal from '@/components/ForgotPassModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  Button,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -16,13 +17,27 @@ import {
 } from 'react-native';
 import api from './services/api';
 
+
+
 export default function LoginPage() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
   const router = useRouter();
   const auth = useAuth();
-
+  const [forgotPassVisible, setForgotPassVisible] = useState(false);
+  const forgotPassMutation = useMutation({
+    mutationFn: (email: string) => {
+      return api.post('/api/forgot-password', { email }).then(res => res.data);
+    },
+    onSuccess: (data) => {
+      alert('If an account with that email exists, a reset link has been sent.');
+    },
+    onError: (error) => {
+      console.error('Forgot password request failed', error);
+      alert('Failed to send reset link. Please try again later.');
+    }
+  });
   // Redirect if already authenticated
   React.useEffect(() => {
     if (!auth.restoring && auth.isAuthenticated) {
@@ -31,6 +46,7 @@ export default function LoginPage() {
   }, [auth.restoring, auth.isAuthenticated]);
 
   const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
+  const toggleForgotPassVisible = () => setForgotPassVisible(!forgotPassVisible);
 
   const loginMutation = useMutation({
     mutationFn: ({ email, pass }: { email: string; pass: string }) =>
@@ -56,15 +72,12 @@ export default function LoginPage() {
       {/* Logo */}
       <View style={styles.logo}>
         <View style={styles.badge}>
-          <Image source={require('../assets/images/logo.png')} style={styles.logoImage} resizeMode="contain" />
+          <Image source={require('../assets/images/logo.png')} style={styles.logoImage} />
         </View>
       </View>
 
       {/* Card */}
       <View style={styles.card}>
-        <View style={styles.grab} />
-
-        {/* Email Field */}
         <View style={styles.field}>
           <Text style={styles.label}>E-mail:</Text>
           <View style={styles.inputWrapper}>
@@ -97,21 +110,44 @@ export default function LoginPage() {
             </Pressable>
           </View>
         </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
+          <View style={styles.checkboxContainer}>
+            <CheckboxComponent/>
+            <Text style={styles.checkboxText}> Remember Me</Text>
+          </View>
+          <Pressable onPress={toggleForgotPassVisible}>
+            <Text style={styles.forgotPass}>
+              Forgot Password?
+            </Text>
+          </Pressable>
+        </View>
 
         {/* Buttons */}
-        <Button
-          title={loginMutation.isPending ? 'Logging in...' : 'LOG IN'}
+        <View>
+          <Pressable
+          style={styles.loginButton}
           onPress={() => loginMutation.mutate({ email, pass })}
           disabled={loginMutation.isPending}
-          color="#f1dfcf"
-        />
+          >
+          <Text style={styles.buttonText}>
+          {loginMutation.isPending ? 'Logging in...' : 'LOG IN'}</Text>
+          </Pressable>
+        </View>
+        
 
-        <Link href="/RegisterPage" style={styles.registerLink}>
-          Don't have an account? Sign Up
+        <Link href="/RegisterPage" asChild>
+          <Text style={styles.registerLink}>
+            Don't have an account? Sign Up
+          </Text>
         </Link>
 
         {loginMutation.isError && <Text style={styles.error}>Login failed. Please try again.</Text>}
       </View>
+      {forgotPassVisible ? (
+        <View style={styles.forgotPassModal}>
+          <ForgotPassModal />
+        </View>
+      ) : null}
     </KeyboardAvoidingView>
   );
 }
@@ -125,7 +161,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   logo: {
-    marginBottom: -50,
+    marginBottom: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -138,8 +174,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logoImage: {
-    width: 140,
-    height: 80,
+    width: 270,
+    height: 180,
   },
   card: {
     width: '100%',
@@ -147,20 +183,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#411C0E',
     borderRadius: 50,
     padding: 24,
-    paddingTop: 10,
+    paddingTop: 30,
     shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowOffset: { width: 0, height: 8 },
     shadowRadius: 24,
     elevation: 5,
-  },
-  grab: {
-    width: 40,
-    height: 3,
-    backgroundColor: '#fff',
-    borderRadius: 999,
-    marginBottom: 20,
-    alignSelf: 'center',
   },
   field: {
     marginVertical: 10,
@@ -198,4 +226,33 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontWeight: '500',
   },
+  loginButton: {
+    marginTop: 20,
+    backgroundColor: '#f1dfcf',
+    paddingVertical: 12,
+    borderRadius: 24,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#411C0E',
+    fontWeight: '900',
+    letterSpacing: 0.5,
+  },
+  checkboxText: {
+    color: '#fff',
+    marginLeft: 2,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  forgotPass: {
+    color: '#fff',
+    textAlign: 'right',
+  },
+  forgotPassModal: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });

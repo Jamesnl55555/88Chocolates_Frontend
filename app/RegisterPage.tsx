@@ -75,7 +75,7 @@ const RegisterPage: React.FC = () => {
       {/* Logo badge */}
       <View style={styles.logo}>
         <View style={styles.badge}>
-          <Image source={require('../assets/images/logo.png')} style={styles.logoImage} resizeMode="contain" />
+          <Image source={require('../assets/images/logo.png')} style={styles.logoImage} />
         </View>
       </View>
 
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   logo: {
-    marginBottom: -50,
+    marginBottom: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -189,8 +189,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logoImage: {
-    width: 140,
-    height: 80,
+    width: 270,
+    height: 180,
   },
   card: {
     width: '100%',
