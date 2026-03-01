@@ -5,6 +5,7 @@ import { Pressable } from "react-native";
 type Props = {
     isChecked: boolean;
 };
+
 export default function CheckboxComponent({ isChecked }: Props) { 
     const [checked, setChecked] = React.useState(isChecked);
 
