@@ -2,7 +2,6 @@ import { useApp } from "@/contexts/AppContext";
 import React, { useEffect, useRef } from "react";
 import {
   Animated,
-  Dimensions,
   StyleSheet,
   View
 } from "react-native";
@@ -11,7 +10,6 @@ type Props = {
   onFinish?: () => void;
 };
 
-const { width, height } = Dimensions.get("window");
 
 export default function Loading({ onFinish }: Props) {
   const { setIsLoading } = useApp();
@@ -90,8 +88,7 @@ export default function Loading({ onFinish }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    width,
-    height,
+    flex: 1,
     backgroundColor: "#F5E3CF",
     justifyContent: "center",
     alignItems: "center",

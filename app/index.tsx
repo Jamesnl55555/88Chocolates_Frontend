@@ -8,7 +8,7 @@ export default function Index() {
 
   useEffect(() => {
     if (splashDone && !isLoading) {
-      router.replace('/RegisterPage');
+      router.replace('/LoginPage');
     }
   }, [splashDone, isLoading]);
 

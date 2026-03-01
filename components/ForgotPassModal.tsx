@@ -1,4 +1,8 @@
+import React, { useState } from "react";
 import {
+    Keyboard,
+    KeyboardAvoidingView,
+    Platform,
     Pressable,
     StyleSheet,
     Text,
@@ -6,50 +10,123 @@ import {
     View,
 } from "react-native";
 
-export default function ForgotPassModal() {
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Forgot Password</Text>
-            <TextInput style={styles.input} placeholder="Enter your email" keyboardType="email-address" />
-            <Pressable style={styles.button}>
-                <Text style={styles.buttonText}>Send Reset Link</Text>
-            </Pressable>
+type Props = {
+  onSubmit: (email: string) => void;
+  onCancel?: () => void;
+  isLoading: boolean;
+};
+
+export default function ForgotPassModal({ onSubmit, onCancel, isLoading }: Props) {
+  const [email, setEmail] = useState("");
+
+  const handlePress = () => {
+    if (!email) return alert("Please enter your email");
+    onSubmit(email);
+  };
+
+  return (
+    <View style={styles.modalOverlay}>
+      {/* Background to dismiss keyboard */}
+      <Pressable style={StyleSheet.absoluteFill} onPress={Keyboard.dismiss} />
+
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0} // adjust if modal top changes
+        style={styles.modalContainer}
+      >
+        <Text style={styles.title}>Forgot Password</Text>
+        <Text style={styles.description}>
+          Please enter your verified email address from your account.
+        </Text>
+
+        <Text style={styles.subheading}>E-mail:</Text>
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={styles.input}
+            placeholder="user@example.com"
+            keyboardType="email-address"
+            value={email}
+            onChangeText={setEmail}
+            returnKeyType="done"
+          />
         </View>
-    );
+
+        <Pressable
+          style={styles.button}
+          onPress={handlePress}
+          disabled={isLoading}
+        >
+          <Text style={styles.buttonText}>
+            {isLoading ? "Sending..." : "Send Verification"}
+          </Text>
+        </Pressable>
+
+        {onCancel && (
+          <Pressable style={styles.cancelContainer} onPress={onCancel}>
+            <Text style={styles.cancelButton}>Back to login</Text>
+          </Pressable>
+        )}
+      </KeyboardAvoidingView>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f3e1d0',
-        padding: 20,
-        borderRadius: 45,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    input: {
-        width: '100%',
-        height: 50,
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        paddingHorizontal: 15,
-        marginBottom: 20,
-    },
-    button: {
-        width: '100%',
-        height: 50,
-        backgroundColor: '#411C0E',
-        borderRadius: 8,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-    }
+  modalOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.3)",
+    zIndex: 1000,
+  },
+  modalContainer: {
+    width: 320,
+    minHeight: 350,
+    maxHeight: 420,
+    backgroundColor: "#fff",
+    borderRadius: 30,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 25,
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  title: { fontSize: 24, fontWeight: "bold", marginBottom: 10 },
+  description: { fontSize: 14, color: "#333", textAlign: "center", marginBottom: 15 },
+  subheading: {
+    fontSize: 16,
+    fontWeight: "900",
+    color: "#411C0E",
+    marginTop: 10,
+    marginBottom: 8,
+    alignSelf: "flex-start",
+  },
+  inputWrapper: {
+    width: "100%",
+    height: 50,
+    backgroundColor: "#fff",
+    borderRadius: 45,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    marginBottom: 20,
+    justifyContent: "center",
+    paddingHorizontal: 12,
+  },
+  input: { width: "100%", height: 40, color: "#222" },
+  button: {
+    width: "100%",
+    height: 50,
+    backgroundColor: "#411C0E",
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  buttonText: { color: "#fff", fontWeight: "bold" },
+  cancelContainer: { width: "100%", alignItems: "center", marginTop: 5 },
+  cancelButton: { color: "#3c0af0", fontWeight: "600" },
 });
