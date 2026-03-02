@@ -36,7 +36,6 @@ export default function LoginPage() {
   const [rememberMeChecked, setRememberMeChecked] = useState(false);
 
   // Error states
-  const [fillError, setFillError] = useState('');
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [resetConfirmPassError, setResetConfirmPassError] = useState<string | null>(null);
@@ -102,10 +101,20 @@ export default function LoginPage() {
   });
 
   const handleLogin = () => {
-    if (!email || !pass) {
-      setFillError('Please fill in all fields');
+    const newErrors: any = {};
+
+    if (!email.trim()) newErrors.email = 'Please enter your email';
+    if (!pass) newErrors.password = 'Please enter your password';
+
+    if (Object.keys(newErrors).length > 0) {
+      setEmailError(newErrors.email);
+      setPasswordError(newErrors.password);
       return;
     }
+
+    setEmailError(null);
+    setPasswordError(null);
+
     loginMutation.mutate({ email, pass });
   };
 
@@ -222,10 +231,9 @@ export default function LoginPage() {
               <Text style={styles.registerLink}>Sign Up</Text>
             </Link>
           </View>
-
-          {fillError && <Text style={{ color: '#e20505', alignSelf: 'center' }}>{fillError}</Text>}
         </View>
       </Animated.View>
+      
 
       {/* Modals */}
       {forgotPassVisible && (
@@ -313,10 +321,9 @@ const styles = StyleSheet.create({
     color: '#222' 
   },
   error: { 
-    color: 'red', 
-    marginTop: 10, 
-    fontSize: 12, 
-    alignSelf: 'center',
+    color: '#ffb3b3',
+    marginTop: 6,
+    fontSize: 12,
   },
   registerLink: { 
     color: '#6251FF', 

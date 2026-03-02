@@ -21,7 +21,7 @@ function LayoutContent() {
         screenOptions={{
           headerShown: false,
           animation: 'fade',
-          animationDuration: 300,
+          animationDuration: 100,
           gestureEnabled: false,
         }}
       />
