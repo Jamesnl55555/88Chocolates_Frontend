@@ -200,7 +200,7 @@ export default function LoginPage() {
           </View>
 
           {/* Remember + Forgot */}
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
             <View style={styles.checkboxContainer}>
               <CheckboxComponent isChecked={rememberMeChecked} />
               <Text style={styles.checkboxText}> Remember Me</Text>
@@ -217,13 +217,13 @@ export default function LoginPage() {
 
           {/* Footer */}
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 12 }}>
-            <Text style={styles.text}>Don't have an account?</Text>
+            <Text style={styles.text}>Don&apos;t have an account?</Text>
             <Link href="/RegisterPage" asChild>
               <Text style={styles.registerLink}>Sign Up</Text>
             </Link>
           </View>
 
-          {fillError && <Text style={{ color: 'red', marginTop: 10 }}>{fillError}</Text>}
+          {fillError && <Text style={{ color: '#e20505', alignSelf: 'center' }}>{fillError}</Text>}
         </View>
       </Animated.View>
 
@@ -261,9 +261,23 @@ export default function LoginPage() {
 }
 
 const styles = StyleSheet.create({
-  logo: { marginBottom: 50, justifyContent: 'center', alignItems: 'center' },
-  badge: { width: 160, height: 96, backgroundColor: '#f3e1d0', borderRadius: 18, justifyContent: 'center', alignItems: 'center' },
-  logoImage: { width: 270, height: 180 },
+  logo: { 
+    marginBottom: 50, 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
+  badge: { 
+    width: 160, 
+    height: 96, 
+    backgroundColor: '#f3e1d0', 
+    borderRadius: 18, 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
+  logoImage: { 
+    width: 270, 
+    height: 180 
+  },
   card: {
     width: '90%',
     maxWidth: 700,
@@ -277,17 +291,77 @@ const styles = StyleSheet.create({
     shadowRadius: 24,
     elevation: 5,
   },
-  field: { marginVertical: 10 },
-  label: { color: '#fff', fontWeight: '700', marginBottom: 8, letterSpacing: 0.2 },
-  inputWrapper: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 24, paddingHorizontal: 12 },
-  input: { flex: 1, height: 40, color: '#222' },
-  error: { color: 'red', marginTop: 10, fontSize: 12 },
-  registerLink: { color: '#6251FF', fontWeight: '500', marginLeft: 4 },
-  text: { color: '#fff' },
-  loginButton: { marginTop: 20, backgroundColor: '#f1dfcf', paddingVertical: 12, borderRadius: 24, alignItems: 'center' },
-  buttonText: { color: '#411C0E', fontWeight: '900', letterSpacing: 0.5 },
-  checkboxText: { color: '#fff', marginLeft: 2 },
-  checkboxContainer: { flexDirection: 'row', alignItems: 'center' },
-  forgotPass: { color: '#fff', textAlign: 'right' },
-  modalOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.3)', zIndex: 1000 },
+  field: { 
+    marginVertical: 10 
+  },
+  label: { 
+    color: '#fff', 
+    fontWeight: '700', 
+    marginBottom: 8, 
+    letterSpacing: 0.2 
+  },
+  inputWrapper: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    backgroundColor: '#fff', 
+    borderRadius: 24, 
+    paddingHorizontal: 12 
+  },
+  input: { 
+    flex: 1, 
+    height: 40, 
+    color: '#222' 
+  },
+  error: { 
+    color: 'red', 
+    marginTop: 10, 
+    fontSize: 12, 
+    alignSelf: 'center',
+  },
+  registerLink: { 
+    color: '#6251FF', 
+    fontWeight: '500', 
+    marginLeft: 4 
+  },
+  text: { 
+    color: '#fff' 
+  },
+  loginButton: { 
+    marginTop: 10, 
+    backgroundColor: '#f1dfcf', 
+    paddingVertical: 12, 
+    borderRadius: 24, 
+    alignItems: 'center', 
+    width: '85%',
+    alignSelf: 'center',
+  },
+  buttonText: { 
+    color: '#411C0E', 
+    fontWeight: '900', 
+    letterSpacing: 0.5 
+  },
+  checkboxText: { 
+    color: '#fff', 
+  },
+  checkboxContainer: { 
+    flexDirection: 'row', 
+    alignItems: 'center' 
+  },
+  forgotPass: { 
+    color: '#fff', 
+    textAlign: 'right' 
+  },
+  modalOverlay: { 
+    position: 'absolute', 
+    top: 0, 
+    left: 0, 
+    right: 0, 
+    bottom: 0, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: 'rgba(0,0,0,0.3)', 
+    zIndex: 1000 
+  },
+
+  
 });

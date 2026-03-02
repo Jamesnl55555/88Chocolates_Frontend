@@ -3,7 +3,7 @@ import { AppProvider, useApp } from '@/contexts/AppContext';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import SplashScreen from '@/screens/SplashScreen';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Stack } from "expo-router";
+import { Stack } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 const queryClient = new QueryClient();
@@ -12,16 +12,28 @@ function LayoutContent() {
   const { splashDone, isLoading } = useApp();
   const { restoring } = useAuth();
 
+  // Prevent rendering stack while restoring auth state
   if (restoring) return null;
 
   return (
     <View style={{ flex: 1 }}>
-      <Stack screenOptions={{ headerShown: false}} />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          animation: 'fade',
+          animationDuration: 300,
+          gestureEnabled: false,
+        }}
+      />
+
+      {/* Splash Overlay */}
       {!splashDone && (
         <View style={[styles.absoluteFillObject, { zIndex: 1000 }]}>
           <SplashScreen onFinish={() => {}} />
         </View>
       )}
+
+      {/* Global Loader Overlay */}
       {isLoading && (
         <View style={[styles.absoluteFillObject, { zIndex: 1001 }]}>
           <Loading onFinish={() => {}} />
@@ -45,6 +57,6 @@ export default function RootLayout() {
 
 const styles = StyleSheet.create({
   absoluteFillObject: {
-  ...StyleSheet.absoluteFillObject,
-  }
+    ...StyleSheet.absoluteFillObject,
+  },
 });
