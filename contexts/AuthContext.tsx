@@ -1,15 +1,21 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type User = { email: string; name?: string } | null;
+export type User = {
+  email: string;
+  name: string;
+  storeName: string;
+} | null;
 
-type AuthContextType = {
+export type AuthContextType = {
   userToken: string | null;
   user: User;
   isAuthenticated: boolean;
   restoring: boolean;
-  signIn: (token: string, user: User | string | null) => Promise<void>;
+  setUser: React.Dispatch<React.SetStateAction<User>>;
+  signIn: (token: string, userData: User) => Promise<void>;
   signOut: () => Promise<void>;
+  updateUser: (userData: User) => Promise<void>; // NEW helper
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,6 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [restoring, setRestoring] = useState(true);
   const [user, setUser] = useState<User>(null);
 
+  // Restore token & user from AsyncStorage
   useEffect(() => {
     (async () => {
       try {
@@ -27,45 +34,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (token) {
           setUserToken(token);
           if (userJson) {
-            try {
-              setUser(JSON.parse(userJson));
-            } catch (err) {
-              // fallback — if older code stored only an email string
-              setUser({ email: userJson });
-            }
+            const parsedUser = JSON.parse(userJson);
+            setUser({
+              email: parsedUser.email ?? '',
+              name: parsedUser.name ?? '',
+              storeName: parsedUser.storeName ?? '',
+            });
           }
         }
-      } catch (e) {
-        console.warn('Failed to restore session', e);
+      } catch (err) {
+        console.warn('Failed to restore session', err);
       } finally {
         setRestoring(false);
       }
     })();
   }, []);
 
-  const signIn = async (token: string, userData: User | string | null) => {
+  // Sign in: store token & user in AsyncStorage
+  const signIn = async (token: string, userData: User) => {
+    if (!userData) throw new Error('User data must be provided');
     await AsyncStorage.setItem('userToken', token);
-    if (userData) {
-      if (typeof userData === 'string') {
-        const userObj = { email: userData };
-        await AsyncStorage.setItem('user', JSON.stringify(userObj));
-        setUser(userObj);
-      } else {
-        await AsyncStorage.setItem('user', JSON.stringify(userData));
-        setUser(userData);
-      }
-    } else {
-      await AsyncStorage.removeItem('user');
-      setUser(null);
-    }
+    await AsyncStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
     setUserToken(token);
   };
 
+  
+
+  // Sign out: remove token & user from AsyncStorage
   const signOut = async () => {
     await AsyncStorage.removeItem('userToken');
     await AsyncStorage.removeItem('user');
-    setUserToken(null);
     setUser(null);
+    setUserToken(null);
+  };
+
+  // NEW: Update user in memory AND AsyncStorage
+  const updateUser = async (userData: User) => {
+    if (!userData) return;
+    setUser(userData);
+    await AsyncStorage.setItem('user', JSON.stringify(userData));
   };
 
   return (
@@ -74,9 +82,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         userToken,
         user,
         isAuthenticated: !!userToken,
+        setUser,
         restoring,
         signIn,
         signOut,
+        updateUser,
       }}
     >
       {children}

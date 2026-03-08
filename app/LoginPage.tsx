@@ -87,7 +87,8 @@ export default function LoginPage() {
   const loginMutation = useMutation({
     mutationFn: ({ email, pass }: { email: string; pass: string }) =>
       api.post('/api/login', { email, password: pass, remember: rememberMeChecked }).then(res => res.data),
-    onSuccess: async (data) => {
+    onSuccess: async (data) => {  
+    console.log("LOGIN RESPONSE USER:", data.user);    
       setEmailError(null);
       setPasswordError(null);
       await auth.signIn(data.token, data.user);

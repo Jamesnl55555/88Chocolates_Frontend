@@ -4,6 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Link, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -12,7 +13,6 @@ import {
   Text,
   TextInput,
   View,
-  Image,
 } from 'react-native';
 import api from './services/api';
 
@@ -37,20 +37,8 @@ const RegisterPage: React.FC = () => {
   }, [auth.restoring, auth.isAuthenticated]);
 
   const registerMutation = useMutation({
-    mutationFn: ({ name, email, password, confirmPassword }: any) =>
-      api
-        .post('/api/register', {
-          name,
-          email,
-          password,
-          password_confirmation: confirmPassword,
-        })
-        .then(res => res.data),
-
-    onSuccess: () => {
-      router.push('/LoginPage');
-    },
-
+    mutationFn: ({ name, email, password, confirmPassword }: any) => api.post('/api/register', { name, email, password, password_confirmation: confirmPassword }).then(res => res.data),
+    onSuccess: () => router.push('/LoginPage'),
     onError: (error: any) => {
       if (!error.response) {
         alert('Network error. Please try again.');
