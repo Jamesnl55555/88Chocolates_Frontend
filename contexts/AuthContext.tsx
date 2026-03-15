@@ -5,6 +5,7 @@ export type User = {
   email: string;
   name: string;
   storeName: string;
+  profile_image?: string | null;
 } | null;
 
 export type AuthContextType = {
@@ -39,6 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               email: parsedUser.email ?? '',
               name: parsedUser.name ?? '',
               storeName: parsedUser.storeName ?? '',
+              profile_image: parsedUser.profile_image ?? null,
             });
           }
         }

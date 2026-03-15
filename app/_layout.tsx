@@ -1,4 +1,6 @@
+import AppHeader from '@/components/AppHeader';
 import Loading from '@/components/Loader/Loading';
+import NavigationBar from '@/components/NavigationBar';
 import { AppProvider, useApp } from '@/contexts/AppContext';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import SplashScreen from '@/screens/SplashScreen';
@@ -10,7 +12,8 @@ const queryClient = new QueryClient();
 
 function LayoutContent() {
   const { splashDone, isLoading } = useApp();
-  const { restoring } = useAuth();
+  const { restoring, isAuthenticated } = useAuth();
+  
 
   // Prevent rendering stack while restoring auth state
   if (restoring) return null;
@@ -19,7 +22,9 @@ function LayoutContent() {
     <View style={{ flex: 1 }}>
       <Stack
         screenOptions={{
-          headerShown: false,
+          header: ({ route }) => <AppHeader routeName={route.name} />,
+          headerStyle: { backgroundColor: '#724848' },
+          headerShown: true,
           animation: 'fade',
           animationDuration: 100,
           gestureEnabled: false,
@@ -39,6 +44,7 @@ function LayoutContent() {
           <Loading onFinish={() => {}} />
         </View>
       )}
+      {isAuthenticated && <NavigationBar />}
     </View>
   );
 }

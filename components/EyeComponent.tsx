@@ -29,5 +29,7 @@ const styles = StyleSheet.create({
     eyeIcon: {
     padding: 6,
     marginLeft: 6,
+    position: 'absolute',
+    right: 10
   }
 });

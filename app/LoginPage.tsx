@@ -46,7 +46,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!auth.restoring && auth.isAuthenticated) {
-      router.replace('/Dashboard');
+      router.replace('/HomePage');
     }
   }, [auth.restoring, auth.isAuthenticated]);
 
@@ -92,7 +92,7 @@ export default function LoginPage() {
       setEmailError(null);
       setPasswordError(null);
       await auth.signIn(data.token, data.user);
-      router.push('/Dashboard');
+      router.push('/HomePage');
     },
     onError: (error: any) => {
       const errors = error.response?.data?.errors;
@@ -147,6 +147,7 @@ export default function LoginPage() {
     mutationFn: ({ password, password_confirmation }: ResetPasswordPayload) =>
       api.post('/api/reset-password', { email: emailForReset, code, password, password_confirmation }).then(res => res.data),
     onSuccess: () => {
+      
       alert('Password reset successful!');
       setResetPasswordVisible(false);
     },

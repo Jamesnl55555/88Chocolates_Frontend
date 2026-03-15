@@ -1,19 +1,20 @@
 import AlertModal from "@/components/AlertModal";
 import ChangePassModal from "@/components/ChangePassModal";
 import ConfirmCurrPassModal from "@/components/ConfirmCurrPassModal";
+import LogoutModal from "@/components/LogoutModal";
 import NewProfileModal from "@/components/NewProfileModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { IconEdit, IconUserFilled } from "@tabler/icons-react-native";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Button, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import api from "./services/api";
 
 export default function ProfilePage() {
     
     const [alertModalVisible, setAlertModalVisible] = useState(false);
-    const [logoutModal, setLogoutModal] = useState('');
+    const [logoutModalVisible, setLogoutModalVisible] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
     const [headerText, setHeaderText] = useState('');
     const [changeProfileModalVisible, setChangeProfileModalVisible] = useState(false);
@@ -41,13 +42,16 @@ export default function ProfilePage() {
     });
 
     const editProfileMutation = useMutation({
-    mutationFn: ({ storeName, name }: { storeName: string; name: string }) => {
+    mutationFn: ({ storeName, name, profile_image }: { storeName: string; name: string, profile_image?: string | null; }) => {
         return api.put('/api/editprofile', {
         name: name,
         storeName: storeName,
+        profile_image
         }).then(res => res.data);
     },
     onSuccess: async (data, variables) => {
+        setHeaderText("Profile Updated");
+        setAlertMessage("Your profile has been updated successfully.");
         setAlertModalVisible(true);
         await auth.updateUser(data.user);
         setChangeProfileModalVisible(false);
@@ -93,7 +97,14 @@ export default function ProfilePage() {
         <View style={styles.container}>
             <View style={styles.card}>
                 <View style={styles.profile}>
-                    <IconUserFilled size={90} />
+                    {auth.user?.profile_image ? (
+                        <Image
+                            source={{ uri: auth.user.profile_image }}
+                            style={{ width: 100, height: 100, borderRadius: 50 }}
+                        />
+                    ) : (
+                        <IconUserFilled size={90} />
+                    )}
                     <Pressable
                         style={styles.edit}
                         onPress={() => setChangeProfileModalVisible(true)}
@@ -116,22 +127,23 @@ export default function ProfilePage() {
                     <TextInput value={auth.user?.email ?? "user@example.com"} editable={false}/>
                 </View>
                 </View>
-                <View>
+                <View style={styles.footerContainer}>
                     <TouchableOpacity style={styles.buttons} onPress={() => setCurrPassModalVisible(true)}>
-                        <Text>Change Password</Text>
+                        <Text style={styles.buttonText}>Change Password</Text>
                     </TouchableOpacity>
-                    <Button
-                    title={logoutMutation.isPending ? "Logging out..." : "Logout"}
+                    <TouchableOpacity
                     disabled={logoutMutation.isPending}
-                    onPress={() => logoutMutation.mutate()}
-                    />
+                    onPress={logoutModalVisible ? () => setLogoutModalVisible(false) : () => setLogoutModalVisible(true)}
+                    style={styles.logoutButton}
+                    >
+                    <Text style={styles.buttonText}>Logout</Text>
+                    </TouchableOpacity>
                 </View>
-                
             </View>
             {changeProfileModalVisible && (
             <NewProfileModal
-            onSubmit={(storename, name) =>
-            editProfileMutation.mutate({ storeName: storename, name: name })
+            onSubmit={(storename, name, image) =>
+            editProfileMutation.mutate({ storeName: storename, name: name, profile_image: image})
             }
             onCancel={() => setChangeProfileModalVisible(false)}
             isSaving={editProfileMutation.isPending}
@@ -164,6 +176,13 @@ export default function ProfilePage() {
                 onConfirm={() => setAlertModalVisible(false)}
                 />
             )}
+            {logoutModalVisible && (
+                <LogoutModal
+                onConfirm={() => logoutMutation.mutate()}
+                onCancel={() => setLogoutModalVisible(false)}
+                isLoading={logoutMutation.isPending}
+                />
+            )}
             
         </View>  
     );
@@ -178,7 +197,9 @@ const styles = StyleSheet.create({
    card: {
     borderColor: 'grey',
     borderWidth: 1,
-    borderRadius: 45,
+    borderBottomWidth: 0,
+    borderTopStartRadius: 30,
+    borderTopEndRadius: 30, 
     height: "90%",
     width: "90%",
     alignItems: 'center'
@@ -196,10 +217,9 @@ const styles = StyleSheet.create({
    },
    profile: {
     marginVertical: 50,
-    borderColor: 'brown',
-    borderWidth: 7,
+    borderColor: 'black',
+    borderWidth: 5,
     borderRadius: 60,
-    padding: 9,
     position: 'relative',       
     alignItems: 'center',
     justifyContent: 'center',
@@ -224,12 +244,32 @@ const styles = StyleSheet.create({
    boxContainer: {
     width: '90%'
    },
+   footerContainer: {
+    width: '90%',
+    alignItems: 'center'
+   },
    buttons: {
-    backgroundColor: '#e7dddd',
-    borderColor: '#412f2f',
-    borderWidth: 1,
+    backgroundColor: '#3d2cd4',
+    width: '100%',
+    alignItems: 'center',
     borderRadius: 24,
-    paddingHorizontal: 12,
+    padding: 12,
     marginVertical: 10,
    },
+   logoutButton: {
+    backgroundColor: '#c53306',
+    width: '100%',
+    alignItems: 'center',
+    borderRadius: 24,
+    padding: 12,
+    marginVertical: 10,
+   },
+   buttonText: {
+    color: '#fff',
+    fontSize: 16
+   },
+   navigationBar:{
+    position: 'absolute',
+    bottom: 0
+   }
 })

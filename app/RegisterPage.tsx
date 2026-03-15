@@ -32,7 +32,7 @@ const RegisterPage: React.FC = () => {
 
   useEffect(() => {
     if (!auth.restoring && auth.isAuthenticated) {
-      router.replace('/Dashboard');
+      router.replace('/HomePage');
     }
   }, [auth.restoring, auth.isAuthenticated]);
 
