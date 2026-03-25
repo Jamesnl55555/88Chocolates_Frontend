@@ -15,6 +15,11 @@ export default function AppHeader({ routeName }: AppHeaderProps) {
   let title = 'My App';
   if (routeName === 'ProfilePage') title = 'Profile';
   if (routeName === 'HomePage') title = 'Home';
+  if (routeName === 'MakeTransactionPage') title = 'Transaction';
+  
+  if (routeName === 'ReceiptPage') title = 'Receipt';
+
+
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
