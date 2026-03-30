@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import * as ImagePicker from "expo-image-picker";
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { uploadImage } from "../app/services/cloudinary";
 import api from './services/api';
 
@@ -63,41 +63,86 @@ export default function AddProductsPage() {
 
 
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View style={styles.container}>
-            <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Add Products Page</Text>
-            <Text style={{ marginTop: 10 }}>This is where users can add products to their Inventory</Text>
-            <View>
+            <View style={styles.card}>
             <TouchableOpacity onPress={pickImage}>
-                <Text>Upload Image</Text>
+                <View style={styles.imageContainer}>
+                    {imageUrl && <Image source={{ uri: imageUrl }} resizeMode="cover" style={styles.image} />}
+                    {!imageUrl ? <Text style={styles.addIcon}>+</Text> : null}
+                </View>
             </TouchableOpacity>
             <Text>Category:</Text>
-            <TextInput placeholder="Category" style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} value={category} onChangeText={setCategory} />
+            <TextInput placeholder="Category" style={styles.input} value={category} onChangeText={setCategory} />
             <Text>Product Name: </Text>
-            <TextInput placeholder="Product Name" style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} value={name} onChangeText={setName} />
+            <TextInput placeholder="Product Name" style={styles.input} value={name} onChangeText={setName} />
             <Text>Price: </Text>
-            <TextInput placeholder="Price" style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} value={price} onChangeText={setPrice} />
+            <TextInput placeholder="Price" style={styles.input} value={price} onChangeText={setPrice} />
             <Text>Quantity: </Text>
-            <TextInput placeholder="Quantity" style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} value={quantity} onChangeText={setQuantity} />
-            <Text>Color/Size:</Text>
-            <TextInput placeholder="Color/Size" style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} value={color} onChangeText={setColor} />
-            </View>
-
-            <TouchableOpacity style={{ marginTop: 20 }} onPress={handleSubmit} >
+            <TextInput placeholder="Quantity" style={styles.input} value={quantity} onChangeText={setQuantity} />
+            <Text>Net Weight:</Text>
+            <TextInput placeholder="Color/Size" style={styles.input} value={color} onChangeText={setColor} />
+            
+            <TouchableOpacity style={styles.button} onPress={handleSubmit} >
                 <Text>Add Product</Text>
             </TouchableOpacity>
             </View>
-        </View>
+            </View>
+        </ScrollView>
     );
 } 
 
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      margin: 5,
-      justifyContent: 'center',
-      alignItems: 'center',
       backgroundColor: '#fff',
       padding: 20,
+      width: '100%',
     },
+    card: {
+      backgroundColor: '#f5f5f5',
+      borderRadius: 10,
+      borderWidth: 1,
+      padding: 20,
+      height: '85%',
+      width: '100%',
+    },
+    imageContainer: {
+      alignItems: 'center',
+      marginBottom: 10,
+      width: '50%',
+      height: 150,
+      justifyContent: 'center',
+      borderWidth: 1,
+      backgroundColor: '#f5f5f5',
+      borderRadius: 10,
+      alignSelf: 'center',
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 10,
+    },
+    addIcon: {
+      fontSize: 24,
+      color: '#ccc',
+    },
+    input: {
+      width: '100%',
+      height: 40,
+      borderRadius: 45,
+      borderWidth: 2,
+      borderColor: '#402424',
+      marginBottom: 10,
+      paddingHorizontal: 10,
+    },
+    button: {
+      backgroundColor: '#FFEDD9',
+      borderColor: '#411C0E',
+      borderWidth: 2,
+      paddingVertical: 12,
+      paddingHorizontal: 24,
+      borderRadius: 8,
+    }
+    
   });

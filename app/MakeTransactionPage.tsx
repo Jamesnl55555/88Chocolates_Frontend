@@ -158,7 +158,7 @@ export default function MakeTransactionPage() {
                         isChecked={!!selectedItem}
                         onPress={() => toggleSelect(item)}
                     />
-                    <Text style={{ fontWeight: 'bold', fontSize: 20 }}>{item.category}</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, maxWidth: '70%' }} numberOfLines={1} ellipsizeMode="tail">{item.category}</Text>
 
                     <TouchableOpacity onPress={() => openModal(item)} style={{ marginLeft: 'auto', marginRight: 10 }}>
                         <IconEdit size={20} />
@@ -173,8 +173,8 @@ export default function MakeTransactionPage() {
                 <View style={styles.info}>
                     <Image source={{ uri: item.file_path }} style={styles.image} />
 
-                    <View style={{ marginLeft: 10 }}>
-                        <Text style={styles.name}>{item.name}</Text>
+                    <View style={{ marginLeft: 10, flex: 1 }}>
+                        <Text style={styles.name} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>
                         <Text style={styles.details}>₱{item.price}</Text>
                     </View>
                     <View style={{ marginLeft: 20, alignItems: 'center' }}>
@@ -338,7 +338,12 @@ const styles = StyleSheet.create({
     },
     productContainer: { width: '90%', flex: 1 },
     info: { flexDirection: 'row', alignItems: 'center' },
-    name: { fontSize: 15 },
+    name: { 
+        fontSize: 15,
+        maxWidth: '70%',
+        flexShrink: 1,
+        flexWrap: 'wrap',
+    },
     details: { fontSize: 15, fontWeight: 'bold', color: '#666' },
     input: {
         borderWidth: 1,
