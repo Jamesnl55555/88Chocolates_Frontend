@@ -96,16 +96,16 @@ export default function LoginPage() {
     },
     onError: (error: any) => {
       const errors = error.response?.data?.errors;
-      setEmailError(errors?.email?.[0] ?? 'Invalid email');
-      setPasswordError(errors?.password?.[0] ?? 'Invalid password');
+      setEmailError(errors?.email?.[0] ?? 'Incorrect email. Please try again.');
+      setPasswordError(errors?.password?.[0] ?? 'Incorrect password. Please try again.');
     },
   });
 
   const handleLogin = () => {
     const newErrors: any = {};
 
-    if (!email.trim()) newErrors.email = 'Please enter your email';
-    if (!pass) newErrors.password = 'Please enter your password';
+    if (!email.trim()) newErrors.email = 'Email is required.';
+    if (!pass) newErrors.password = 'Password is required.';
 
     if (Object.keys(newErrors).length > 0) {
       setEmailError(newErrors.email);
@@ -267,7 +267,7 @@ export default function LoginPage() {
         />
       )}
     </View>
-  );
+  ); 
 }
 
 const styles = StyleSheet.create({

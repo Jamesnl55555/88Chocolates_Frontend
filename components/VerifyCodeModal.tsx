@@ -38,15 +38,19 @@ export default function VerifyCodeModal({ email, onSubmit, isLoading, onCancel }
         <Text style={styles.title}>Verify Code</Text>
         <Text style={styles.subtitle}>Enter the 6-digit code sent to {email}</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="123456"
-          keyboardType="number-pad"
-          value={code}
-          onChangeText={setCode}
-          maxLength={6}
-          returnKeyType="done"
-        />
+        <Text style={styles.subheading}>Code:</Text>
+        <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              placeholder="123456"
+              keyboardType="number-pad"
+              value={code}
+              onChangeText={setCode}
+              maxLength={6}
+              returnKeyType="done"
+            />
+        </View>
+        
 
         <Pressable style={styles.button} onPress={handlePress} disabled={isLoading}>
           <Text style={styles.buttonText}>{isLoading ? "Verifying..." : "Verify Code"}</Text>
@@ -54,7 +58,7 @@ export default function VerifyCodeModal({ email, onSubmit, isLoading, onCancel }
 
         {onCancel && (
           <Pressable style={styles.cancelContainer} onPress={onCancel}>
-            <Text style={styles.cancelText}>Back to login</Text>
+            <Text style={styles.cancelButton}>Back to login</Text>
           </Pressable>
         )}
       </KeyboardAvoidingView>
@@ -75,42 +79,78 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   modalContainer: {
-    width: 320,
-    minHeight: 250,
-    maxHeight: 350,
+    width: 360,
+    minHeight: 350,
+    maxHeight: 420,
     backgroundColor: "#fff",
-    borderRadius: 30,
+    borderRadius: 50,
     paddingHorizontal: 20,
     paddingTop: 20,
-    paddingBottom: 25,
+    paddingBottom: 10,
     justifyContent: "flex-start",
     alignItems: "center",
   },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 10 },
-  subtitle: { fontSize: 14, color: "#333", textAlign: "center", marginBottom: 15 },
-  input: {
+  title: { 
+    fontSize: 22, 
+    fontWeight: "bold", 
+    marginBottom: 10,
+    paddingHorizontal: 10, 
+    marginTop: '7%',
+    color: '#411C0E',
+  },
+  subtitle: { 
+    fontSize: 15, 
+    color: "#411C0E", 
+    textAlign: "center", 
+    marginBottom: 15,
+    paddingHorizontal: 10, 
+  },
+  subheading: {
+    fontSize: 16,
+    fontWeight: "900",
+    color: "#411C0E",
+    marginTop: 10,
+    marginBottom: 8,
+    alignSelf: "flex-start",
+  },
+  inputWrapper: {
     width: "100%",
     height: 50,
     backgroundColor: "#fff",
-    borderRadius: 8,
+    borderRadius: 45,
+    borderColor: "#411C0E",
     borderWidth: 1,
-    borderColor: "#ccc",
-    paddingHorizontal: 15,
-    fontSize: 18,
-    letterSpacing: 4,
-    textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 15,
+    justifyContent: "center",
+    paddingHorizontal: 12,
+  },
+  input: {
+    width: "100%", 
+    height: 40, 
+    color: "#565656",
   },
   button: {
-    width: "100%",
+    width: "60%",
     height: 50,
     backgroundColor: "#411C0E",
-    borderRadius: 8,
+    borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 10,
+    marginTop: 10,
+    marginBottom: 7,
   },
-  buttonText: { color: "#fff", fontWeight: "bold" },
-  cancelContainer: { width: "100%", alignItems: "center" },
-  cancelText: { color: "#3c0af0", fontWeight: "600" },
+  buttonText: { 
+    color: "#fff", 
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  cancelContainer: { 
+    width: "60%", 
+    alignItems: "center", 
+    marginTop: 5 
+  },
+  cancelButton: { 
+    color: "#1A00FF", 
+    fontWeight: "600",
+  },
 });

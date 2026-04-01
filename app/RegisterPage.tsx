@@ -58,14 +58,14 @@ const RegisterPage: React.FC = () => {
   const handleRegister = () => {
     const newErrors: any = {};
 
-    if (!name.trim()) newErrors.name = 'Username is required';
-    if (!email.trim()) newErrors.email = 'Email is required';
-    if (!password) newErrors.password = 'Password is required';
+    if (!name.trim()) newErrors.name = 'Username is required.';
+    if (!email.trim()) newErrors.email = 'E-mail is required.';
+    if (!password) newErrors.password = 'Password is required.';
     if (!confirmPassword)
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = 'Please confirm your password.';
 
     if (password && confirmPassword && password !== confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = 'Passwords do not match. Please try again.';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -218,6 +218,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f3e1d0',
+    paddingTop: '10%'
   },
 
   scrollContainer: {

@@ -35,7 +35,7 @@ export default function ChangePassModal({ onSubmit, onCancel, isLoading, confirm
                 <View style={styles.inputWrapper}>
                     <TextInput
                         style={styles.input}
-                        placeholder="***********"
+                        placeholder="Password"
                         secureTextEntry={!isPasswordVisible}
                         onChangeText={setPassword}
                         value={password}
@@ -52,7 +52,7 @@ export default function ChangePassModal({ onSubmit, onCancel, isLoading, confirm
                 <View style={styles.inputWrapper}>
                     <TextInput
                         style={styles.input}
-                        placeholder="***********"
+                        placeholder="Password"
                         secureTextEntry={!isConfirmVisible}
                         onChangeText={setPasswordConfirmation}
                         value={password_confirmation}

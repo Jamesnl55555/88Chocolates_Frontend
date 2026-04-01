@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "88Chocolates",
+    "name": "88 Chocolates",
     "slug": "88Chocolates_Frontend",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -12,7 +12,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#00000000",
         "foregroundImage": "./assets/images/logo.png",
         "backgroundImage": "./assets/images/logo.png",
         "monochromeImage": "./assets/images/logo.png"
@@ -31,9 +31,9 @@
           "image": "./assets/images/logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#00000000",
           "dark": {
-            "backgroundColor": "#000000"
+            "backgroundColor": "#00000000"
           }
         }
       ]
