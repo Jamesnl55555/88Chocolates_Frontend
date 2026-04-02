@@ -1,10 +1,13 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from "expo-router";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import api from './services/api';
 
 
 export default function HomePage() {
+    const [customerCount, setCustomerCount] = useState(0);
+    const [revenue, setRevenue] = useState(0);
     const today = new Date();
     const formattedDate = today.toLocaleDateString("en-GB", {
         day: "numeric",
@@ -19,6 +22,18 @@ export default function HomePage() {
         }
     }, [auth.restoring, auth.isAuthenticated]);
     
+    useEffect(() => {
+    api.get('/api/fetchLatestTransactions')
+    .then(res => {
+      setCustomerCount(res.data.distinct_minutes ?? 0);
+      setRevenue(Number(res.data.total_amount) ?? 0);
+    })
+    .catch(err => {
+      console.error('Error fetching latest transactions:', err);
+      setCustomerCount(0);
+      setRevenue(0);
+    });
+    }, []);
     
     return (
     <View>
@@ -35,11 +50,11 @@ export default function HomePage() {
         </View>
         <View style={styles.boxesContainer}>
             <View style={styles.box}>
-                <Text style={styles.boxHeadText}>100</Text>
+                <Text style={styles.boxHeadText}>{customerCount ?? 0}</Text>
                 <Text style={styles.boxText}>Customer Count</Text>
             </View>
             <View style={styles.box}>
-                <Text style={styles.boxHeadText}>200</Text>
+                <Text style={styles.boxHeadText}>₱{revenue?.toFixed(2) ?? '0.00'}</Text>
                 <Text style={styles.boxText}>Revenue</Text>
             </View>
         </View>
