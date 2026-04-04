@@ -65,28 +65,28 @@ export default function AddProductsPage() {
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View style={styles.container}>
-            <View style={styles.card}>
-            <TouchableOpacity onPress={pickImage}>
-                <View style={styles.imageContainer}>
-                    {imageUrl && <Image source={{ uri: imageUrl }} resizeMode="cover" style={styles.image} />}
-                    {!imageUrl ? <Text style={styles.addIcon}>+</Text> : null}
+                <View style={styles.card}>
+                <TouchableOpacity onPress={pickImage}>
+                    <View style={styles.imageContainer}>
+                        {imageUrl && <Image source={{ uri: imageUrl }} resizeMode="cover" style={styles.image} />}
+                        {!imageUrl ? <Text style={styles.addIcon}>+</Text> : null}
+                    </View>
+                </TouchableOpacity>
+                <Text style={styles.label}>Category:</Text>
+                <TextInput placeholder="Category" style={styles.input} value={category} onChangeText={setCategory} />
+                <Text style={styles.label}>Product Name: </Text>
+                <TextInput placeholder="Product Name" style={styles.input} value={name} onChangeText={setName} />
+                <Text style={styles.label}>Price: </Text>
+                <TextInput placeholder="Price" style={styles.input} value={price} onChangeText={setPrice} />
+                <Text style={styles.label}>Quantity: </Text>
+                <TextInput placeholder="Quantity" style={styles.input} value={quantity} onChangeText={setQuantity} />
+                <Text style={styles.label}>Net Weight:</Text>
+                <TextInput placeholder="Color/Size" style={styles.input} value={color} onChangeText={setColor} />
+                
+                <TouchableOpacity style={styles.button} onPress={handleSubmit} >
+                    <Text>Add Product</Text>
+                </TouchableOpacity>
                 </View>
-            </TouchableOpacity>
-            <Text>Category:</Text>
-            <TextInput placeholder="Category" style={styles.input} value={category} onChangeText={setCategory} />
-            <Text>Product Name: </Text>
-            <TextInput placeholder="Product Name" style={styles.input} value={name} onChangeText={setName} />
-            <Text>Price: </Text>
-            <TextInput placeholder="Price" style={styles.input} value={price} onChangeText={setPrice} />
-            <Text>Quantity: </Text>
-            <TextInput placeholder="Quantity" style={styles.input} value={quantity} onChangeText={setQuantity} />
-            <Text>Net Weight:</Text>
-            <TextInput placeholder="Color/Size" style={styles.input} value={color} onChangeText={setColor} />
-            
-            <TouchableOpacity style={styles.button} onPress={handleSubmit} >
-                <Text>Add Product</Text>
-            </TouchableOpacity>
-            </View>
             </View>
         </ScrollView>
     );
@@ -109,13 +109,12 @@ const styles = StyleSheet.create({
     },
     imageContainer: {
       alignItems: 'center',
-      marginBottom: 10,
+      marginHorizontal: 20,
       width: '50%',
       height: 150,
       justifyContent: 'center',
       borderWidth: 1,
       backgroundColor: '#f5f5f5',
-      borderRadius: 10,
       alignSelf: 'center',
     },
     image: {
@@ -135,6 +134,9 @@ const styles = StyleSheet.create({
       borderColor: '#402424',
       marginBottom: 10,
       paddingHorizontal: 10,
+    },
+    label: {
+        marginBottom: 5,
     },
     button: {
       backgroundColor: '#FFEDD9',
