@@ -36,9 +36,9 @@ export default function HomePage() {
     }, []);
     
     return (
-    <View>
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
         <View style={styles.container}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 5, marginTop: 40 }}>Welcome, {auth.user?.name ?? 'User'}!</Text>
+        <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 10, marginTop: 20, color: '#411C0E' }}>WELCOME, {(auth.user?.name ?? 'User').toUpperCase()}!</Text>
         <Pressable style={styles.makeButton} onPress={() => router.push('/MakeTransactionPage')}>
             <Text style={styles.makeText}>NEW TRANSACTION</Text>
         </Pressable>
@@ -67,23 +67,25 @@ export default function HomePage() {
 const styles = StyleSheet.create({
     container: {
       padding: 20,  
+      backgroundColor: '#fff',
     },
     makeButton: {
         backgroundColor: '#FFEDD9',
         borderColor: '#411C0E',
         borderWidth: 2,
-        paddingVertical: 12,
+        paddingVertical: 19,
         paddingHorizontal: 24,
-        borderRadius: 8,
-        marginTop: 20,
+        borderRadius: 10,
+        marginTop: 10,
+        fontWeight: 800,
     },
     makeText: {
-        color: '#5e3f17',
-        fontSize: 16,
+        color: '#411C0E',
+        fontSize: 20,
         fontWeight: 'bold',
     },
     date: {
-        marginTop: 20,
+        marginTop: 30,
     },
     dateText: {
         fontSize: 18,
@@ -93,14 +95,14 @@ const styles = StyleSheet.create({
     boxesContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 20,
+        marginTop: 5,
     },
     box: {
-        backgroundColor: '#FFEDD9',
+        backgroundColor: '#FFFFFF',
         width: '48%',
         height: 100,
-        borderRadius: 8,
-        borderWidth: 2,
+        borderRadius: 10,
+        borderWidth: 1,
         borderColor: '#411C0E',
         alignItems: 'center',
         justifyContent: 'center',
