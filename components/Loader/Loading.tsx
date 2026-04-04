@@ -63,8 +63,7 @@ export default function Loading({ onFinish }: Props) {
     <View style={styles.container}>
       <Animated.Image
         source={require("../../assets/images/logo.png")}
-        style={[
-          styles.logo,
+        style={[ styles.logo,
           {
             transform: [{ scale: pulseAnim }],
           },
@@ -74,8 +73,7 @@ export default function Loading({ onFinish }: Props) {
 
       <View style={styles.loaderLine}>
         <Animated.View
-          style={[
-            styles.line,
+          style={[ styles.line,
             {
               width: lineWidth,
             },
@@ -92,26 +90,28 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5E3CF",
     justifyContent: "center",
     alignItems: "center",
+    paddingBottom: 80,
   },
 
   logo: {
     width: 250,
     height: 250,
-    marginBottom: 40,
+    marginBottom: 95,
   },
 
   loaderLine: {
     width: "50%",
     height: 10,
     backgroundColor: "#FFFFFF",
-    borderRadius: 30,
+    borderRadius: 50,
     overflow: "hidden",
+    marginTop: -120,
   },
 
   line: {
     height: "100%",
     backgroundColor: "#411C0E",
-    borderRadius: 30,
+    borderRadius: 50,
     shadowColor: "#411C0E",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 1,
