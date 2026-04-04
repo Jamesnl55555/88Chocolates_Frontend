@@ -214,7 +214,7 @@ export default function LoginPage() {
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
             <View style={styles.checkboxContainer}>
               <CheckboxComponent isChecked={rememberMeChecked} />
-              <Text style={styles.checkboxText}> Remember Me</Text>
+              <Text style={styles.checkboxText}>Remember Me</Text>
             </View>
             <Pressable onPress={toggleForgotPassVisible}>
               <Text style={styles.forgotPass}>Forgot Password?</Text>
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
   },
   logoImage: { 
     width: 270, 
-    height: 180 
+    height: 180,
   },
   card: {
     width: '90%',
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#411C0E',
     borderRadius: 50,
     padding: 24,
-    paddingTop: 30,
+    paddingVertical: 30,
     shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowOffset: { width: 0, height: 8 },
@@ -354,11 +354,13 @@ const styles = StyleSheet.create({
   },
   checkboxContainer: { 
     flexDirection: 'row', 
-    alignItems: 'center' 
+    alignItems: 'center',
+    marginLeft: -7,
   },
   forgotPass: { 
     color: '#fff', 
-    textAlign: 'right' 
+    textAlign: 'right',
+    textDecorationLine: 'underline',
   },
   modalOverlay: { 
     position: 'absolute', 
