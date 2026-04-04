@@ -191,8 +191,7 @@ const RegisterPage: React.FC = () => {
             >
               <Text style={styles.buttonText}>
                 {registerMutation.isPending
-                  ? 'Registering...'
-                  : 'SIGN UP'}
+                  ? 'Registering...' : 'Sign Up'}
               </Text>
             </Pressable>
 
@@ -253,7 +252,9 @@ const styles = StyleSheet.create({
     maxWidth: 700,
     backgroundColor: '#411C0E',
     borderRadius: 40,
-    padding: 24,
+    paddingTop: 33,
+    paddingHorizontal: 20,
+    paddingBottom: 24,
     shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowOffset: { width: 0, height: 8 },
@@ -262,7 +263,7 @@ const styles = StyleSheet.create({
   },
 
   field: {
-    marginBottom: 18,
+    marginVertical: 10,
   },
 
   label: {
@@ -286,23 +287,26 @@ const styles = StyleSheet.create({
   },
 
   signUpButton: {
-    marginTop: 20,
-    backgroundColor: '#f1dfcf',
-    paddingVertical: 14,
-    borderRadius: 24,
-    alignItems: 'center',
+    marginTop: 20, 
+    backgroundColor: '#f1dfcf', 
+    paddingVertical: 12, 
+    borderRadius: 50, 
+    alignItems: 'center', 
+    width: '65%',
+    alignSelf: 'center',
   },
 
   buttonText: {
-    color: '#411C0E',
-    fontWeight: '900',
-    letterSpacing: 0.5,
+    color: '#411C0E', 
+    fontWeight: '800', 
+    letterSpacing: 0.4,
+    fontSize: 15,
   },
 
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 18,
+    marginTop: 15,
   },
 
   footerText: {

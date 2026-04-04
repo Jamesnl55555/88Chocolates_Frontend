@@ -223,11 +223,11 @@ export default function LoginPage() {
 
           {/* Login Button */}
           <Pressable style={styles.loginButton} onPress={handleLogin} disabled={loginMutation.isPending}>
-            <Text style={styles.buttonText}>{loginMutation.isPending ? 'Logging in...' : 'LOG IN'}</Text>
+            <Text style={styles.buttonText}>{loginMutation.isPending ? 'Logging in...' : 'Log In'}</Text>
           </Pressable>
 
           {/* Footer */}
-          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 12 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 15 }}>
             <Text style={styles.text}>Don&apos;t have an account?</Text>
             <Link href="/RegisterPage" asChild>
               <Text style={styles.registerLink}>Sign Up</Text>
@@ -293,8 +293,9 @@ const styles = StyleSheet.create({
     maxWidth: 700,
     backgroundColor: '#411C0E',
     borderRadius: 50,
-    padding: 24,
-    paddingVertical: 30,
+    paddingHorizontal: 20,
+    paddingTop: 33,
+    paddingBottom: 24,
     shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowOffset: { width: 0, height: 8 },
@@ -336,18 +337,19 @@ const styles = StyleSheet.create({
     color: '#fff' 
   },
   loginButton: { 
-    marginTop: 10, 
+    marginTop: 15, 
     backgroundColor: '#f1dfcf', 
     paddingVertical: 12, 
-    borderRadius: 24, 
+    borderRadius: 50, 
     alignItems: 'center', 
-    width: '85%',
+    width: '65%',
     alignSelf: 'center',
   },
   buttonText: { 
     color: '#411C0E', 
-    fontWeight: '900', 
-    letterSpacing: 0.5 
+    fontWeight: '800', 
+    letterSpacing: 0.4,
+    fontSize: 15,
   },
   checkboxText: { 
     color: '#fff', 
