@@ -20,6 +20,7 @@ export default function AppHeader({ routeName }: AppHeaderProps) {
   if (routeName === 'ReceiptPage') title = 'Receipt';
   if (routeName === 'InventoryPage') title = 'Inventory';
   if (routeName === 'TransactionRecordPage') title = 'Transaction Record';
+  if (routeName === 'EditProductPage') title = 'Edit Product';
 
 
 
