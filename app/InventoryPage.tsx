@@ -1,5 +1,10 @@
+import AlertModal from "@/components/AlertModal";
+import CheckboxComponent from "@/components/CheckboxComponent";
+import ConfirmAlertModal from "@/components/ConfirmAlertModal";
+import { useFocusEffect } from '@react-navigation/native';
 import { IconCalendar, IconEdit, IconSearch, IconTrash } from "@tabler/icons-react-native";
-import { useEffect, useState } from "react";
+import { useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,
     FlatList,
@@ -13,12 +18,8 @@ import {
 } from "react-native";
 import api from "./services/api";
 
-import AlertModal from "@/components/AlertModal";
-import CheckboxComponent from "@/components/CheckboxComponent";
-import ConfirmAlertModal from "@/components/ConfirmAlertModal";
-import EditProductModal from "@/components/EditProductModal";
-
 export default function InventoryPage() {
+    const router = useRouter();
     const [products, setProducts] = useState<any[]>([]);
     const [selectedProducts, setSelectedProducts] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -35,7 +36,11 @@ export default function InventoryPage() {
     const [alertMessage, setAlertMessage] = useState("");
     const [alertHeader, setAlertHeader] = useState("");
 
-    // --- Functions from MakeTransactionPage ---
+    useFocusEffect(
+    useCallback(() => {
+    fetchProducts(1, searchTerm);
+    }, [searchTerm])
+    );
 
     // Fetch products with pagination and search
     const fetchProducts = async (page = 1, term = "") => {
@@ -105,9 +110,14 @@ export default function InventoryPage() {
     };
 
     // Open Edit Modal
-    const openEditModal = (product: any) => {
+    const openEditProductPage = (product: any) => {
     setCurrentProduct(product);
-    setModalVisible(true);
+    router.push({
+        pathname: "/EditProductPage",
+        params: {
+        product: JSON.stringify(product),
+        },
+    });
     };
 
     // Render each product row
@@ -125,7 +135,7 @@ export default function InventoryPage() {
         <View style={styles.cell}><Text>{item.quantity <= 0 ? "Out of stock" : item.quantity}</Text></View>
         <View style={styles.cell}>
         <View style={{ flexDirection: "row", gap: 10 }}>
-            <TouchableOpacity onPress={() => openEditModal(item)}>
+            <TouchableOpacity onPress={() => openEditProductPage(item)}>
             <IconEdit size={18} />
             </TouchableOpacity>
             <TouchableOpacity
@@ -201,19 +211,6 @@ export default function InventoryPage() {
         />
         </View>
     </ScrollView>
-
-    {/* Edit Modal */}
-    {modalVisible && currentProduct && (
-        <View style={styles.overlay}>
-        <EditProductModal
-            visible={modalVisible}
-            product={currentProduct}
-            onClose={() => setModalVisible(false)}
-            onUpdate={() => fetchProducts()}
-        />
-        </View>
-    )}
-
     {/* Confirm Delete */}
     {alertVisible && (
         <View style={styles.overlay}>
@@ -265,7 +262,7 @@ const styles = StyleSheet.create({
    },
   toolbar: { flexDirection: "row", alignItems: "center", paddingHorizontal: 10, paddingVertical: 5, borderBottomWidth: 1, borderColor: "#ccc", backgroundColor: "#f9f9f9", marginBottom: '10%' },
   header: { flexDirection: "row", backgroundColor: "#eee", borderBottomWidth: 1, borderColor: "#2b2828" },
-  headerCell: { width: CELL_WIDTH, padding: 20, borderRightWidth: 1, borderColor: "#2b2828" },
+  headerCell: { width: CELL_WIDTH, padding: 20, borderRightWidth: 1, borderColor: "#2b2828", backgroundColor: "#FFEDD9" },
   row: { flexDirection: "row", alignItems: "stretch", borderBottomWidth: 1, borderColor: "#2b2828", minHeight: 60 },
   cell: { width: CELL_WIDTH, justifyContent: "center", alignItems: "center", borderRightWidth: 1, borderColor: "#2b2828", flexDirection: "row", height: "100%" },
   image: { width: 80, height: 80, borderRadius: 5, marginLeft: 5 },
