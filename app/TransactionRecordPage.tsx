@@ -70,7 +70,7 @@ export default function TransactionsPage() {
     return (
       <View style={styles.row}>
         <View style={styles.cell}>
-          <Text>{item.id}</Text>
+          <Text>{String(item.id).padStart(5, "0")}</Text>
         </View>
         <View style={styles.cell}>
           <Text>{formatTime(item.created_at)}</Text>

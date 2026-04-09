@@ -1,7 +1,7 @@
 import AlertModal from "@/components/AlertModal";
 import { IconCamera } from '@tabler/icons-react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import api from './services/api';
@@ -13,7 +13,7 @@ export default function EditProductModal() {
     const parsedProduct = product ? JSON.parse(product as string) : null;
     const [editProduct, setEditProduct] = useState<any>(parsedProduct);
     const [editImageUrl, setEditImageUrl] = useState<string | null>(parsedProduct?.file_path || null);
-    const router = useRouter();
+ 
     const [alertVisible, setAlertVisible] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertHeader, setAlertHeader] = useState("");
@@ -104,9 +104,9 @@ export default function EditProductModal() {
     return (
         <View>
             <View style={{ margin: 20, padding: 20, borderWidth: 1, borderRadius: 10 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                 <Text style={styles.label}>Transaction No.</Text>
-                <Text>{editProduct.id}</Text>
+                <Text>{String(editProduct.id).padStart(5, '0')}</Text>
             </View>
             <View style={styles.imageContainer}>
                 {editImageUrl ? (
