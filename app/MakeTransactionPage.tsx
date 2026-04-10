@@ -175,7 +175,7 @@ export default function MakeTransactionPage() {
                 </View>
 
                 <View style={{ flexDirection: 'row', marginBottom: 15 }}>
-                    <Text style={{ fontWeight: 'bold', color: '#411C0E', fontSize: 20 }}>Transaction No.</Text>
+                    <Text style={{ fontWeight: 'bold', color: '#411C0E', fontSize: 20 }}>Product No.</Text>
                     <Text style={{ marginLeft: 'auto', marginRight: 10 }}>{String(item.id).padStart(5, '0')}</Text>
                 </View>
 

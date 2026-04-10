@@ -1,5 +1,6 @@
 import { IconCalendar, IconSearch } from "@tabler/icons-react-native";
-import { useEffect, useState } from "react";
+import { useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -7,38 +8,62 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  View
+  TouchableOpacity,
+  View,
 } from "react-native";
 import api from "./services/api";
 
-
 export default function TransactionsPage() {
-   const [transactions, setTransactions] = useState<any[]>([]);
-   const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [date] = useState(new Date());
-  const [selectedTransactions, setSelectedTransactions] = useState<any[]>([]);
+  const isFetchingRef = useRef(false);
 
+  const fetchTransactions = async (page = 1, term = "", retry = true) => {
+    if (isFetchingRef.current) return;
 
-  // Fetch transactions
-  const fetchTransactions = async (page = 1, term = "") => {
-    if (loading) return;
+    isFetchingRef.current = true;
     setLoading(true);
+
     try {
       const response = await api.get("/api/fetchtransactions", {
         params: { page, search: term },
       });
+
       const newData = response.data.transactions;
-      if (page === 1) setTransactions(newData);
-      else setTransactions((prev) => [...prev, ...newData]);
+
+      const mergeUniqueByProductNumber = (prev: any[], incoming: any[]) => {
+      const map = new Map();
+
+      [...prev, ...incoming].forEach((item) => {
+        if (!map.has(item.product_number)) {
+          map.set(item.product_number, item);
+        }
+      });
+
+      return Array.from(map.values());
+    };
+
+    if (page === 1) {
+      setTransactions(mergeUniqueByProductNumber([], newData));
+    } else {
+      setTransactions((prev) =>
+        mergeUniqueByProductNumber(prev, newData)
+      );
+    }
 
       setCurrentPage(response.data.current_page);
       setLastPage(response.data.last_page);
-    } catch (error) {
-      console.error("Error fetching transactions:", error);
+    } catch (error: any) {
+      if (!error.response && retry) {
+        return fetchTransactions(page, term, false);
+      }
     } finally {
+      isFetchingRef.current = false;
       setLoading(false);
     }
   };
@@ -55,22 +80,30 @@ export default function TransactionsPage() {
   }, [searchTerm]);
 
   const loadMore = () => {
-    if (currentPage < lastPage && !loading) fetchTransactions(currentPage + 1, searchTerm);
+    if (loading) return;
+    if (currentPage >= lastPage) return;
+    fetchTransactions(currentPage + 1, searchTerm);
   };
-
 
   const formatTime = (dateString: string) => {
     if (!dateString) return "-";
     const date = new Date(dateString);
     return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
   };
+  const goToReceiptPage = (productNumber: number) => {
+  router.push({
+    pathname: "/RecordReceiptPage",
+    params: {
+      product_number: productNumber,
+    },
+    });
+  };
 
   const renderItem = ({ item }: { item: any }) => {
-    const isSelected = selectedTransactions.some((t) => t.id === item.id);
     return (
-      <View style={styles.row}>
+      <TouchableOpacity style={styles.row} onPress={() => goToReceiptPage(item.product_number)}>
         <View style={styles.cell}>
-          <Text>{String(item.id).padStart(5, "0")}</Text>
+          <Text>{String(item.product_number).padStart(5, "0")}</Text>
         </View>
         <View style={styles.cell}>
           <Text>{formatTime(item.created_at)}</Text>
@@ -81,13 +114,12 @@ export default function TransactionsPage() {
         <View style={styles.cell}>
           <Text>{item.payment_method || "Cash"}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
   return (
     <View style={{ flex: 1 }}>
-      {/* Navbar */}
       <View style={styles.navbar}>
         <View style={styles.searchContainer}>
           <TextInput
@@ -104,7 +136,6 @@ export default function TransactionsPage() {
         </View>
       </View>
 
-      {/* Table */}
       <ScrollView horizontal>
         <View>
           <View style={styles.header}>
@@ -162,11 +193,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10
    },
-  toolbar: { flexDirection: "row", alignItems: "center", paddingHorizontal: 10, paddingVertical: 5, borderBottomWidth: 1, borderColor: "#ccc", backgroundColor: "#f9f9f9", marginBottom: '10%' },
   header: { flexDirection: "row", backgroundColor: "#eee", borderBottomWidth: 1, borderColor: "#2b2828" },
   headerCell: { width: CELL_WIDTH, padding: 10, borderRightWidth: 1, borderColor: "#2b2828", backgroundColor: "#FFEDD9" },
   row: { flexDirection: "row", alignItems: "stretch", borderBottomWidth: 1, borderColor: "#2b2828", minHeight: 60 },
   cell: { width: CELL_WIDTH, justifyContent: "center", alignItems: "center", borderRightWidth: 1, borderColor: "#2b2828", flexDirection: "row", height: "100%" },
-  image: { width: 80, height: 80, borderRadius: 5, marginLeft: 5 },
-  overlay: { position: "absolute", width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" },
 });
