@@ -100,7 +100,7 @@ export default function ProfilePage() {
                     {auth.user?.profile_image ? (
                         <Image
                             source={{ uri: auth.user.profile_image }}
-                            style={{ width: 100, height: 100, borderRadius: 50 }}
+                            style={{ width: '100%', height: '100%', borderRadius: 100 }}
                         />
                     ) : (
                         <IconUserFilled size={90} />
@@ -110,7 +110,7 @@ export default function ProfilePage() {
                         onPress={() => setChangeProfileModalVisible(true)}
                         accessibilityLabel="Edit profile"
                     >
-                        <IconEdit size={20} color="#724848" />
+                        <IconEdit size={20} color="#FFFFFF" />
                     </Pressable>
                 </View>
                 <View style={styles.boxContainer}>
@@ -192,46 +192,49 @@ const styles = StyleSheet.create({
    container: {
     flex: 1, 
     justifyContent: 'center',
-    alignItems: 'center' 
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF'
    },
    card: {
     borderColor: 'grey',
     borderWidth: 1,
     borderBottomWidth: 0,
-    borderTopStartRadius: 30,
-    borderTopEndRadius: 30, 
-    height: "90%",
-    width: "90%",
-    alignItems: 'center'
-
+    borderTopStartRadius: 10,
+    borderTopEndRadius: 10, 
+    height: "93%",
+    width: "95%",
+    alignItems: 'center',
    },
    inputBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#e7dddd',
+    backgroundColor: '#FFFFFF',
     borderColor: '#412f2f',
     borderWidth: 1,
     borderRadius: 24,
     paddingHorizontal: 12,
-    marginBottom: 5
+    marginBottom: 15,
+    height: 50,
    },
    profile: {
-    marginVertical: 50,
+    marginVertical: 25,
     borderColor: 'black',
     borderWidth: 5,
-    borderRadius: 60,
+    borderRadius: 100,
     position: 'relative',       
     alignItems: 'center',
     justifyContent: 'center',
+    width: 150,
+    height: 150,
     },
    edit: {
     position: 'absolute',    
     bottom: 0,
     right: 0,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: '#a7a4a4',
+    width: 35,
+    height: 35,
+    borderRadius: 50,
+    backgroundColor: '#565656',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
@@ -240,6 +243,7 @@ const styles = StyleSheet.create({
    subheading: {
     alignSelf: "flex-start",
     fontWeight: 'bold',
+    marginBottom: 3,
    },
    boxContainer: {
     width: '90%'
@@ -249,15 +253,15 @@ const styles = StyleSheet.create({
     alignItems: 'center'
    },
    buttons: {
-    backgroundColor: '#3d2cd4',
+    backgroundColor: '#1A00FFB2',
     width: '100%',
     alignItems: 'center',
     borderRadius: 24,
     padding: 12,
-    marginVertical: 10,
+    marginTop: 20,
    },
    logoutButton: {
-    backgroundColor: '#c53306',
+    backgroundColor: '#B00B0BCC',
     width: '100%',
     alignItems: 'center',
     borderRadius: 24,
