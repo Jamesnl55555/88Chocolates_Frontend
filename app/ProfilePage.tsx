@@ -244,6 +244,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     fontWeight: 'bold',
     marginBottom: 3,
+    color: '#411C0E'
    },
    boxContainer: {
     width: '90%'
