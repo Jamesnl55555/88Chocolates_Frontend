@@ -19,11 +19,12 @@ export default function ConfirmCurrPassModal( { onSubmit, onCancel, isLoading }:
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10, color: '#5c3406'}}>Current Password:</Text>
-                <Text>Please enter your previous</Text><Text> password from your account</Text>
+                <Text style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10, color: '#5c3406'}}>Current Password</Text>
+                <Text style={{ color: '#5c3406' }}>Please enter your previous</Text>
+                <Text style={{ color: '#5c3406' }}> password from your account</Text>
             </View>
             <View style={{width: '100%'}}>
-                <Text style={{marginBottom: 10, fontWeight: 'bold', color: '#5c3406'}}>Password:</Text>
+                <Text style={{marginBottom: 5, fontWeight: 800, color: '#5c3406'}}>Password:</Text>
                 <View style={styles.inputWrapper}>
                     <TextInput style={styles.input} placeholder="***********" secureTextEntry={!isPasswordVisible} onChangeText={setPassword}/>
                     <EyeComponent toggleVisibility= {() => {setIsPasswordVisible(!isPasswordVisible)}} isVisible={false} />
@@ -58,7 +59,9 @@ const styles = StyleSheet.create({
         padding: 10
     },
     input: {
-        flex: 1, height: 40, color: "#222"
+        flex: 1, 
+        height: 40, 
+        color: "#222"
     },
     inputWrapper: {
         flexDirection: "row",
@@ -66,7 +69,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         borderRadius: 24,
         borderWidth: 1,
-        borderColor: "#ccc",
+        borderColor: "#411C0E",
         paddingHorizontal: 12,
         marginBottom: 10,
         width: "100%",
@@ -74,24 +77,27 @@ const styles = StyleSheet.create({
     },
     cancelbutton: {
         width: '60%',
-        backgroundColor: '#aaa6a6',
+        backgroundColor: '#565656CC',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 25,
-        padding: 15,
-        marginTop: 10
+        borderRadius: 50,
+        padding: 12,
+        marginTop: 5,
     },
     confirmbutton: {
         width: '60%',
-        padding: 15,
-        backgroundColor: '#55514d',
+        padding: 12,
+        backgroundColor: '#411C0ECC',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 25,
+        borderRadius: 50,
+        marginTop: 10,
     },
     text: {
         color: '#fff',
-        fontSize: 15
+        fontSize: 16,
+        fontWeight: 800,
+        letterSpacing: 0.5,
     },
     buttonContainer:{
         width: '100%',

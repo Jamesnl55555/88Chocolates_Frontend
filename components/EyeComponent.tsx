@@ -17,9 +17,9 @@ export default function EyeComponent({ toggleVisibility, isVisible }: Props) {
    return(
     <Pressable onPress={onPress} style={[styles.eyeIcon]}>
     {eyeSwitch ? (
-        <IconEye size={24} color="#ac530b" onPress={onPress} />
+        <IconEye size={24} color="#411C0E" onPress={onPress} />
     ) : (
-        <IconEyeOff size={24} color="#ac530b" onPress={onPress} />
+        <IconEyeOff size={24} color="#411C0E" onPress={onPress} />
     )}
     </Pressable>
    );
