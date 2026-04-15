@@ -50,8 +50,8 @@ export default function ProfilePage() {
         }).then(res => res.data);
     },
     onSuccess: async (data, variables) => {
-        setHeaderText("Profile Updated");
-        setAlertMessage("Your profile has been updated successfully.");
+        setHeaderText("Profile Updated Successfully");
+        setAlertMessage("Your profile has been updated.");
         setAlertModalVisible(true);
         await auth.updateUser(data.user);
         setChangeProfileModalVisible(false);
