@@ -96,7 +96,8 @@ export default function ProfilePage() {
     return (
         <View style={styles.container}>
             <View style={styles.card}>
-                <View style={styles.profile}>
+                <Pressable onPress={() => setChangeProfileModalVisible(true)} 
+                    style={styles.profile}>
                     {auth.user?.profile_image ? (
                         <Image
                             source={{ uri: auth.user.profile_image }}
@@ -112,7 +113,7 @@ export default function ProfilePage() {
                     >
                         <IconEdit size={20} color="#FFFFFF" />
                     </Pressable>
-                </View>
+                </Pressable>
                 <View style={styles.boxContainer}>
                 <Text style={styles.subheading}>Store Name:</Text>
                 <View style={styles.inputBox}>
