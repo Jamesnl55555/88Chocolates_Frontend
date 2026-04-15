@@ -23,10 +23,13 @@ export default function ChangePassModal({ onSubmit, onCancel, isLoading, confirm
     const [isConfirmVisible, setIsConfirmVisible] = useState(false);
 
     return (
-        <View style={styles.container}>
+        <View style={styles.backdrop}>
+            <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Create New Password</Text>
-                <Text>Please enter your new strong password from your account.</Text>
+                <Text style={{ textAlign: 'center', color: '#411C0E', paddingHorizontal: 20, marginBottom: 10 }}>
+                    Please enter your new strong password from your account.
+                </Text>
             </View>
 
             <View style={{ width: '100%' }}>
@@ -71,7 +74,7 @@ export default function ChangePassModal({ onSubmit, onCancel, isLoading, confirm
                     onPress={() => onSubmit(password, password_confirmation)}
                     disabled={isLoading}
                 >
-                    <Text style={styles.buttonText}>{isLoading ? "Changing..." : "Continue"}</Text>
+                    <Text style={styles.buttonText}>{isLoading ? "Changing..." : "Change Password"}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.cancelButton}
@@ -81,35 +84,45 @@ export default function ChangePassModal({ onSubmit, onCancel, isLoading, confirm
                 </TouchableOpacity>
             </View>
         </View>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
+    backdrop: {
         position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#411C0E80',
+    },
+    container: {
         backgroundColor: '#fff',
+        width: '90%',
         padding: 20,
         borderRadius: 45,
         justifyContent: 'center',
         alignItems: 'center',
-        width: '90%',
+        top: -20,
     },
     header: {
-        marginBottom: 20,
+        marginVertical: 15,
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 10,
     },
     headerTitle: {
         fontSize: 20,
-        fontWeight: 'bold',
+        fontWeight: 800,
         marginBottom: 10,
-        color: '#5c3406',
+        color: '#411C0E',
     },
     label: {
-        marginBottom: 8,
-        fontWeight: 'bold',
-        color: '#5c3406',
+        marginBottom: 5,
+        fontWeight: 800,
+        color: '#411C0E',
     },
     inputWrapper: {
         flexDirection: "row",
@@ -117,43 +130,45 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         borderRadius: 24,
         borderWidth: 1,
-        borderColor: "#ccc",
+        borderColor: "#411C0E",
         paddingHorizontal: 12,
-        marginBottom: 10,
+        marginBottom: 20,
         width: "100%",
         height: 50,
     },
     input: {
         flex: 1,
         height: 40,
-        color: "#222",
+        color: "#411C0E",
     },
     buttonContainer: {
-        width: '100%',
+        width: '120%',
         alignItems: 'center',
         justifyContent: 'center',
     },
     confirmButton: {
         width: '60%',
-        padding: 15,
-        backgroundColor: '#55514d',
+        padding: 13,
+        backgroundColor: '#411C0ECC',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 25,
+        borderRadius: 50,
         marginTop: 10,
     },
     cancelButton: {
         width: '60%',
-        backgroundColor: '#aaa6a6',
+        backgroundColor: '#565656CC',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 25,
-        padding: 15,
-        marginTop: 10,
+        borderRadius: 50,
+        padding: 13,
+        marginTop: 8,
     },
     buttonText: {
         color: '#fff',
         fontSize: 15,
+        fontWeight: 800,
+        letterSpacing: 0.5,
     },
     error: {
         color: '#ff4d4d',
