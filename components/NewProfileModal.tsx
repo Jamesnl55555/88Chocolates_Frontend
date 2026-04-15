@@ -8,9 +8,11 @@ type Props = {
     onSubmit: (storename: string, name: string, imageUrl?: string | null) => void;
     onCancel?: () => void;
     isSaving?: boolean;
+    image?: string | null;
+
 };
 
-export default function NewProfileModal({ onSubmit, onCancel, isSaving }: Props){
+export default function NewProfileModal({ onSubmit, onCancel, isSaving, image }: Props){
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const auth = useAuth();
     const [storename, setStoreName] = useState(auth.user?.storeName ?? "88 Chocolates and more");
@@ -46,10 +48,17 @@ export default function NewProfileModal({ onSubmit, onCancel, isSaving }: Props)
         <View style={styles.container}>
             <View style={styles.profile}>
                 {auth.user?.profile_image ? (
+                    imageUrl ? (
+                        <Image
+                            source={{ uri: imageUrl }}
+                            style={{ width: 100, height: 100, borderRadius: 50 }}
+                        />
+                    ) : (
                         <Image
                             source={{ uri: auth.user.profile_image }}
                             style={{ width: 100, height: 100, borderRadius: 50 }}
                         />
+                    )
                     ) : (
                         <IconUserFilled size={90} />
                 )}
