@@ -45,66 +45,78 @@ export default function NewProfileModal({ onSubmit, onCancel, isSaving, image }:
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.profile}>
-                {auth.user?.profile_image ? (
-                    imageUrl ? (
-                        <Image
-                            source={{ uri: imageUrl }}
-                            style={{ width: '100%', height: '100%', borderRadius: 50 }}
-                        />
-                    ) : (
-                        <Image
-                            source={{ uri: auth.user.profile_image }}
-                            style={{ width: '100%', height: '100%', borderRadius: 50 }}
-                        />
-                    )
-                    ) : (
-                        <IconUserFilled size={90} />
-                )}
-                <TouchableOpacity onPress={pickImage} style={styles.edit }>
-                    <IconCamera size={25} color="#fff" />
-                </TouchableOpacity>
-            </View>
-            <View style={styles.inputArea}>
-                <Text style={styles.label}>Store Name:</Text>
-                <View style={styles.input}>
-                    <TextInput placeholder={storename} value={storename} onChangeText={setStoreName} />
+        <View style={styles.backdrop}>
+            <View style={styles.container}>
+                <View style={styles.profile}>
+                    {auth.user?.profile_image ? (
+                        imageUrl ? (
+                            <Image
+                                source={{ uri: imageUrl }}
+                                style={{ width: '100%', height: '100%', borderRadius: 100 }}
+                            />
+                        ) : (
+                            <Image
+                                source={{ uri: auth.user.profile_image }}
+                                style={{ width: '100%', height: '100%', borderRadius: 100    }}
+                            />
+                        )
+                        ) : (
+                            <IconUserFilled size={90} />
+                    )}
+                    <TouchableOpacity onPress={pickImage} style={styles.edit }>
+                        <IconCamera size={25} color="#fff" />
+                    </TouchableOpacity>
                 </View>
-                <Text style={styles.label}>Username:</Text>
-                <View style={styles.input}>
-                    <TextInput placeholder={name} value={name} onChangeText={setName} />
+                <View style={styles.inputArea}>
+                    <Text style={styles.label}>Store Name:</Text>
+                    <View style={styles.input}>
+                        <TextInput placeholder={storename} value={storename} onChangeText={setStoreName} />
+                    </View>
+                    <Text style={styles.label}>Username:</Text>
+                    <View style={styles.input}>
+                        <TextInput placeholder={name} value={name} onChangeText={setName} />
+                    </View>
                 </View>
-            </View>
-            <View style={styles.buttonArea}>
-                <TouchableOpacity style={styles.buttonSave} onPress={handleSubmit} disabled={isSaving}>
-                    <Text style={styles.text}>{isSaving ? "Saving..." : "Save"}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonCancel} onPress={onCancel}>
-                    <Text style={styles.text}>Cancel</Text>
-                </TouchableOpacity>
+                <View style={styles.buttonArea}>
+                    <TouchableOpacity style={styles.buttonSave} onPress={handleSubmit} disabled={isSaving}>
+                        <Text style={styles.text}>{isSaving ? "Saving..." : "Save"}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonCancel} onPress={onCancel}>
+                        <Text style={styles.text}>Cancel</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container:{
+    backdrop: {
         position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#411C0E80',
+    },
+    container:{
         backgroundColor: '#fff',
         width: '90%',
         padding: 20,
         borderRadius: 45,
         justifyContent: 'center',
         alignItems: 'center',
+        top: -30,
     },
     profile: {
-        width: 120,
-        height: 120,
+        width: 150,
+        height: 150,
         backgroundColor: '#ffffff',
-        borderColor: '#000',
-        borderWidth: 8,
-        borderRadius: 60,
+        borderColor: '#411C0E',
+        borderWidth: 10,
+        borderRadius: 100,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -122,45 +134,46 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     inputArea: {
-        marginTop: 30,
+        marginTop: 10,
         width: '100%',
     },
     input: {
         borderWidth: 2,
         borderColor: '#411C0E',
-        borderRadius: 35,
-        paddingVertical: 5,
+        borderRadius: 50,
+        paddingVertical: 4,
         paddingHorizontal: 15,
-        marginBottom: 10,
+        marginBottom: 15,
     },
     label: {
-        fontWeight: 'bold',
-        marginBottom: 5,
-        marginTop: 20,
+        fontWeight: 800,
+        marginVertical: 5,
         color: '#411C0E'
     },
     buttonArea: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 20,
-        gap: 10,
+        marginTop: 10,
+        gap: 15,
     },
     buttonSave: {
         backgroundColor: '#2FA262CC',
         padding: 10,
-        width: '40%',
+        width: '38%',
         borderRadius: 45,
         fontWeight: 'bold',
     },
     buttonCancel: {
         backgroundColor: '#565656CC',
         padding: 10,
-        width: '40%',
+        width: '38%',
         borderRadius: 45,
         fontWeight: 'bold',
     },
     text: {
         color: '#fff',
         textAlign: 'center',
+        fontWeight: 'bold',
+        letterSpacing: 0.5,
     },
 });
