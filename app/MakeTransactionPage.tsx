@@ -6,8 +6,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import api from './services/api';
 import Svg, { ClipPath, Defs, G, Path, Rect } from 'react-native-svg';
+import api from './services/api';
 
 export default function MakeTransactionPage() {
     
@@ -157,6 +157,22 @@ export default function MakeTransactionPage() {
         }
     };
 
+    const handleBulkDelete = async () => {
+        try {
+            await Promise.all(selectedProducts.map(p => api.post(`/api/delete-item/${p.id}`)));
+            setProducts(prev => prev.filter(p => !selectedProducts.some(sp => sp.id === p.id)));
+            setSelectedProducts([]);
+            setAlertHeader('Deletion Successful!');
+            setAlertMessage('Selected transactions have been removed');
+            setConfirmAlertVisible(true);
+        } catch (error) {
+            console.error('Error deleting products:', error);
+            setAlertHeader('Error!');
+            setAlertMessage('Failed to delete some products.');
+            setConfirmAlertVisible(true);
+        }
+    };
+
     const renderItem = ({ item }: { item: any }) => {
         const selectedItem = selectedProducts.find(p => p.id === item.id);
 
@@ -250,15 +266,15 @@ export default function MakeTransactionPage() {
     };
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: '#fff', }}>
             <View style={styles.searchContainer}>
                 <TextInput
                     placeholder="Search"
                     value={searchTerm}
                     onChangeText={setSearchTerm}
-                    style={{ flex: 1 }}
+                    style={{ flex: 1, marginLeft: 10 }}
                 />
-                <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <Svg width="25" height="25" viewBox="0 0 25 25" fill="none">
                     <Path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="#411C0E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </Svg>
             </View>
@@ -274,10 +290,21 @@ export default function MakeTransactionPage() {
             <View style={styles.container}>
                 <View style={styles.selectAll}>
                     <CheckboxComponent
-                        isChecked={selectedProducts.length === products.length && products.length > 0}
-                        onPress={toggleSelectAll}
-                    />
-                    <Text>Select All</Text>
+                            isChecked={selectedProducts.length === products.length && products.length > 0}
+                            onPress={toggleSelectAll}
+                            />
+                            <Text style={{ marginLeft: 5 }}>Select All</Text>
+                            {selectedProducts.length > 0 && (
+                            <TouchableOpacity
+                                style={{ marginLeft: "auto", marginRight: 10 }}
+                                onPress={() => { setProductToDelete(null); setAlertVisible(true); }}
+                            >
+                                <Svg width={25} height={25} viewBox="-3 0 24 24" fill="none">
+                                    <Path d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z" 
+                                        fill="#B00B0B" fillOpacity="0.8"/>
+                                </Svg>
+                            </TouchableOpacity>
+                            )}
                 </View>
 
                 <View style={styles.productContainer}>
@@ -302,15 +329,15 @@ export default function MakeTransactionPage() {
             </View>
            
             {alertVisible && (
-                <View style={{position: 'absolute', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)'}}>
+                <View style={{position: 'absolute', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
                 <ConfirmAlertModal
-                    onConfirm={() =>{setAlertVisible(false); handleDelete(productToDelete)}}
+                    onConfirm={() =>{setAlertVisible(false); if (productToDelete) { handleDelete(productToDelete); } else { handleBulkDelete(); }}}
                     onCancel={() => setAlertVisible(false)}
                 />
                 </View>
             )}
             {confirmAlertVisible && (
-                <View style={{position: 'absolute', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)'}}>
+                <View style={{position: 'absolute', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%'}}>
                 <AlertModal
                     message= {alertMessage}
                     headertext= {alertHeader}
@@ -326,23 +353,25 @@ const styles = StyleSheet.create({
     container: { 
         flex: 1, 
         alignItems: 'center', 
-        marginBottom: '30%' 
+        marginBottom: '30%',
+        backgroundColor: '#fff',
     },
     productHeader: { 
         flexDirection: 'row', 
         alignItems: 'center' 
     },
     searchContainer: {
-        margin: 7,
+        marginVertical: 15,
         borderRadius: 40,
-        width: '80%',
-        backgroundColor: '#f2f2f2',
+        width: '90%',
+        backgroundColor: '#FFFFFF',
         paddingHorizontal: 10,
+        paddingVertical: 3,
         borderWidth: 1,
         alignSelf: 'center',
-        borderColor: '#ccc',
+        borderColor: '#411C0E',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     product: { 
         padding: 10, 
@@ -359,14 +388,16 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         alignSelf: 'flex-end',
         flexDirection: 'row',
-        gap: 10
+        gap: 10,
+        backgroundColor: '#F4F4F4',
     },
     selectAll: {
         borderWidth: 1,
         flexDirection: 'row',
         alignItems: 'center',
         width: '90%',
-        padding: 3
+        padding: 3,
+        marginBottom: 5, 
     },
     productContainer: { 
         width: '90%', 
@@ -397,7 +428,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 5
     },
-    qtyText: { fontSize: 18, fontWeight: 'bold' },
+    qtyText: { 
+        fontSize: 18, 
+        fontWeight: 'bold' 
+    },
     button: {
         backgroundColor: '#411C0ECC',
         padding: 15,
@@ -405,7 +439,10 @@ const styles = StyleSheet.create({
         width: '50%',
         borderRadius: 40
     },
-    buttonText: { color: '#fff', fontWeight: 'bold' },
+    buttonText: { 
+        color: '#fff', 
+        fontWeight: 'bold' 
+    },
     total: {
         marginBottom: 10,
         borderWidth: 1,

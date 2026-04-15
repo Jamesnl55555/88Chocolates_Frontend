@@ -10,8 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import api from "./services/api";
 import Svg, { Path } from 'react-native-svg';
+import api from "./services/api";
 
 export default function TransactionsPage() {
   const router = useRouter();
@@ -119,16 +119,16 @@ export default function TransactionsPage() {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.navbar}>
         <View style={styles.searchContainer}>
           <TextInput
             placeholder="Search transactions..."
             value={searchTerm}
             onChangeText={setSearchTerm}
-            style={{ flex: 1 }}
+            style={{ flex: 1, marginLeft: 5 }}
           />
-            <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <Svg width="25" height="25" viewBox="0 0 25 25" fill="none">
                 <Path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="#411C0E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
             </Svg>
         </View>
@@ -141,20 +141,20 @@ export default function TransactionsPage() {
         </View>
       </View>
 
-      <ScrollView horizontal>
-        <View>
+      <ScrollView horizontal style={{ width: '90%', alignSelf: 'center', backgroundColor: '#fff' }}>
+      <View>
           <View style={styles.header}>
             <View style={styles.headerCell}>
-              <Text>Transaction No.</Text>
+              <Text style={styles.headerText}>Transaction No.</Text>
             </View>
             <View style={styles.headerCell}>
-              <Text>Time</Text>
+              <Text style={styles.headerText}>Time</Text>
             </View>
             <View style={styles.headerCell}>
-              <Text>Total Amount</Text>
+              <Text style={styles.headerText}>Total Amount</Text>
             </View>
             <View style={styles.headerCell}>
-              <Text>Payment Method</Text>
+              <Text style={styles.headerText}>Payment Method</Text>
             </View>
           </View>
 
@@ -176,56 +176,77 @@ export default function TransactionsPage() {
 const CELL_WIDTH = 140;
 
 const styles = StyleSheet.create({
-  navbar: { paddingHorizontal: 10, paddingTop: 10, backgroundColor: "#fff", zIndex: 1 },
+  navbar: { 
+    paddingHorizontal: 10, 
+    paddingTop: 10, 
+    backgroundColor: "#fff", 
+    zIndex: 1 
+  },
   searchContainer: { 
-    margin: 7,
+    marginVertical: 15,
     borderRadius: 40,
-    width: '80%',
-    backgroundColor: '#f2f2f2',
+    width: '95%',
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 10,
+    paddingVertical: 3,
     borderWidth: 1,
     alignSelf: 'center',
-    borderColor: '#ccc',
+    borderColor: '#411C0E',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
    },
   date: { 
     marginTop: 15,
-    marginBottom: 5,
+    marginBottom: 10,
+    marginRight: 10,
     borderWidth: 1,
     paddingVertical: 2,
     paddingHorizontal: 10,
     alignSelf: 'flex-end',
     flexDirection: 'row',
     gap: 10,
+    backgroundColor: '#F4F4F4',
    },
   header: { 
     flexDirection: "row", 
     backgroundColor: "#eee", 
     borderBottomWidth: 1, 
-    borderColor: "#2b2828" 
+    borderColor: "#2b2828",
   },
   headerCell: { 
     width: CELL_WIDTH, 
     padding: 10, 
-    borderRightWidth: 1,
-    borderColor: "#2b2828", 
-    backgroundColor: "#FFEDD9" 
+    borderWidth: 1,
+    borderRightWidth: 1, 
+    borderLeftWidth: 1, 
+    borderColor: "#411C0E", 
+    backgroundColor: "#FFEDD9",
+    alignItems: "center", 
+    justifyContent: "center",
+  },
+  headerText: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    textAlign: 'center',
+    color: '#411C0E'
   },
   row: { 
     flexDirection: "row", 
-    alignItems: "stretch", 
+    alignItems: "center", 
     borderBottomWidth: 1, 
-    borderColor: "#2b2828", 
-    minHeight: 60 
+    borderColor: "#411C0E", 
+    minHeight: 60,
+    justifyContent: "center",
   },
   cell: { 
     width: CELL_WIDTH, 
     justifyContent: "center", 
     alignItems: "center", 
     borderRightWidth: 1, 
-    borderColor: "#2b2828", 
+    borderLeftWidth: 1, 
+    borderColor: "#411C0E", 
     flexDirection: "row", 
-    height: "100%" 
+    height: "100%",
+    
   },
 });

@@ -99,13 +99,14 @@ const styles = StyleSheet.create({
     },
     box: {
         backgroundColor: '#FFFFFF',
-        width: '48%',
+        width: '49%',
         height: 100,
         borderRadius: 10,
         borderWidth: 1,
         borderColor: '#411C0E',
         alignItems: 'center',
         justifyContent: 'center',
+        paddingHorizontal: 5,
     },
     boxHeadText: {
         fontSize: 24,

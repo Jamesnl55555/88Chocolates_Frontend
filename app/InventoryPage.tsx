@@ -15,8 +15,8 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import api from "./services/api";
 import Svg, { ClipPath, Defs, G, Path, Rect } from 'react-native-svg';
+import api from "./services/api";
 
 export default function InventoryPage() {
     const router = useRouter();
@@ -103,6 +103,22 @@ export default function InventoryPage() {
     }
     };
 
+    const handleBulkDelete = async () => {
+    try {
+    await Promise.all(selectedProducts.map(p => api.post(`/api/delete-item/${p.id}`)));
+    setProducts((prev) => prev.filter((p) => !selectedProducts.some((sp) => sp.id === p.id)));
+    setSelectedProducts([]);
+    setAlertHeader("Deleted!");
+    setAlertMessage("Selected products removed successfully");
+    setConfirmAlertVisible(true);
+    } catch (error) {
+    console.error("Error deleting products:", error);
+    setAlertHeader("Error!");
+    setAlertMessage("Failed to delete some products.");
+    setConfirmAlertVisible(true);
+    }
+    };
+
     const formatTime = (dateString: string) => {
     if (!dateString) return "-";
     const date = new Date(dateString);
@@ -166,7 +182,7 @@ export default function InventoryPage() {
     };
 
     return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
     {/* Search */}
     <View style={styles.navbar}>
         <View style={styles.searchContainer}>
@@ -174,9 +190,9 @@ export default function InventoryPage() {
             placeholder="Search products..."
             value={searchTerm}
             onChangeText={setSearchTerm}
-            style={{ flex: 1 }}
+            style={{ flex: 1, marginLeft: 5 }}
         />
-            <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <Svg width="25" height="25" viewBox="0 0 25 25" fill="none">
                 <Path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="#411C0E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
             </Svg>
         </View>
@@ -199,7 +215,7 @@ export default function InventoryPage() {
         {selectedProducts.length > 0 && (
         <TouchableOpacity
             style={{ marginLeft: "auto", marginRight: 10 }}
-            onPress={() => selectedProducts.forEach((p) => handleDelete(p.id))}
+            onPress={() => { setProductToDelete(null); setAlertVisible(true); }}
         >
             <Svg width={25} height={25} viewBox="-3 0 24 24" fill="none">
                 <Path d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z" 
@@ -210,15 +226,27 @@ export default function InventoryPage() {
     </View>
 
     {/* Table */}
-    <ScrollView horizontal>
+    <ScrollView horizontal style={{ width: '90%', alignSelf: 'center', backgroundColor: '#fff'}}>
         <View>
         <View style={styles.header}>
-            <View style={styles.headerCell}><Text>Images</Text></View>
-            <View style={styles.headerCell}><Text>Product Name</Text></View>
-            <View style={styles.headerCell}><Text>Category</Text></View>
-            <View style={styles.headerCell}><Text>Price</Text></View>
-            <View style={styles.headerCell}><Text>Stock</Text></View>
-            <View style={styles.headerCell}><Text>Actions</Text></View>
+            <View style={styles.headerCell}>
+                <Text style={styles.headerText}>Images</Text>
+            </View>
+            <View style={styles.headerCell}>
+                <Text style={styles.headerText}>Product Name</Text>
+            </View>
+            <View style={styles.headerCell}>
+                <Text style={styles.headerText}>Category</Text>
+            </View>
+            <View style={styles.headerCell}>
+                <Text style={styles.headerText}>Price</Text>
+            </View>
+            <View style={styles.headerCell}>
+                <Text style={styles.headerText}>Stock</Text>
+            </View>
+            <View style={styles.headerCell}>
+                <Text style={styles.headerText}>Actions</Text>
+            </View>
         </View>
 
         <FlatList
@@ -236,7 +264,7 @@ export default function InventoryPage() {
     {alertVisible && (
         <View style={styles.overlay}>
         <ConfirmAlertModal
-            onConfirm={() => { setAlertVisible(false); handleDelete(productToDelete); }}
+            onConfirm={() => { setAlertVisible(false); if (productToDelete) { handleDelete(productToDelete); } else { handleBulkDelete(); } }}
             onCancel={() => setAlertVisible(false)}
         />
         </View>
@@ -261,32 +289,97 @@ const CELL_WIDTH = 140;
 const styles = StyleSheet.create({
   navbar: { paddingHorizontal: 10, paddingTop: 10, backgroundColor: "#fff", zIndex: 1 },
   searchContainer: { 
-    margin: 7,
+    marginVertical: 15,
     borderRadius: 40,
-    width: '80%',
-    backgroundColor: '#f2f2f2',
+    width: '95%',
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 10,
+    paddingVertical: 3,
     borderWidth: 1,
     alignSelf: 'center',
-    borderColor: '#ccc',
+    borderColor: '#411C0E',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
    },
   date: { 
     marginTop: 15,
-    marginBottom: 5,
+    marginBottom: 10,
+    marginRight: 10,
     borderWidth: 1,
     paddingVertical: 2,
     paddingHorizontal: 10,
     alignSelf: 'flex-end',
     flexDirection: 'row',
-    gap: 10
+    gap: 10,
+    backgroundColor: '#F4F4F4',
    },
-  toolbar: { flexDirection: "row", alignItems: "center", paddingHorizontal: 10, paddingVertical: 5, borderBottomWidth: 1, borderColor: "#ccc", backgroundColor: "#f9f9f9", marginBottom: '10%' },
-  header: { flexDirection: "row", backgroundColor: "#eee", borderBottomWidth: 1, borderColor: "#2b2828" },
-  headerCell: { width: CELL_WIDTH, padding: 20, borderRightWidth: 1, borderColor: "#2b2828", backgroundColor: "#FFEDD9" },
-  row: { flexDirection: "row", alignItems: "stretch", borderBottomWidth: 1, borderColor: "#2b2828", minHeight: 60 },
-  cell: { width: CELL_WIDTH, justifyContent: "center", alignItems: "center", borderRightWidth: 1, borderColor: "#2b2828", flexDirection: "row", height: "100%" },
-  image: { width: 80, height: 80, borderRadius: 5, marginLeft: 5 },
-  overlay: { position: "absolute", width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" },
+  toolbar: { 
+    flexDirection: "row", 
+    alignItems: "center", 
+    paddingHorizontal: 10, 
+    paddingVertical: 5, 
+    borderWidth: 1, 
+    borderColor: "#411C0E", 
+    backgroundColor: "#f9f9f9", 
+    marginHorizontal: 20,
+    marginBottom: 10,
+},
+  header: { 
+    flexDirection: "row", 
+    backgroundColor: "#eee", 
+    borderBottomWidth: 1, 
+    borderColor: "#411C0E" 
+},
+  headerCell: { 
+    width: CELL_WIDTH, 
+    padding: 15, 
+    borderWidth: 1,
+    borderRightWidth: 1, 
+    borderLeftWidth: 1, 
+    borderColor: "#411C0E", 
+    backgroundColor: "#FFEDD9",
+    alignItems: "center", 
+    justifyContent: "center",
+},
+headerText: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    textAlign: 'center',
+    color: '#411C0E'
+  },
+  row: { 
+    flexDirection: "row", 
+    alignItems: "center", 
+    borderBottomWidth: 1, 
+    borderColor: "#411C0E", 
+    minHeight: 60,
+    justifyContent: "center",
+},
+  cell: { 
+    width: CELL_WIDTH, 
+    justifyContent: "center", 
+    alignItems: "center", 
+    borderRightWidth: 1, 
+    borderLeftWidth: 1, 
+    borderColor: "#411C0E", 
+    flexDirection: "row", 
+    height: "100%",
+    paddingVertical: 5,
+},
+  image: { 
+    width: 70, 
+    height: 70, 
+    borderRadius: 5, 
+    marginLeft: 5 
+},
+  overlay: { 
+    position: 'absolute', 
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    zIndex: 999,
+},
 });

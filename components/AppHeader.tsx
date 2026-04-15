@@ -15,11 +15,11 @@ export default function AppHeader({ routeName }: AppHeaderProps) {
   let title = 'My App';
   if (routeName === 'ProfilePage') title = 'Profile';
   if (routeName === 'HomePage') title = 'Home';
-  if (routeName === 'MakeTransactionPage') title = 'Transaction';
-  if (routeName === 'AddProductsPage') title = 'Add Products';
+  if (routeName === 'MakeTransactionPage') title = 'Make a Transaction';
+  if (routeName === 'AddProductsPage') title = 'Add a Product';
   if (routeName === 'ReceiptPage') title = 'Receipt';
   if (routeName === 'InventoryPage') title = 'Inventory';
-  if (routeName === 'TransactionRecordPage') title = 'Transaction Record';
+  if (routeName === 'TransactionRecordPage') title = 'Transaction Records';
   if (routeName === 'EditProductPage') title = 'Edit Product';
 
 
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+    marginLeft: 10,
   },
   profileImage: {
     width: 36,
