@@ -17,14 +17,15 @@ export default function ConfirmCurrPassModal( { onSubmit, onCancel, isLoading }:
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [password, setPassword] = useState("");
     return (
-        <View style={styles.container}>
+        <View style={styles.backdrop}>
+            <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10, color: '#5c3406'}}>Current Password</Text>
-                <Text style={{ color: '#5c3406' }}>Please enter your previous</Text>
-                <Text style={{ color: '#5c3406' }}> password from your account</Text>
+                <Text style={{ fontSize: 20, fontWeight: 800, marginBottom: 9, color: '#411C0E'}}>Current Password</Text>
+                <Text style={{ color: '#411C0E', fontSize: 15 }}>Please enter your previous</Text>
+                <Text style={{ color: '#411C0E', fontSize: 15 }}> password from your account.</Text>
             </View>
             <View style={{width: '100%'}}>
-                <Text style={{marginBottom: 5, fontWeight: 800, color: '#5c3406'}}>Password:</Text>
+                <Text style={{marginBottom: 5, fontWeight: 800, color: '#411C0E'}}>Password:</Text>
                 <View style={styles.inputWrapper}>
                     <TextInput style={styles.input} placeholder="***********" secureTextEntry={!isPasswordVisible} onChangeText={setPassword}/>
                     <EyeComponent toggleVisibility= {() => {setIsPasswordVisible(!isPasswordVisible)}} isVisible={false} />
@@ -39,18 +40,29 @@ export default function ConfirmCurrPassModal( { onSubmit, onCancel, isLoading }:
                 </TouchableOpacity>
             </View>
         </View>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container:{
+    backdrop: {
         position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#411C0E80',
+    },
+    container:{
         backgroundColor: '#fff',
+        width: '90%',
         padding: 20,
         borderRadius: 45,
         justifyContent: 'center',
         alignItems: 'center',
-        width: '90%',
+        top: -20,
     },
     header:{
         marginBottom: 20,
@@ -61,7 +73,8 @@ const styles = StyleSheet.create({
     input: {
         flex: 1, 
         height: 40, 
-        color: "#222"
+        color: "#222",
+        paddingHorizontal: 3,
     },
     inputWrapper: {
         flexDirection: "row",
