@@ -63,7 +63,7 @@ export default function NewProfileModal({ onSubmit, onCancel, isSaving, image }:
                         <IconUserFilled size={90} />
                 )}
                 <TouchableOpacity onPress={pickImage} style={styles.edit }>
-                    <IconCamera size={20} color="#fff" />
+                    <IconCamera size={25} color="#fff" />
                 </TouchableOpacity>
             </View>
             <View style={styles.inputArea}>
@@ -110,12 +110,14 @@ const styles = StyleSheet.create({
     },
     edit: {
         position: 'absolute',
-        bottom: 0,
-        right: 0,
+        bottom: -5,
+        right: -10,
         width: 40,
         height: 40,
+        borderWidth: 1,
         borderRadius: 20,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        borderColor: '#fff',
+        backgroundColor: '#565656',
         justifyContent: 'center',
         alignItems: 'center',
     },

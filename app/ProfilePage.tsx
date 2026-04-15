@@ -116,7 +116,7 @@ export default function ProfilePage() {
                 <View style={styles.boxContainer}>
                 <Text style={styles.subheading}>Store Name:</Text>
                 <View style={styles.inputBox}>
-                    <TextInput value={auth.user?.storeName ?? "88 Chocolates and more"} editable={false}/>
+                    <TextInput value={auth.user?.storeName ?? "88 Chocolates and More"} editable={false}/>
                 </View>
                 <Text style={styles.subheading}>Username:</Text>
                 <View style={styles.inputBox}>
@@ -217,10 +217,10 @@ const styles = StyleSheet.create({
     height: 50,
    },
    profile: {
-    marginVertical: 25,
-    borderColor: 'black',
-    borderWidth: 5,
+    marginVertical: 25,    
+    borderWidth: 10,
     borderRadius: 100,
+    borderColor: '#411C0E',
     position: 'relative',       
     alignItems: 'center',
     justifyContent: 'center',
@@ -231,8 +231,8 @@ const styles = StyleSheet.create({
     position: 'absolute',    
     bottom: 0,
     right: 0,
-    width: 35,
-    height: 35,
+    width: 40,
+    height: 40,
     borderRadius: 50,
     backgroundColor: '#565656',
     alignItems: 'center',
