@@ -51,12 +51,12 @@ export default function NewProfileModal({ onSubmit, onCancel, isSaving, image }:
                     imageUrl ? (
                         <Image
                             source={{ uri: imageUrl }}
-                            style={{ width: 100, height: 100, borderRadius: 50 }}
+                            style={{ width: '100%', height: '100%', borderRadius: 50 }}
                         />
                     ) : (
                         <Image
                             source={{ uri: auth.user.profile_image }}
-                            style={{ width: 100, height: 100, borderRadius: 50 }}
+                            style={{ width: '100%', height: '100%', borderRadius: 50 }}
                         />
                     )
                     ) : (
@@ -124,16 +124,18 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
+        borderWidth: 2,
+        borderColor: '#411C0E',
         borderRadius: 35,
-        padding: 10,
+        paddingVertical: 5,
+        paddingHorizontal: 15,
         marginBottom: 10,
     },
     label: {
         fontWeight: 'bold',
         marginBottom: 5,
         marginTop: 20,
+        color: '#411C0E'
     },
     buttonArea: {
         flexDirection: 'row',
@@ -142,16 +144,18 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     buttonSave: {
-        backgroundColor: 'green',
+        backgroundColor: '#2FA262CC',
         padding: 10,
         width: '40%',
         borderRadius: 45,
+        fontWeight: 'bold',
     },
     buttonCancel: {
-        backgroundColor: 'grey',
+        backgroundColor: '#565656CC',
         padding: 10,
         width: '40%',
         borderRadius: 45,
+        fontWeight: 'bold',
     },
     text: {
         color: '#fff',
