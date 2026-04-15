@@ -117,8 +117,8 @@ export default function AddProductsPage() {
     return (
         <View style={{ flex: 1 }}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                <View style={{ margin: 20, padding: 20, borderWidth: 1, borderRadius: 10, marginBottom: 10 }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View style={styles.container}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
                         <Text style={styles.label}>Product No.</Text>
                         <Text style={{ color: '#411C0E' }}>
                             {latestProductId !== null ? String(latestProductId).padStart(5, '0') : '00001'}
@@ -211,28 +211,34 @@ export default function AddProductsPage() {
 }
 
 const styles = StyleSheet.create({
+    container: { 
+        margin: 18, 
+        padding: 20, 
+        borderWidth: 1, 
+    },
     input: {
         borderWidth: 2,
         borderColor: '#411C0E',
         padding: 10,
         marginBottom: 10,
-        borderRadius: 25,
+        borderRadius: 50,
     },
     image: {
         alignSelf: 'center',
         justifyContent: 'center',
-        width: 100,
-        height: 100,
+        width: '100%',
+        height: '100%',
         marginBottom: 10
     },
     label: {
         color: '#411C0E',
         fontWeight: 'bold',
+        marginBottom: 3,
     },
     buttons: {
         flexDirection: 'row',
         justifyContent: 'center',
-        marginTop: 20
+        marginTop: 10
     },
     save: {
         color: 'green'
@@ -246,7 +252,7 @@ const styles = StyleSheet.create({
     quantityPriceContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 10,
+        marginTop: 5,
         marginHorizontal: 5,
         padding: 10,
     },
@@ -278,7 +284,7 @@ const styles = StyleSheet.create({
     },
     imageIconCamera: {
         position: 'absolute',
-        bottom: 0,
+        bottom: -12,
         right: -15,
         backgroundColor: '#565656',
         width: 35,
@@ -288,14 +294,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     imageContainer: {
-        width: 100,
-        height: 100,
-        backgroundColor: '#eee',
+        width: 130,
+        height: 130,
+        backgroundColor: '#D9D9D9',
         justifyContent: 'center',
         alignSelf: 'center',
-        borderRadius: 10,
         borderWidth: 2,
         borderColor: '#411C0E',
+        marginBottom: 20,
+        marginTop: 5,
     },
     alert: {
         position: 'absolute',
@@ -307,7 +314,7 @@ const styles = StyleSheet.create({
     imagePlaceholder: {
         alignSelf: 'center',
         justifyContent: 'center',
-        fontSize: 24,
+        fontSize: 50,
         color: '#411C0E',
     },
 });

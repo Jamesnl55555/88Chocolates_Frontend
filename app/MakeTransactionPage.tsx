@@ -3,11 +3,11 @@ import AlertModal from '@/components/AlertModal';
 import CheckboxComponent from '@/components/CheckboxComponent';
 import ConfirmAlertModal from '@/components/ConfirmAlertModal';
 import { useFocusEffect } from '@react-navigation/native';
-import { IconCalendar, IconEdit, IconSearch, IconTrash } from '@tabler/icons-react-native';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import api from './services/api';
+import Svg, { ClipPath, Defs, G, Path, Rect } from 'react-native-svg';
 
 export default function MakeTransactionPage() {
     
@@ -170,7 +170,17 @@ export default function MakeTransactionPage() {
                     <Text style={{ fontWeight: 'bold', fontSize: 20, maxWidth: '70%' }} numberOfLines={1} ellipsizeMode="tail">{item.category}</Text>
 
                     <TouchableOpacity onPress={() => openEditProductPage(item)} style={{ marginLeft: 'auto', marginRight: 10 }}>
-                        <IconEdit size={20} />
+                        <Svg width={20} height={20} viewBox="0 0 20 20" fill="none">
+                            <G clipPath="url(#clip0_884_4043)">
+                                <Path d="M9.1665 3.3332H3.33317C2.89114 3.3332 2.46722 3.50879 2.15466 3.82135C1.8421 4.13391 1.6665 4.55784 1.6665 4.99986V16.6665C1.6665 17.1086 1.8421 17.5325 2.15466 17.845C2.46722 18.1576 2.89114 18.3332 3.33317 18.3332H14.9998C15.4419 18.3332 15.8658 18.1576 16.1783 17.845C16.4909 17.5325 16.6665 17.1086 16.6665 16.6665V10.8332M15.4165 2.0832C15.748 1.75168 16.1977 1.56543 16.6665 1.56543C17.1353 1.56543 17.585 1.75168 17.9165 2.0832C18.248 2.41472 18.4343 2.86436 18.4343 3.3332C18.4343 3.80204 18.248 4.25168 17.9165 4.5832L9.99984 12.4999L6.6665 13.3332L7.49984 9.99986L15.4165 2.0832Z" 
+                                stroke="#411C0E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </G>
+                            <Defs>
+                                <ClipPath id="clip0_884_4043">
+                                    <Rect width="20" height="20" fill="white"/>
+                                </ClipPath>
+                            </Defs>
+                        </Svg>
                     </TouchableOpacity>
                 </View>
 
@@ -186,6 +196,7 @@ export default function MakeTransactionPage() {
                         <Text style={styles.name} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>
                         <Text style={styles.details}>₱{item.price}</Text>
                     </View>
+
                     <View style={{ marginLeft: 20, alignItems: 'center' }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
                             <TouchableOpacity onPress={() => decreaseQuantity(item)} style={styles.qtyButton}>
@@ -209,7 +220,10 @@ export default function MakeTransactionPage() {
                         onPress={() => { setProductToDelete(item.id); setAlertVisible(true)}}
                         style={{ marginLeft: 'auto', marginRight: 10, marginTop: 50 }}
                     >
-                        <IconTrash size={20} color={'red'} />
+                        <Svg width={25} height={25} viewBox="-3 0 24 24" fill="none">
+                            <Path d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z" 
+                                fill="#B00B0B" fillOpacity="0.8"/>
+                        </Svg>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -244,12 +258,17 @@ export default function MakeTransactionPage() {
                     onChangeText={setSearchTerm}
                     style={{ flex: 1 }}
                 />
-                <IconSearch size={20} color={'grey'} />
+                <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <Path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="#411C0E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </Svg>
             </View>
 
             <View style={styles.date}>
                 <Text>{date.toLocaleDateString()}</Text>
-                <IconCalendar size={20} />
+                <Svg width={15} height={15} viewBox="0 -1 15 13" fill="none">
+                    <Path d="M10 1.08301V3.24967M5 1.08301V3.24967M1.875 5.41634H13.125M3.125 2.16634H11.875C12.5654 2.16634 13.125 2.65137 13.125 3.24967V10.833C13.125 11.4313 12.5654 11.9163 11.875 11.9163H3.125C2.43464 11.9163 1.875 11.4313 1.875 10.833V3.24967C1.875 2.65137 2.43464 2.16634 3.125 2.16634Z" 
+                        stroke="#1E1E1E" strokeLinecap="round" strokeLinejoin="round"/>
+                </Svg>
             </View>
 
             <View style={styles.container}>
@@ -304,8 +323,15 @@ export default function MakeTransactionPage() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, alignItems: 'center', marginBottom: '30%' },
-    productHeader: { flexDirection: 'row', alignItems: 'center' },
+    container: { 
+        flex: 1, 
+        alignItems: 'center', 
+        marginBottom: '30%' 
+    },
+    productHeader: { 
+        flexDirection: 'row', 
+        alignItems: 'center' 
+    },
     searchContainer: {
         margin: 7,
         borderRadius: 40,
@@ -318,12 +344,19 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center'
     },
-    product: { padding: 10, marginBottom: 10, borderWidth: 1, width: '100%' },
+    product: { 
+        padding: 10, 
+        marginBottom: 10, 
+        borderWidth: 1, 
+        width: '100%' 
+    },
     date: {
-        marginTop: 10,
+        marginTop: 15,
         marginBottom: 10,
+        marginRight: 20,
         borderWidth: 1,
-        padding: 10,
+        paddingVertical: 2,
+        paddingHorizontal: 10,
         alignSelf: 'flex-end',
         flexDirection: 'row',
         gap: 10
@@ -335,15 +368,25 @@ const styles = StyleSheet.create({
         width: '90%',
         padding: 3
     },
-    productContainer: { width: '90%', flex: 1 },
-    info: { flexDirection: 'row', alignItems: 'center' },
+    productContainer: { 
+        width: '90%', 
+        flex: 1 
+    },
+    info: { 
+        flexDirection: 'row', 
+        alignItems: 'center' 
+    },
     name: { 
         fontSize: 15,
         maxWidth: '70%',
         flexShrink: 1,
         flexWrap: 'wrap',
     },
-    details: { fontSize: 15, fontWeight: 'bold', color: '#666' },
+    details: { 
+        fontSize: 15, 
+        fontWeight: 'bold', 
+        color: '#666' 
+    },
     input: {
         borderWidth: 1,
         padding: 5,

@@ -1,4 +1,3 @@
-import { IconCalendar, IconSearch } from "@tabler/icons-react-native";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -12,6 +11,7 @@ import {
   View,
 } from "react-native";
 import api from "./services/api";
+import Svg, { Path } from 'react-native-svg';
 
 export default function TransactionsPage() {
   const router = useRouter();
@@ -128,11 +128,16 @@ export default function TransactionsPage() {
             onChangeText={setSearchTerm}
             style={{ flex: 1 }}
           />
-          <IconSearch size={18} color="gray" />
+            <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <Path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="#411C0E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </Svg>
         </View>
         <View style={styles.date}>
           <Text>{date.toLocaleDateString()}</Text>
-          <IconCalendar size={18} />
+            <Svg width={15} height={15} viewBox="0 -1 15 13" fill="none">
+                <Path d="M10 1.08301V3.24967M5 1.08301V3.24967M1.875 5.41634H13.125M3.125 2.16634H11.875C12.5654 2.16634 13.125 2.65137 13.125 3.24967V10.833C13.125 11.4313 12.5654 11.9163 11.875 11.9163H3.125C2.43464 11.9163 1.875 11.4313 1.875 10.833V3.24967C1.875 2.65137 2.43464 2.16634 3.125 2.16634Z" 
+                    stroke="#1E1E1E" strokeLinecap="round" strokeLinejoin="round"/>
+            </Svg>
         </View>
       </View>
 
@@ -185,16 +190,42 @@ const styles = StyleSheet.create({
     alignItems: 'center'
    },
   date: { 
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: 15,
+    marginBottom: 5,
     borderWidth: 1,
-    padding: 10,
+    paddingVertical: 2,
+    paddingHorizontal: 10,
     alignSelf: 'flex-end',
     flexDirection: 'row',
-    gap: 10
+    gap: 10,
    },
-  header: { flexDirection: "row", backgroundColor: "#eee", borderBottomWidth: 1, borderColor: "#2b2828" },
-  headerCell: { width: CELL_WIDTH, padding: 10, borderRightWidth: 1, borderColor: "#2b2828", backgroundColor: "#FFEDD9" },
-  row: { flexDirection: "row", alignItems: "stretch", borderBottomWidth: 1, borderColor: "#2b2828", minHeight: 60 },
-  cell: { width: CELL_WIDTH, justifyContent: "center", alignItems: "center", borderRightWidth: 1, borderColor: "#2b2828", flexDirection: "row", height: "100%" },
+  header: { 
+    flexDirection: "row", 
+    backgroundColor: "#eee", 
+    borderBottomWidth: 1, 
+    borderColor: "#2b2828" 
+  },
+  headerCell: { 
+    width: CELL_WIDTH, 
+    padding: 10, 
+    borderRightWidth: 1,
+    borderColor: "#2b2828", 
+    backgroundColor: "#FFEDD9" 
+  },
+  row: { 
+    flexDirection: "row", 
+    alignItems: "stretch", 
+    borderBottomWidth: 1, 
+    borderColor: "#2b2828", 
+    minHeight: 60 
+  },
+  cell: { 
+    width: CELL_WIDTH, 
+    justifyContent: "center", 
+    alignItems: "center", 
+    borderRightWidth: 1, 
+    borderColor: "#2b2828", 
+    flexDirection: "row", 
+    height: "100%" 
+  },
 });
