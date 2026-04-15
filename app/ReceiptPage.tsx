@@ -1,5 +1,4 @@
 import AlertModal from '@/components/AlertModal';
-import { IconCalendar } from '@tabler/icons-react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -11,6 +10,8 @@ import {
     View
 } from "react-native";
 import api from "./services/api";
+import Svg, { Path } from 'react-native-svg';
+
 
 export default function ReceiptPage() {
     const { cart } = useLocalSearchParams();
@@ -88,7 +89,7 @@ export default function ReceiptPage() {
                         <Text style={styles.details}>₱{item.price}</Text>
                     </View>
 
-                    <View style={{ marginLeft: 'auto', marginRight: 10, marginTop: 30 }}>
+                    <View style={{ marginLeft: 'auto', marginRight: 10, marginTop: 30, bottom: -5 }}>
                         <Text style={{ fontSize: 16}}>
                             X{item.quantity}
                         </Text>
@@ -99,11 +100,14 @@ export default function ReceiptPage() {
     };
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: '#fff' }}>
             {/* DATE */}
             <View style={styles.date}>
-                <Text>{date.toLocaleDateString()}</Text>
-                <IconCalendar size={20} />
+                <Text style={{ color: '#411C0E' }}>{date.toLocaleDateString()}</Text>
+                <Svg width={15} height={15} viewBox="0 -1 15 13" fill="none">
+                    <Path d="M10 1.08301V3.24967M5 1.08301V3.24967M1.875 5.41634H13.125M3.125 2.16634H11.875C12.5654 2.16634 13.125 2.65137 13.125 3.24967V10.833C13.125 11.4313 12.5654 11.9163 11.875 11.9163H3.125C2.43464 11.9163 1.875 11.4313 1.875 10.833V3.24967C1.875 2.65137 2.43464 2.16634 3.125 2.16634Z" 
+                        stroke="#411C0E" strokeLinecap="round" strokeLinejoin="round"/>
+                </Svg>
             </View>
 
             <View style={styles.container}>
@@ -149,17 +153,21 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        marginBottom: '30%'
+        marginBottom: '30%',
+        backgroundColor: '#fff',
     },
     product: {
-        padding: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
         marginBottom: 10,
         borderWidth: 1,
         width: '100%'
     },
     productHeader: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        color: '#411C0E',
+        marginBottom: 10
     },
     productContainer: {
         width: '90%',
@@ -171,27 +179,30 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     name: {
-        fontSize: 15
+        fontSize: 15,
+        top: -15
     },
     details: {
         fontSize: 15,
-        fontWeight: 'bold',
-        color: '#666'
+        fontWeight: 700,
+        color: '#411C0E',
+        bottom: -12
     },
     image: {
         width: 70,
         height: 70,
-        borderRadius: 5
     },
     date: {
-        marginTop: 10,
-        marginBottom: 10,
+        marginTop: 20,
+        marginBottom: 5,
         borderWidth: 1,
-        padding: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 2,
         alignSelf: 'flex-end',
         flexDirection: 'row',
         gap: 10,
-        right: 20
+        right: 20,
+        backgroundColor: '#F4F4F4'
     },
     total: {
         borderWidth: 1,

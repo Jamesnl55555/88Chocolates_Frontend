@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         borderRadius: 45,
         justifyContent: 'center',
         alignItems: 'center',
-        top: -30,
+        top: -40,
     },
     message: {
         fontSize: 15,
