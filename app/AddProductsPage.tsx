@@ -115,7 +115,7 @@ export default function AddProductsPage() {
     };
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ backgroundColor: '#fff', flex: 1 }}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={styles.container}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
@@ -187,15 +187,16 @@ export default function AddProductsPage() {
                                 </TouchableOpacity>
                             </View>
                         </View>
-                    </View>
-
+                    </View>  
                     <View style={styles.buttons}>
                         <TouchableOpacity onPress={handleSubmit} style={styles.saveButton}>
                             <Text style={styles.save}>Add Product</Text>
                         </TouchableOpacity>
-                    </View>
+                    </View>      
                 </View>
+                
             </ScrollView>
+            
 
             {alertVisible && (
                 <View style={styles.alert}>
@@ -212,15 +213,17 @@ export default function AddProductsPage() {
 
 const styles = StyleSheet.create({
     container: { 
-        margin: 18, 
+        marginHorizontal: 18, 
+        marginTop: 20,
         padding: 20, 
         borderWidth: 1, 
+        backgroundColor: '#fff',
     },
     input: {
         borderWidth: 2,
         borderColor: '#411C0E',
         padding: 10,
-        marginBottom: 10,
+        marginBottom: 12,
         borderRadius: 50,
     },
     image: {
@@ -228,7 +231,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: '100%',
         height: '100%',
-        marginBottom: 10
+        borderRadius: 3,
     },
     label: {
         color: '#411C0E',
@@ -238,21 +241,21 @@ const styles = StyleSheet.create({
     buttons: {
         flexDirection: 'row',
         justifyContent: 'center',
-        marginTop: 10
+        marginVertical: -5,
     },
     save: {
-        color: 'green'
+        color: '#FFFFFF',
+        fontWeight: 700
     },
     saveButton: {
-        backgroundColor: '#C8E6C9',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
+        backgroundColor: '#2FA262CC',
+        paddingVertical: 12,
+        paddingHorizontal: 25,
+        borderRadius: 50,
     },
     quantityPriceContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 5,
         marginHorizontal: 5,
         padding: 10,
     },
@@ -287,8 +290,8 @@ const styles = StyleSheet.create({
         bottom: -12,
         right: -15,
         backgroundColor: '#565656',
-        width: 35,
-        height: 35,
+        width: 40,
+        height: 40,
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
@@ -301,6 +304,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderWidth: 2,
         borderColor: '#411C0E',
+        borderRadius: 5,
         marginBottom: 20,
         marginTop: 5,
     },
