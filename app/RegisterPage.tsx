@@ -55,6 +55,27 @@ const RegisterPage: React.FC = () => {
     },
   });
 
+  const validatePassword = (password: string) => {
+    const errors: string[] = [];
+
+    if (password.length < 8) {
+      errors.push('Must be at least 8 characters.');
+    }
+
+    if (!/[A-Z]/.test(password)) {
+      errors.push('Must contain at least one uppercase letter.');
+    }
+
+    if (!/[a-z]/.test(password)) {
+      errors.push('Must contain at least one lowercase letter.');
+    }
+
+    if (!/[0-9]/.test(password)) {
+      errors.push('Must contain at least one number.');
+    }
+
+    return errors;
+  };
   const handleRegister = () => {
     const newErrors: any = {};
 
@@ -64,6 +85,14 @@ const RegisterPage: React.FC = () => {
     if (!confirmPassword)
       newErrors.confirmPassword = 'Please confirm your password.';
 
+    if (password) {
+      const passwordErrors = validatePassword(password);
+
+      if (passwordErrors.length > 0) {
+        newErrors.password = passwordErrors.join('\n');
+      }
+    }
+    
     if (password && confirmPassword && password !== confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match. Please try again.';
     }
@@ -319,7 +348,7 @@ const styles = StyleSheet.create({
   },
 
   error: {
-    color: '#ffa8a8',
+    color: '#ffb3b3',
     marginTop: 6,
     fontSize: 12,
   },

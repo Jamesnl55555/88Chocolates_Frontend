@@ -64,34 +64,50 @@ export default function MakeTransactionPage() {
 
     const increaseQuantity = (item: any) => {
         ensureSelected(item);
+
         setSelectedProducts(prev =>
-            prev.map(p =>
-                p.id === item.id ? { ...p, quantity: p.quantity + 1 } : p
-            )
+            prev.map(p => {
+                if (p.id !== item.id) return p;
+
+                return {
+                    ...p,
+                    quantity: clampQuantity(p.quantity + 1, item.quantity)
+                };
+            })
         );
     };
 
     const decreaseQuantity = (item: any) => {
         ensureSelected(item);
+
         setSelectedProducts(prev =>
-            prev.map(p =>
-                p.id === item.id
-                    ? { ...p, quantity: Math.max(1, p.quantity - 1) }
-                    : p
-            )
+            prev.map(p => {
+                if (p.id !== item.id) return p;
+
+                return {
+                    ...p,
+                    quantity: Math.max(1, p.quantity - 1)
+                };
+            })
         );
     };
 
     const updateQuantity = (item: any, value: string) => {
         const numeric = value.replace(/[^0-9]/g, '');
+
         ensureSelected(item);
 
+        const parsed = numeric === '' ? 0 : parseInt(numeric);
+
         setSelectedProducts(prev =>
-            prev.map(p =>
-                p.id === item.id
-                    ? { ...p, quantity: numeric === '' ? 1 : parseInt(numeric) }
-                    : p
-            )
+            prev.map(p => {
+                if (p.id !== item.id) return p;
+
+                return {
+                    ...p,
+                    quantity: clampQuantity(parsed, item.quantity)
+                };
+            })
         );
     };
 
@@ -143,6 +159,10 @@ export default function MakeTransactionPage() {
                 price: p.price
             })));
         }
+    };
+
+    const clampQuantity = (value: number, max: number) => {
+        return Math.max(0, Math.min(value, max));
     };
 
     const handleDelete = async (id: number) => {
@@ -215,18 +235,31 @@ export default function MakeTransactionPage() {
 
                     <View style={{ marginLeft: 20, alignItems: 'center' }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
-                            <TouchableOpacity onPress={() => decreaseQuantity(item)} style={styles.qtyButton}>
+                            <TouchableOpacity
+                                onPress={() => decreaseQuantity(item)}
+                                disabled={selectedItem?.quantity <= 1}
+                                style={[
+                                    styles.qtyButton,
+                                    (selectedItem?.quantity <= 1) && { opacity: 0.5 }
+                                ]}
+                                >
                                 <Text style={styles.qtyText}>-</Text>
                             </TouchableOpacity>
 
                             <TextInput
                                 keyboardType="numeric"
-                                value={String(selectedItem?.quantity ?? 1)}
+                                value={selectedItem ? String(selectedItem.quantity) : ''}
                                 onChangeText={(text) => updateQuantity(item, text)}
                                 style={styles.input}
                             />
-
-                            <TouchableOpacity onPress={() => increaseQuantity(item)} style={styles.qtyButton}>
+                            <TouchableOpacity
+                                onPress={() => increaseQuantity(item)}
+                                disabled={selectedItem?.quantity >= item.quantity}
+                                style={[
+                                    styles.qtyButton,
+                                    selectedItem?.quantity >= item.quantity && { opacity: 0.5 }
+                                ]}
+                                >
                                 <Text style={styles.qtyText}>+</Text>
                             </TouchableOpacity>
                         </View>
@@ -253,9 +286,11 @@ export default function MakeTransactionPage() {
                 id: product?.id,
                 name: product?.name,
                 price: product?.price,
+                netWeightNumber: product?.netWeightNumber,
+                netWeightUnit: product?.netWeightUnit,
                 quantity: p.quantity,
                 category: product?.category,
-                file_path: product?.file_path
+                file_path: product?.file_path,
             };
         });
 

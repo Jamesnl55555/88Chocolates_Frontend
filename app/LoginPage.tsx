@@ -8,15 +8,15 @@ import { useMutation } from '@tanstack/react-query';
 import { Link, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-    Animated,
-    Image,
-    Keyboard,
-    Platform,
-    Pressable,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  Animated,
+  Image,
+  Keyboard,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from 'react-native';
 import api from './services/api';
 
@@ -43,6 +43,15 @@ export default function LoginPage() {
 
   // Animated shift for keyboard
   const contentTranslateY = useRef(new Animated.Value(0)).current;
+
+  const resetAllVariables = () => {
+    setForgotPassVisible(false);
+    setVerifyCodeVisible(false);
+    setResetPasswordVisible(false);
+    setEmailForReset('');
+    setCode(''); 
+    setRememberMeChecked(false); 
+  };
 
   useEffect(() => {
     if (!auth.restoring && auth.isAuthenticated) {
@@ -92,7 +101,7 @@ export default function LoginPage() {
       setEmailError(null);
       setPasswordError(null);
       await auth.signIn(data.token, data.user);
-      router.push('/HomePage');
+      router.replace('/HomePage');
     },
     onError: (error: any) => {
       const errors = error.response?.data?.errors;

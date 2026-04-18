@@ -1,5 +1,5 @@
 import AlertModal from "@/components/AlertModal";
-import { IconCamera } from '@tabler/icons-react-native';
+import { IconCamera, IconCaretDownFilled, IconCaretUpFilled } from '@tabler/icons-react-native';
 import { useMutation } from '@tanstack/react-query';
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState } from 'react';
@@ -12,13 +12,20 @@ export default function AddProductsPage() {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [quantity, setQuantity] = useState('1');
-    const [color, setColor] = useState('');
     const [imageUrl, setImageUrl] = useState<string | null>(null);
 
     const [alertVisible, setAlertVisible] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertHeader, setAlertHeader] = useState("");
     const [latestProductId, setLatestProductId] = useState<number | null>(null);
+    const [netWeightNumber, setNetWeightNumber] = useState('')
+    const [netWeightUnit, setNetWeightUnit] = useState("");
+
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [showUnitDropdown, setShowUnitDropdown] = useState(false);
+
+    const units = ['g', 'kg', 'ml', 'L'];
+    const categories = ['Chocolates', 'Candies', 'Drinks', 'Canned Goods', 'Instant Noodles', 'Chip Snacks']; 
 
     useEffect(() => {
         const fetchLatestProductId = async () => {
@@ -67,13 +74,14 @@ export default function AddProductsPage() {
     };
 
     const addProduct = useMutation({
-        mutationFn: ({ category, name, price, quantity, color }: any) =>
+        mutationFn: ({ category, name, price, quantity, netWeightNumber, netWeightUnit }: any) =>
             api.post('/api/postproducts', {
                 category,
                 name,
                 price,
                 quantity,
-                color,
+                netWeightNumber,
+                netWeightUnit,
                 file_path: imageUrl
             }).then(res => res.data),
         onSuccess: () => {
@@ -81,7 +89,8 @@ export default function AddProductsPage() {
             setName('');
             setPrice('');
             setQuantity('1');
-            setColor('');
+            setNetWeightNumber('');
+            setNetWeightUnit('');
             setImageUrl(null);
             setAlertHeader("Success!");
             setAlertMessage("Product added successfully");
@@ -95,13 +104,14 @@ export default function AddProductsPage() {
     });
 
     const handleSubmit = () => {
-        if (category && name && price && quantity && color && imageUrl) {
+        if (category && name && price && quantity && netWeightNumber && netWeightUnit && imageUrl) {
             addProduct.mutate({
                 category,
                 name,
                 price: Number(price),
                 quantity: Number(quantity),
-                color
+                netWeightNumber: Number(netWeightNumber),
+                netWeightUnit: netWeightUnit,
             });
         } else {
             setAlertHeader("Error!");
@@ -134,13 +144,35 @@ export default function AddProductsPage() {
                             <IconCamera size={24} color="#ffffff" />
                         </TouchableOpacity>
                     </View>
+                    <View style={styles.dropdownContainer}>
+                    <Text style={[styles.label, {marginTop: 20}]}>Category:</Text>
+                    <TouchableOpacity
+                    style={styles.dropdownButton}
+                    onPress={() => setShowDropdown(prev => !prev)}
+                    >
+                    <Text style={{ color: category ? '#000' : '#999' }}>
+                        {category || 'Category'}
+                    </Text>
+                    {showDropdown ? <IconCaretUpFilled size={16} /> : <IconCaretDownFilled size={16} />}
+                    </TouchableOpacity>
 
-                    <Text style={styles.label}>Category:</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={category}
-                        onChangeText={setCategory}
-                    />
+                    {showDropdown && (
+                    <View style={styles.dropdown}>
+                        {categories.map((item) => (
+                        <TouchableOpacity
+                            key={item}
+                            onPress={() => {
+                            setCategory(item);
+                            setShowDropdown(false);
+                            }}
+                            style={styles.dropdownItem}
+                        >
+                            <Text>{item}</Text>
+                        </TouchableOpacity>
+                        ))}
+                    </View>
+                    )}
+                    </View>
 
                     <Text style={styles.label}>Product Name:</Text>
                     <TextInput
@@ -148,26 +180,53 @@ export default function AddProductsPage() {
                         value={name}
                         onChangeText={setName}
                     />
+                    <View style={styles.netWeightQuantityContainer}>
+                        <View>
+                            <Text style={styles.label}>Net Weight:</Text>
 
-                    <Text style={styles.label}>Net Weight:</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={color}
-                        onChangeText={setColor}
-                    />
+                        <View style={styles.netWeightContainer}>
+                        <TextInput
+                            style={styles.netWeightInput}
+                            keyboardType="numeric"
+                            value={netWeightNumber}
+                            onChangeText={setNetWeightNumber}
+                            placeholder="0"
+                        />
 
-                    <View style={styles.quantityPriceContainer}>
-                        <View style={styles.quantityContainer}>
-                            <Text style={styles.label}>Price:</Text>
-                            <TextInput
-                                style={[styles.input, { width: 100 }]}
-                                keyboardType="numeric"
-                                value={price}
-                                onChangeText={setPrice}
-                            />
+                        <TouchableOpacity
+                            style={styles.unitButton}
+                            onPress={() => setShowUnitDropdown(prev => !prev)}
+                        >
+                            <Text style={{ color: netWeightUnit ? '#000' : '#999' }}>
+                            {netWeightUnit || 'Unit'}
+                            </Text>
+                            {showUnitDropdown ? (
+                            <IconCaretUpFilled size={16} />
+                            ) : (
+                            <IconCaretDownFilled size={16} />
+                            )}
+                        </TouchableOpacity>
+
+                        {showUnitDropdown && (
+                            <View style={styles.unitDropdown}>
+                            {units.map((unit) => (
+                                <TouchableOpacity
+                                key={unit}
+                                onPress={() => {
+                                    setNetWeightUnit(unit);
+                                    setShowUnitDropdown(false);
+                                }}
+                                style={styles.dropdownItem}
+                                >
+                                <Text>{unit}</Text>
+                                </TouchableOpacity>
+                            ))}
+                            </View>
+                        )}
                         </View>
-
-                        <View style={styles.PriceContainer}>
+                        </View>
+                        
+                        <View style={styles.quantityContainer}>
                             <Text style={[styles.label, { alignSelf: 'center' }]}>Quantity:</Text>
 
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -186,6 +245,19 @@ export default function AddProductsPage() {
                                     <Text style={styles.qtyText}>+</Text>
                                 </TouchableOpacity>
                             </View>
+                        </View>
+                    </View>
+
+                    <View style={styles.quantityPriceContainer}>
+                        <View style={styles.PriceContainer}>
+                            <Text style={styles.label}>Price:</Text>
+                            <TextInput
+                                style={[styles.input, { width: 100 }]}
+                                keyboardType="numeric"
+                                value={price}    
+                                placeholder="₱"
+                                onChangeText={setPrice}
+                            />
                         </View>
                     </View>  
                     <View style={styles.buttons}>
@@ -256,15 +328,18 @@ const styles = StyleSheet.create({
     quantityPriceContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginHorizontal: 5,
-        padding: 10,
+        paddingHorizontal: 10,
     },
     PriceContainer: {
         flexDirection: 'column',
     },
+    netWeightQuantityContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginHorizontal: 5,
+    },
     quantityContainer: {
         flexDirection: 'column',
-        justifyContent: 'space-between',
     },
     qtyButton: {
         backgroundColor: '#eee',
@@ -320,5 +395,67 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         fontSize: 50,
         color: '#411C0E',
+    },
+    dropdownContainer: {
+        zIndex: 10,
+        position: 'relative',
+        marginBottom: 20,
+    },
+    dropdownButton: {
+        padding: 10,
+        borderWidth: 1,
+        marginTop: 10,
+        borderColor: '#411C0E',
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 10,
+    },
+    dropdown: {
+        position: 'absolute',
+        width: '100%',
+        top: '100%',
+        borderWidth: 1,
+        borderColor: '#411C0E',
+        backgroundColor: '#fff',
+    },
+    dropdownItem: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    netWeightContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: '#411C0E',
+        borderRadius: 50,
+        marginBottom: 12,
+        alignSelf: 'flex-start',
+    },
+
+    netWeightInput: {
+        width: '30%',
+        padding: 10,
+    },
+
+    unitButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 5,
+        paddingHorizontal: 12,
+        height: '100%',
+    },
+
+    unitDropdown: {
+        position: 'absolute',
+        top: '100%',
+        borderWidth: 1,
+        borderColor: '#411C0E',
+        backgroundColor: '#fff',
+        zIndex: 999,
+        left: 50,
+        elevation: 10,
     },
 });

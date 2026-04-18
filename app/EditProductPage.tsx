@@ -1,5 +1,5 @@
 import AlertModal from "@/components/AlertModal";
-import { IconCamera } from '@tabler/icons-react-native';
+import { IconCamera, IconCaretDownFilled, IconCaretUpFilled } from '@tabler/icons-react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -18,15 +18,26 @@ export default function EditProductModal() {
     const [alertMessage, setAlertMessage] = useState("");
     const [alertHeader, setAlertHeader] = useState("");
 
+    const [netWeightNumber, setNetWeightNumber] = useState(String(parsedProduct?.netWeightNumber || ''));
+    const [netWeightUnit, setNetWeightUnit] = useState(parsedProduct?.netWeightUnit || '');
+
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [showUnitDropdown, setShowUnitDropdown] = useState(false);
+
+    const categories = ['Chocolates', 'Candies', 'Drinks', 'Canned Goods', 'Instant Noodles', 'Chip Snacks']; 
+    const units = ['g', 'kg', 'ml', 'L'];
+
     useEffect(() => {
         setEditProduct(parsedProduct);
         setEditImageUrl(parsedProduct?.file_path || null);
+        setNetWeightNumber(String(parsedProduct?.netWeightNumber || ''));
+        setNetWeightUnit(parsedProduct?.netWeightUnit || '');
     }, [product]);
 
     const increaseQuantity = () => {
-    setEditProduct((prev: any) => ({
-        ...prev,
-        quantity: Number(prev.quantity || 0) + 1
+        setEditProduct((prev: any) => ({
+            ...prev,
+            quantity: Number(prev.quantity || 0) + 1
         }));
     };
 
@@ -80,6 +91,8 @@ export default function EditProductModal() {
                 category: editProduct.category,
                 price: Number(editProduct.price),
                 quantity: Number(editProduct.quantity),
+                netWeightNumber: Number(netWeightNumber),
+                netWeightUnit: netWeightUnit,
                 file_path: editImageUrl,
                 is_archived: editProduct.is_archived ?? 0,
                 color_size: editProduct.color_size
@@ -105,8 +118,8 @@ export default function EditProductModal() {
         <View>
             <View style={{ margin: 20, padding: 20, borderWidth: 1, borderRadius: 10 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                <Text style={styles.label}>Transaction No.</Text>
-                <Text>{String(editProduct.id).padStart(5, '0')}</Text>
+                <Text style={styles.label}>Product No.</Text>
+                <Text>{String(editProduct.product_number).padStart(5, '0')}</Text>
             </View>
             <View style={styles.imageContainer}>
                 {editImageUrl ? (
@@ -119,12 +132,43 @@ export default function EditProductModal() {
                 </TouchableOpacity>
             </View>
             
-            <Text style={styles.label}>Category:</Text>
-            <TextInput
-                style={styles.input}
-                value={editProduct.category}
-                onChangeText={(text) => setEditProduct({ ...editProduct, category: text })}
-            />
+            <View style={styles.dropdownContainer}>
+                <Text style={[styles.label, { marginTop: 20 }]}>Category:</Text>
+
+                <TouchableOpacity
+                    style={styles.dropdownButton}
+                    onPress={() => setShowDropdown(prev => !prev)}
+                >
+                    <Text style={{ color: editProduct.category ? '#000' : '#999' }}>
+                        {editProduct.category || 'Category'}
+                    </Text>
+
+                    {showDropdown
+                        ? <IconCaretUpFilled size={16} />
+                        : <IconCaretDownFilled size={16} />
+                    }
+                </TouchableOpacity>
+
+                {showDropdown && (
+                    <View style={styles.dropdown}>
+                        {categories.map((item) => (
+                            <TouchableOpacity
+                                key={item}
+                                onPress={() => {
+                                    setEditProduct({
+                                        ...editProduct,
+                                        category: item
+                                    });
+                                    setShowDropdown(false);
+                                }}
+                                style={styles.dropdownItem}
+                            >
+                                <Text>{item}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                )}
+            </View>
 
             <Text style={styles.label}>Name:</Text>
             <TextInput
@@ -132,29 +176,51 @@ export default function EditProductModal() {
                 value={editProduct.name}
                 onChangeText={(text) => setEditProduct({ ...editProduct, name: text })}
             />
+            <View style={styles.netWeightQuantityContainer}>
+                <View>
+                <Text style={styles.label}>Net Weight:</Text>
 
-            <Text>Color/Size:</Text>
-            <TextInput
-                style={styles.input}
-                value={editProduct.color_size}
-                onChangeText={(text) => setEditProduct({ ...editProduct, color_size: text })}
-            />
-            <View style={styles.quantityPriceContainer}>
-                <View style={styles.quantityContainer}>
-                    <Text style={styles.label}>Price:</Text>
+                <View style={styles.netWeightContainer}>
                     <TextInput
-                    style={[styles.input, { width: 100 }]}
-                    keyboardType="numeric"
-                    value={String(editProduct.price)}
-                    onChangeText={(text) => setEditProduct({ ...editProduct, price: text })}
+                        style={styles.netWeightInput}
+                        keyboardType="numeric"
+                        value={netWeightNumber}
+                        onChangeText={setNetWeightNumber}
+                        placeholder="0"
                     />
+
+                    <TouchableOpacity
+                        style={styles.unitButton}
+                        onPress={() => setShowUnitDropdown(prev => !prev)}
+                    >
+                        <Text>{netWeightUnit || 'Unit'}</Text>
+                        {showUnitDropdown ? <IconCaretUpFilled size={16} /> : <IconCaretDownFilled size={16} />}
+                    </TouchableOpacity>
+
+                    {showUnitDropdown && (
+                        <View style={styles.unitDropdown}>
+                            {units.map(unit => (
+                                <TouchableOpacity
+                                    key={unit}
+                                    onPress={() => {
+                                        setNetWeightUnit(unit);
+                                        setShowUnitDropdown(false);
+                                    }}
+                                    style={styles.dropdownItem}
+                                >
+                                    <Text>{unit}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    )}
                 </View>
-                <View style={styles.PriceContainer}>
-                    
+                </View>
+                
+                <View style={styles.quantityContainer}>
                     <Text style={[styles.label, { alignSelf: 'center' }]}>Quantity:</Text>
                     
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <TouchableOpacity onPress={decreaseQuantity} style={styles.qtyButton}>
+                        <TouchableOpacity onPress={() => decreaseQuantity()} style={styles.qtyButton}>
                             <Text style={styles.qtyText}>-</Text>
                         </TouchableOpacity>
 
@@ -170,7 +236,18 @@ export default function EditProductModal() {
                         </TouchableOpacity>
                     </View>
                 </View>
-                
+            </View>
+            <View style={styles.quantityPriceContainer}>
+                <View style={styles.PriceContainer}>
+                    <Text style={styles.label}>Price:</Text>
+                    <TextInput
+                    style={[styles.input, { width: 100 }]}
+                    keyboardType="numeric"
+                    value={String(editProduct.price)}
+                    onChangeText={(text) => setEditProduct({ ...editProduct, price: text })}
+                    />
+                   
+                </View>     
             </View>
             <View style={styles.buttons}>
                 <TouchableOpacity onPress={onClose} style={styles.cancelButon}>
@@ -243,7 +320,6 @@ const styles = StyleSheet.create({
     },
     quantityContainer: {
         flexDirection: 'column',
-        justifyContent: 'space-between',
     },
     qtyButton: {
         backgroundColor: '#eee',
@@ -285,5 +361,73 @@ const styles = StyleSheet.create({
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
+        zIndex: 999,
+    },
+    dropdownContainer: {
+        zIndex: 10,
+        position: 'relative',
+        marginBottom: 20,
+    },
+    dropdownButton: {
+        padding: 10,
+        borderWidth: 1,
+        marginTop: 10,
+        borderColor: '#411C0E',
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 10,
+    },
+    dropdown: {
+        position: 'absolute',
+        width: '100%',
+        top: '100%',
+        borderWidth: 1,
+        borderColor: '#411C0E',
+        backgroundColor: '#fff',
+    },
+    dropdownItem: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    netWeightQuantityContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginHorizontal: 5,
+    },
+    netWeightContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: '#411C0E',
+        borderRadius: 50,
+        marginBottom: 12,
+        alignSelf: 'flex-start',
+    },
+
+    netWeightInput: {
+        width: '30%',
+        padding: 10,
+    },
+
+    unitButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 5,
+        paddingHorizontal: 12,
+        height: '100%',
+    },
+
+    unitDropdown: {
+        position: 'absolute',
+        top: '100%',
+        borderWidth: 1,
+        borderColor: '#411C0E',
+        backgroundColor: '#fff',
+        zIndex: 995,
+        left: 50,
+        elevation: 10,
     },
 });

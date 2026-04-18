@@ -36,12 +36,12 @@ export default function TransactionsPage() {
 
       const newData = response.data.transactions;
 
-      const mergeUniqueByProductNumber = (prev: any[], incoming: any[]) => {
+      const mergeUniqueByTransactionNumber = (prev: any[], incoming: any[]) => {
       const map = new Map();
 
       [...prev, ...incoming].forEach((item) => {
-        if (!map.has(item.product_number)) {
-          map.set(item.product_number, item);
+        if (!map.has(item.transaction_number)) {
+          map.set(item.transaction_number, item);
         }
       });
 
@@ -49,10 +49,10 @@ export default function TransactionsPage() {
     };
 
     if (page === 1) {
-      setTransactions(mergeUniqueByProductNumber([], newData));
+      setTransactions(mergeUniqueByTransactionNumber([], newData));
     } else {
       setTransactions((prev) =>
-        mergeUniqueByProductNumber(prev, newData)
+        mergeUniqueByTransactionNumber(prev, newData)
       );
     }
 
@@ -90,20 +90,20 @@ export default function TransactionsPage() {
     const date = new Date(dateString);
     return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
   };
-  const goToReceiptPage = (productNumber: number) => {
+  const goToReceiptPage = (transactionNumber: number) => {
   router.push({
     pathname: "/RecordReceiptPage",
     params: {
-      product_number: productNumber,
+      transaction_number: transactionNumber,
     },
     });
   };
 
   const renderItem = ({ item }: { item: any }) => {
     return (
-      <TouchableOpacity style={styles.row} onPress={() => goToReceiptPage(item.product_number)}>
+      <TouchableOpacity style={styles.row} onPress={() => goToReceiptPage(item.transaction_number)}>
         <View style={styles.cell}>
-          <Text>{String(item.product_number).padStart(5, "0")}</Text>
+          <Text>{String(item.transaction_number).padStart(5, "0")}</Text>
         </View>
         <View style={styles.cell}>
           <Text>{formatTime(item.created_at)}</Text>
@@ -161,7 +161,7 @@ export default function TransactionsPage() {
           <FlatList
             contentContainerStyle={{ paddingBottom: 100 }}
             data={transactions}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => item.transaction_number.toString()}
             renderItem={renderItem}
             onEndReached={loadMore}
             onEndReachedThreshold={0.5}

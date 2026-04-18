@@ -13,7 +13,7 @@ import {
 import api from "./services/api";
 
 export default function RecordReceiptPage() {
-    const { product_number } = useLocalSearchParams();
+    const { transaction_number } = useLocalSearchParams();
     const router = useRouter();
 
     const [items, setItems] = useState<any[]>([]);
@@ -30,9 +30,9 @@ export default function RecordReceiptPage() {
             try {
                 setIsLoading(true);
 
-                const response = await api.get('/api/fetchProductNumber', {
+                const response = await api.get('/api/fetchTransactionNumber', {
                     params: {
-                        product_number: product_number,
+                        transaction_number: transaction_number,
                     },
                 });
 
@@ -47,8 +47,8 @@ export default function RecordReceiptPage() {
             }
         };
 
-        if (product_number) fetchReceipt();
-    }, [product_number]);
+        if (transaction_number) fetchReceipt();
+    }, [transaction_number]);
 
     const total = items.reduce(
         (acc: number, item: any) =>

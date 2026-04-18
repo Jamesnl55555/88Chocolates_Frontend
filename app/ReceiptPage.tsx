@@ -1,6 +1,6 @@
 import AlertModal from '@/components/AlertModal';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     FlatList,
     Image,
@@ -9,9 +9,8 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
-import api from "./services/api";
 import Svg, { Path } from 'react-native-svg';
-
+import api from "./services/api";
 
 export default function ReceiptPage() {
     const { cart } = useLocalSearchParams();
@@ -20,12 +19,26 @@ export default function ReceiptPage() {
     const [alertHeader, setAlertHeader] = useState('');
     const [alertMessage, setAlertMessage] = useState('');
     const [alertModalVisible, setAlertModalVisible] = useState(false);
+    const [latestTransactionNumber, setLatestTransactionNumber] = useState<number | null>(null);
 
     const parsedCart = cart ? JSON.parse(cart as string) : [];
     const date = new Date();
 
     const total = parsedCart.reduce(
         (acc: number, item: any) => acc + item.quantity * (item.price || 0), 0);
+
+    useEffect(() => {
+        const fetchLatestTransactionNumber = async () => {
+            try {
+                const response = await api.get('/api/fetchLatestTransactionNumber');
+                setLatestTransactionNumber(response.data.latest_transaction_number + 1);
+                console.log('Latest Transaction Number:', latestTransactionNumber);
+            } catch (error) {
+                console.error('Error fetching latest transaction number:', error);
+            }
+        };
+        fetchLatestTransactionNumber();
+    }, []);
 
     const handleSubmitMutation = async () => {
         if (isLoading){
@@ -102,13 +115,22 @@ export default function ReceiptPage() {
     return (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
             {/* DATE */}
-            <View style={styles.date}>
-                <Text style={{ color: '#411C0E' }}>{date.toLocaleDateString()}</Text>
-                <Svg width={15} height={15} viewBox="0 -1 15 13" fill="none">
-                    <Path d="M10 1.08301V3.24967M5 1.08301V3.24967M1.875 5.41634H13.125M3.125 2.16634H11.875C12.5654 2.16634 13.125 2.65137 13.125 3.24967V10.833C13.125 11.4313 12.5654 11.9163 11.875 11.9163H3.125C2.43464 11.9163 1.875 11.4313 1.875 10.833V3.24967C1.875 2.65137 2.43464 2.16634 3.125 2.16634Z" 
-                        stroke="#411C0E" strokeLinecap="round" strokeLinejoin="round"/>
-                </Svg>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'  }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingTop: 20 }}>
+                    <Text style={styles.label}>Receipt No. 88CM-</Text>
+                    <Text>
+                        {latestTransactionNumber !== null ? String(latestTransactionNumber).padStart(5, '0') : '00001'}
+                    </Text>
+                </View>
+                <View style={styles.date}>
+                    <Text style={{ color: '#411C0E' }}>{date.toLocaleDateString()}</Text>
+                    <Svg width={15} height={15} viewBox="0 -1 15 13" fill="none">
+                        <Path d="M10 1.08301V3.24967M5 1.08301V3.24967M1.875 5.41634H13.125M3.125 2.16634H11.875C12.5654 2.16634 13.125 2.65137 13.125 3.24967V10.833C13.125 11.4313 12.5654 11.9163 11.875 11.9163H3.125C2.43464 11.9163 1.875 11.4313 1.875 10.833V3.24967C1.875 2.65137 2.43464 2.16634 3.125 2.16634Z" 
+                            stroke="#411C0E" strokeLinecap="round" strokeLinejoin="round"/>
+                    </Svg>
+                </View>
             </View>
+            
 
             <View style={styles.container}>
                 <View style={styles.productContainer}>
@@ -242,5 +264,10 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold'
-    }
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#411C0E',
+    },
 });

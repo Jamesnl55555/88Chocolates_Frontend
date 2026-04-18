@@ -1,8 +1,8 @@
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'expo-router';
+import { IconUser } from '@tabler/icons-react-native';
+import { useNavigation, useRouter } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 type AppHeaderProps = {
   routeName?: string;
 };
@@ -10,6 +10,8 @@ type AppHeaderProps = {
 export default function AppHeader({ routeName }: AppHeaderProps) {
   const { user } = useAuth();
   const router = useRouter();
+  const navigation = useNavigation();
+
 
   if (!user) return null;
   let title = 'My App';
@@ -22,14 +24,26 @@ export default function AppHeader({ routeName }: AppHeaderProps) {
   if (routeName === 'TransactionRecordPage') title = 'Transaction Records';
   if (routeName === 'EditProductPage') title = 'Edit Product';
 
+  const noBackRoutes = [
+    'HomePage'
+  ];
 
+  const showBackButton = navigation.canGoBack() && !noBackRoutes.includes(routeName ?? '');
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
     <View style={styles.headerContainer}>
-      <Text style={styles.title}>{title}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+        {showBackButton && (
+          <Pressable onPress={() => navigation.goBack()}>
+            <Text style={{ color: '#fff', fontSize: 18 }}>{'<'}</Text>
+          </Pressable>
+        )}
+        <Text style={styles.title}>{title}</Text>
+      </View>
+      
 
-      {user.profile_image ? (
+      {user.profile_image && routeName !== 'ReceiptPage' && routeName !== 'RecordReceiptPage' ? (
         <Pressable onPress={() => router.push('/ProfilePage')}>
           <Image
             source={{ uri: user.profile_image }}
@@ -38,7 +52,9 @@ export default function AppHeader({ routeName }: AppHeaderProps) {
         </Pressable>
       ) : (
         <Pressable onPress={() => router.push('/ProfilePage')}>
-          <View style={styles.placeholderImage} />
+          <View style={styles.placeholderImage}>
+            <IconUser size={20} color="#411C0E"/>
+          </View>
         </Pressable>
       )}
     </View>
@@ -71,6 +87,8 @@ const styles = StyleSheet.create({
     height: 36,
     borderRadius: 18,
     backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   safeArea: {
     backgroundColor: '#411C0E'
