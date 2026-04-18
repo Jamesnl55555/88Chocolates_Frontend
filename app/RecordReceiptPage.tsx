@@ -66,13 +66,13 @@ export default function RecordReceiptPage() {
         return (
             <View style={styles.product}>
                 <View style={styles.productHeader}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 20 }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#411C0E' }}>
                         {item.category}
                     </Text>
                 </View>
 
                 <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-                    <Text style={{ fontWeight: 'bold' }}>Product No.</Text>
+                    <Text style={{ fontWeight: 'bold', color: '#411C0E' }}>Product No.</Text>
                     <Text style={{ marginLeft: 'auto', marginRight: 10, fontSize: 16 }}>
                         {item.id}
                     </Text>

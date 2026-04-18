@@ -203,7 +203,7 @@ export default function MakeTransactionPage() {
                         isChecked={!!selectedItem}
                         onPress={() => toggleSelect(item)}
                     />
-                    <Text style={{ fontWeight: 'bold', fontSize: 20, maxWidth: '70%' }} numberOfLines={1} ellipsizeMode="tail">{item.category}</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, maxWidth: '70%', color: '#411C0E' }} numberOfLines={1} ellipsizeMode="tail">{item.category}</Text>
 
                     <TouchableOpacity onPress={() => openEditProductPage(item)} style={{ marginLeft: 'auto', marginRight: 10 }}>
                         <Svg width={20} height={20} viewBox="0 0 20 20" fill="none">
