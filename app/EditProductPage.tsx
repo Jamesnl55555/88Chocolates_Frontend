@@ -115,8 +115,8 @@ export default function EditProductModal() {
     if (!editProduct) return null;
 
     return (
-        <View>
-            <View style={{ margin: 20, padding: 20, borderWidth: 1, borderRadius: 10 }}>
+        <View style={{ flex: 1, backgroundColor: '#fff' }}>
+            <View style={{ margin: 20, padding: 20, borderWidth: 1 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                 <Text style={styles.label}>Product No.</Text>
                 <Text>{String(editProduct.product_number).padStart(5, '0')}</Text>
@@ -128,12 +128,12 @@ export default function EditProductModal() {
                     <Text>Upload Image</Text>
                 )}
                 <TouchableOpacity onPress={pickImageForEdit} style={styles.imageIconCamera}>
-                    <IconCamera size={24} color="#ffffff" />
+                    <IconCamera size={22} color="#ffffff" />
                 </TouchableOpacity>
             </View>
             
             <View style={styles.dropdownContainer}>
-                <Text style={[styles.label, { marginTop: 20 }]}>Category:</Text>
+                <Text style={[styles.label, { marginBottom: -5 }]}>Category:</Text>
 
                 <TouchableOpacity
                     style={styles.dropdownButton}
@@ -250,11 +250,11 @@ export default function EditProductModal() {
                 </View>     
             </View>
             <View style={styles.buttons}>
-                <TouchableOpacity onPress={onClose} style={styles.cancelButon}>
-                    <Text style={styles.cancel}>Cancel</Text>
-                </TouchableOpacity>
                 <TouchableOpacity onPress={handleEditSubmit} style={styles.saveButton}>
                     <Text style={styles.save}>Save</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onClose} style={styles.cancelButon}>
+                    <Text style={styles.cancel}>Cancel</Text>
                 </TouchableOpacity>
             </View>
             </View>
@@ -272,9 +272,24 @@ export default function EditProductModal() {
 }
 
 const styles = StyleSheet.create({
-    modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center' },
-    modalContainer: { width: '90%', backgroundColor: '#fff', padding: 20, borderRadius: 10, maxHeight: '90%' },
-    title: { fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
+    modalBackdrop: { 
+        flex: 1, 
+        backgroundColor: 'rgba(0,0,0,0.5)', 
+        justifyContent: 'center', 
+        alignItems: 'center' 
+    },
+    modalContainer: { 
+        width: '90%', 
+        backgroundColor: '#fff', 
+        padding: 20, 
+        borderRadius: 10, 
+        maxHeight: '90%' 
+    },
+    title: { 
+        fontSize: 20, 
+        fontWeight: 'bold', 
+        marginBottom: 10 
+    },
     input: { 
         borderWidth: 2,
         borderColor: '#411C0E',
@@ -285,28 +300,42 @@ const styles = StyleSheet.create({
     image: { 
         alignSelf: 'center',
         justifyContent: 'center',
-        width: 100, 
-        height: 100, 
-        marginBottom: 10 
+        width: '100%', 
+        height: '100%', 
     },
     label: {
         color: '#411C0E',
         fontWeight: 'bold',
+        marginTop: 10,
+        marginBottom: 2,
     },
-    buttons: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 },
-    cancel: { color: 'red' },
+    buttons: { 
+        flexDirection: 'row', 
+        justifyContent: 'space-evenly',
+         marginTop: 15,
+        },
+    cancel: { 
+        color: '#fff',
+        textAlign: 'center',
+        fontWeight: 'bold',
+    },
     cancelButon: {
-        backgroundColor: '#FFCDD2',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
+        backgroundColor: '#565656CC',
+        padding: 10,
+        width: '38%',
+        borderRadius: 50,
     },
-    save: { color: 'green' },
+    save: { 
+        color: '#fff',
+        textAlign: 'center',
+        fontWeight: 'bold',
+
+    },
     saveButton: {
-        backgroundColor: '#C8E6C9',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
+        backgroundColor: '#2FA262CC',
+        padding: 10,
+        width: '38%',
+        borderRadius: 50,
     },
     quantityPriceContainer: {
         flexDirection: 'row',
@@ -317,6 +346,8 @@ const styles = StyleSheet.create({
     },
     PriceContainer: {
         flexDirection: 'column',
+        marginLeft: -10,
+        marginTop: -10,
     },
     quantityContainer: {
         flexDirection: 'column',
@@ -342,7 +373,7 @@ const styles = StyleSheet.create({
     },
     imageIconCamera: {
         position: 'absolute',
-        bottom: 0,
+        bottom: -10,
         right: -15,
         backgroundColor: '#565656',
         width: 35,
@@ -354,6 +385,12 @@ const styles = StyleSheet.create({
     imageContainer: {
         position: 'relative',
         alignSelf: 'center',
+        borderWidth: 1,
+        borderColor: '#411C0E',
+        width: 120, 
+        height: 120, 
+        marginBottom: 15,
+        marginTop: 5,
     },
     alert: {
         position: 'absolute',
@@ -366,7 +403,7 @@ const styles = StyleSheet.create({
     dropdownContainer: {
         zIndex: 10,
         position: 'relative',
-        marginBottom: 20,
+        marginBottom: 10,
     },
     dropdownButton: {
         padding: 10,
@@ -403,7 +440,6 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: '#411C0E',
         borderRadius: 50,
-        marginBottom: 12,
         alignSelf: 'flex-start',
     },
 
