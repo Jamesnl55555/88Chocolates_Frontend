@@ -1,5 +1,4 @@
 import AlertModal from '@/components/AlertModal';
-import { IconCalendar } from '@tabler/icons-react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -10,6 +9,7 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
+import Svg, { Path } from 'react-native-svg';
 import api from "./services/api";
 
 export default function RecordReceiptPage() {
@@ -22,6 +22,7 @@ export default function RecordReceiptPage() {
     const [alertHeader, setAlertHeader] = useState('');
     const [alertMessage, setAlertMessage] = useState('');
     const [alertModalVisible, setAlertModalVisible] = useState(false);
+    const [latestTransactionNumber, setLatestTransactionNumber] = useState<number | null>(null);
 
     const date = new Date();
 
@@ -37,6 +38,7 @@ export default function RecordReceiptPage() {
                 });
 
                 setItems(response.data.items || []);
+                setLatestTransactionNumber(parseInt(transaction_number as string));
             } catch (error: any) {
                 console.log(error.response?.data);
                 setAlertHeader('Error');
@@ -98,13 +100,24 @@ export default function RecordReceiptPage() {
     };
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: '#fff' }}>
 
             {/* DATE (same design) */}
-            <View style={styles.date}>
-                <Text>{date.toLocaleDateString()}</Text>
-                <IconCalendar size={20} />
-            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'  }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingTop: 20 }}>
+                                <Text style={styles.label}>Receipt No. 88CM-</Text>
+                                <Text>
+                                    {latestTransactionNumber !== null ? String(latestTransactionNumber).padStart(5, '0') : '00001'}
+                                </Text>
+                            </View>
+                            <View style={styles.date}>
+                                <Text style={{ color: '#411C0E' }}>{date.toLocaleDateString()}</Text>
+                                <Svg width={15} height={15} viewBox="0 -1 15 13" fill="none">
+                                    <Path d="M10 1.08301V3.24967M5 1.08301V3.24967M1.875 5.41634H13.125M3.125 2.16634H11.875C12.5654 2.16634 13.125 2.65137 13.125 3.24967V10.833C13.125 11.4313 12.5654 11.9163 11.875 11.9163H3.125C2.43464 11.9163 1.875 11.4313 1.875 10.833V3.24967C1.875 2.65137 2.43464 2.16634 3.125 2.16634Z" 
+                                        stroke="#411C0E" strokeLinecap="round" strokeLinejoin="round"/>
+                                </Svg>
+                            </View>
+                        </View>
 
             <View style={styles.container}>
 
@@ -157,6 +170,7 @@ export default function RecordReceiptPage() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#fff',
         alignItems: 'center',
         marginBottom: '30%'
     },
@@ -193,14 +207,16 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     date: {
-        marginTop: 10,
+        marginTop: 15,
         marginBottom: 10,
+        marginRight: 20,
         borderWidth: 1,
-        padding: 10,
+        paddingVertical: 2,
+        paddingHorizontal: 10,
         alignSelf: 'flex-end',
         flexDirection: 'row',
         gap: 10,
-        right: 20
+        backgroundColor: '#F4F4F4',
     },
     total: {
         borderWidth: 1,
@@ -240,5 +256,10 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold'
-    }
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#411C0E',
+    },
 });
