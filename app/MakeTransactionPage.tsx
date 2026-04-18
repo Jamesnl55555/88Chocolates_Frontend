@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
     details: { 
         fontSize: 15, 
         fontWeight: 'bold', 
-        color: '#666' 
+        color: '#411C0E' 
     },
     input: {
         borderWidth: 1,
