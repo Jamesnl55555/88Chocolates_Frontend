@@ -303,7 +303,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: '100%',
         height: '100%',
-        borderRadius: 3,
     },
     label: {
         color: '#411C0E',
@@ -379,7 +378,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderWidth: 2,
         borderColor: '#411C0E',
-        borderRadius: 5,
         marginBottom: 20,
         marginTop: 5,
     },
