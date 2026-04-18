@@ -39,10 +39,22 @@ export default function HomePage() {
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
         <View style={styles.container}>
         <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 10, marginTop: 20, color: '#411C0E' }}>WELCOME, {(auth.user?.name ?? 'User').toUpperCase()}!</Text>
-        <Pressable style={styles.makeButton} onPress={() => router.push('/MakeTransactionPage')}>
+        <Pressable
+            style={({ pressed }) => [
+                styles.makeButton,
+                pressed && styles.makeButtonPressed,
+            ]}
+            onPress={() => router.push('/MakeTransactionPage')}
+        >
             <Text style={styles.makeText}>NEW TRANSACTION</Text>
         </Pressable>
-        <Pressable style={styles.makeButton} onPress={() => router.push('/InventoryPage')}>
+        <Pressable
+            style={({ pressed }) => [
+                styles.makeButton,
+                pressed && styles.makeButtonPressed,
+            ]}
+            onPress={() => router.push('/InventoryPage')}
+        >
             <Text style={styles.makeText}>MANAGE INVENTORY</Text>
         </Pressable>
         <View style={styles.date}>
@@ -78,6 +90,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: 10,
         fontWeight: 800,
+    },
+    makeButtonPressed: {
+        backgroundColor: '#E9D2B6',
+        borderColor: '#331205',
     },
     makeText: {
         color: '#411C0E',
