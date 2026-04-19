@@ -96,6 +96,10 @@ export default function LoginPage() {
   const loginMutation = useMutation({
     mutationFn: ({ email, pass }: { email: string; pass: string }) =>
       api.post('/api/login', { email, password: pass, remember: rememberMeChecked }).then(res => res.data),
+    onMutate: () => {
+      setEmailError(null);
+      setPasswordError(null);
+    },
     onSuccess: async (data) => {  
     console.log("LOGIN RESPONSE USER:", data.user);    
       setEmailError(null);
@@ -104,10 +108,25 @@ export default function LoginPage() {
       router.replace('/HomePage');
     },
     onError: (error: any) => {
-      const errors = error.response?.data?.errors;
-      setEmailError(errors?.email?.[0] ?? 'Incorrect email. Please try again.');
-      setPasswordError(errors?.password?.[0] ?? 'Incorrect password. Please try again.');
-    },
+    const data = error?.response?.data;
+
+    if (!data) {
+      setEmailError('Network error. Please check your connection.');
+      setPasswordError(null);
+      return;
+    }
+
+    const errors = data.errors;
+
+    if (errors) {
+      setEmailError(errors.email?.[0] ?? null);
+      setPasswordError(errors.password?.[0] ?? null);
+      return;
+    }
+
+    setEmailError(data.message ?? 'Login failed.');
+    setPasswordError(null);
+  }
   });
 
   const handleLogin = () => {
@@ -124,7 +143,7 @@ export default function LoginPage() {
 
     setEmailError(null);
     setPasswordError(null);
-
+    if (loginMutation.isPending) return;
     loginMutation.mutate({ email, pass });
   };
 
@@ -194,7 +213,10 @@ export default function LoginPage() {
                 placeholder="user@example.com"
                 placeholderTextColor="#999"
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  setEmailError(null);
+                }}
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
@@ -211,7 +233,10 @@ export default function LoginPage() {
                 placeholder="Enter your password"
                 placeholderTextColor="#999"
                 value={pass}
-                onChangeText={setPass}
+                onChangeText={(text) => {
+                  setPass(text);
+                  setPasswordError(null);
+                }}
                 secureTextEntry={!passwordVisible}
               />
               <EyeComponent toggleVisibility={togglePasswordVisibility} isVisible={passwordVisible} />
@@ -251,7 +276,10 @@ export default function LoginPage() {
         <ForgotPassModal
           onSubmit={(email) => forgotPassMutation.mutate(email)}
           isLoading={forgotPassMutation.isPending}
-          onCancel={() => setForgotPassVisible(false)}
+          onCancel={() => {
+            setForgotPassVisible(false);
+            resetAllVariables();
+          }}
         />
       )}
       {verifyCodeVisible && (
@@ -259,7 +287,10 @@ export default function LoginPage() {
           email={emailForReset}
           onSubmit={(code) => verifyCodeMutation.mutate(code)}
           isLoading={verifyCodeMutation.isPending}
-          onCancel={() => setVerifyCodeVisible(false)}
+          onCancel={() => {
+            setVerifyCodeVisible(false);
+            resetAllVariables();
+          }}
         />
       )}
       {resetPasswordVisible && (
@@ -270,7 +301,10 @@ export default function LoginPage() {
             resetPasswordMutation.mutate({ password, password_confirmation })
           }
           isLoading={resetPasswordMutation.isPending}
-          onCancel={() => setResetPasswordVisible(false)}
+          onCancel={() => {
+            setResetPasswordVisible(false);
+            resetAllVariables();
+          }}
           confirmError={resetConfirmPassError}
           passwordError={resetPasswordError}
         />

@@ -1,4 +1,5 @@
 import EyeComponent from '@/components/EyeComponent';
+import VerifyCodeModal from '@/components/VerifyCodeModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useRouter } from 'expo-router';
@@ -16,6 +17,13 @@ import {
 } from 'react-native';
 import api from './services/api';
 
+type FormErrors = {
+  name?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+};
+
 const RegisterPage: React.FC = () => {
   const router = useRouter();
   const auth = useAuth();
@@ -27,8 +35,10 @@ const RegisterPage: React.FC = () => {
 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [pendingEmail, setPendingEmail] = useState('');
 
-  const [errors, setErrors] = useState<any>({});
+  const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
     if (!auth.restoring && auth.isAuthenticated) {
@@ -37,15 +47,29 @@ const RegisterPage: React.FC = () => {
   }, [auth.restoring, auth.isAuthenticated]);
 
   const registerMutation = useMutation({
-    mutationFn: ({ name, email, password, confirmPassword }: any) => api.post('/api/register', { name, email, password, password_confirmation: confirmPassword }).then(res => res.data),
-    onSuccess: () => router.push('/LoginPage'),
+    mutationFn: ({ name, email, password, confirmPassword }: any) => api.post('/api/register-pending', { name, email, password, password_confirmation: confirmPassword }).then(res => res.data),
+    onSuccess: (_, variables) => {
+      setPendingEmail(variables.email);
+      setShowVerifyModal(true);
+    },
+    onMutate: () => {
+      setErrors({});
+    },
     onError: (error: any) => {
-      if (!error.response) {
-        alert('Network error. Please try again.');
+      console.log('Full error: ', error);
+      const response = error?.response;
+      const data = response?.data;
+
+      if (!response) {
+        setErrors({
+          email: 'Network error. Please check your connection.',
+        });
         return;
       }
+      
 
-      const backendErrors = error.response?.data?.errors || {};
+      const backendErrors = data?.errors ?? {};
+
       setErrors({
         name: backendErrors?.name?.[0],
         email: backendErrors?.email?.[0],
@@ -53,6 +77,35 @@ const RegisterPage: React.FC = () => {
         confirmPassword: backendErrors?.password_confirmation?.[0],
       });
     },
+  });
+
+  const verifyMutation = useMutation({
+  mutationFn: ({ email, code }: any) =>
+    api.post('/api/register-confirm', { email, code }).then(res => res.data),
+
+  onSuccess: () => {
+    router.replace('/LoginPage');
+  },
+  onMutate: () => {
+    setErrors({});
+  },
+
+  onError: () => {
+    alert('Invalid or expired code');
+  },
+  });
+
+  const resendMutation = useMutation({
+  mutationFn: (email: string) =>
+    api.post('/api/register-resend', { email }).then(res => res.data),
+
+  onSuccess: () => {
+    alert('New code sent to your email');
+  },
+
+  onError: () => {
+    alert('Failed to resend code');
+  },
   });
 
   const validatePassword = (password: string) => {
@@ -69,9 +122,17 @@ const RegisterPage: React.FC = () => {
     if (!/[a-z]/.test(password)) {
       errors.push('Must contain at least one lowercase letter.');
     }
-
+    
     if (!/[0-9]/.test(password)) {
       errors.push('Must contain at least one number.');
+    }
+
+    if (!/[^A-Za-z0-9]/.test(password)) {
+    errors.push('Must contain at least one special character.');
+    }
+
+    if (/\s/.test(password)) {
+      errors.push('Must not contain spaces.');
     }
 
     return errors;
@@ -92,7 +153,7 @@ const RegisterPage: React.FC = () => {
         newErrors.password = passwordErrors.join('\n');
       }
     }
-    
+
     if (password && confirmPassword && password !== confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match. Please try again.';
     }
@@ -101,11 +162,10 @@ const RegisterPage: React.FC = () => {
       setErrors(newErrors);
       return;
     }
-
-    setErrors({});
+    if (registerMutation.isPending) return;
     registerMutation.mutate({ name, email, password, confirmPassword });
   };
-
+  
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView
@@ -235,6 +295,17 @@ const RegisterPage: React.FC = () => {
             </View>
           </View>
         </ScrollView>
+        {showVerifyModal && (
+            <VerifyCodeModal
+              email={pendingEmail}
+              isLoading={verifyMutation.isPending}
+              onSubmit={(code) =>
+                verifyMutation.mutate({ email: pendingEmail, code })
+              }
+              onResend={() => resendMutation.mutate(pendingEmail)}
+              onCancel={() => setShowVerifyModal(false)}
+            />
+          )}
       </KeyboardAvoidingView>
     </View>
   );

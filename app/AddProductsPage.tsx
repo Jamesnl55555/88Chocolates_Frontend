@@ -11,7 +11,7 @@ export default function AddProductsPage() {
     const [category, setCategory] = useState('');
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
-    const [quantity, setQuantity] = useState('1');
+    const [quantity, setQuantity] = useState<number>(0);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
 
     const [alertVisible, setAlertVisible] = useState(false);
@@ -40,16 +40,22 @@ export default function AddProductsPage() {
         fetchLatestProductId();
     }, []);
     const increaseQuantity = () => {
-        setQuantity(prev => String(Number(prev || 0) + 1));
+    const MAX_QTY = 9999;
+    setQuantity(prev => Math.min(MAX_QTY, prev + 1));
     };
 
     const decreaseQuantity = () => {
-        setQuantity(prev => String(Math.max(1, Number(prev || 1) - 1)));
+        setQuantity(prev => Math.max(0, prev - 1));
     };
 
     const updateQuantity = (value: string) => {
-        const numeric = value.replace(/[^0-9]/g, '');
-        setQuantity(numeric === '' ? '1' : numeric);
+        let numeric = value.replace(/\D/g, '');
+        numeric = numeric.slice(0, 4);
+        if (numeric === '') {
+            setQuantity(0);
+            return;
+        }
+        setQuantity(Number(numeric));
     };
 
     const pickImage = async () => {
@@ -74,21 +80,21 @@ export default function AddProductsPage() {
     };
 
     const addProduct = useMutation({
-        mutationFn: ({ category, name, price, quantity, netWeightNumber, netWeightUnit }: any) =>
+        mutationFn: ({ category, name, price, quantity }: any) =>
             api.post('/api/postproducts', {
                 category,
                 name,
                 price,
                 quantity,
-                netWeightNumber,
-                netWeightUnit,
+                netWeightNumber: Number(netWeightNumber),
+                netWeightUnit: netWeightUnit,
                 file_path: imageUrl
             }).then(res => res.data),
         onSuccess: () => {
             setCategory('');
             setName('');
             setPrice('');
-            setQuantity('1');
+            setQuantity(0);
             setNetWeightNumber('');
             setNetWeightUnit('');
             setImageUrl(null);
@@ -96,20 +102,27 @@ export default function AddProductsPage() {
             setAlertMessage("Product added successfully");
             setAlertVisible(true);
         },
-        onError: () => {
+        onError: (error : any) => {
+            console.log("ADD PRODUCT ERROR:", error?.response?.data || error);
+
             setAlertHeader("Error!");
-            setAlertMessage("Error adding product");
-            setAlertVisible(true);
+            setAlertMessage(
+                error?.response?.data?.message ||
+                error?.message ||
+                "Error adding product"
+            );
         }
     });
+    const limit4Digits = (text: string) =>
+    text.replace(/\D/g, '').slice(0, 4);
 
     const handleSubmit = () => {
-        if (category && name && price && quantity && netWeightNumber && netWeightUnit && imageUrl) {
+        if (category && name && price && quantity) {
             addProduct.mutate({
                 category,
                 name,
                 price: Number(price),
-                quantity: Number(quantity),
+                quantity: quantity,
                 netWeightNumber: Number(netWeightNumber),
                 netWeightUnit: netWeightUnit,
             });
@@ -189,8 +202,9 @@ export default function AddProductsPage() {
                             style={styles.netWeightInput}
                             keyboardType="numeric"
                             value={netWeightNumber}
-                            onChangeText={setNetWeightNumber}
+                            onChangeText={(text) => setNetWeightNumber(limit4Digits(text))}
                             placeholder="0"
+                            maxLength={4}
                         />
 
                         <TouchableOpacity
@@ -235,13 +249,15 @@ export default function AddProductsPage() {
                                 </TouchableOpacity>
 
                                 <TextInput
-                                    keyboardType="numeric"
-                                    value={quantity}
+                                    keyboardType="number-pad"
+                                    value={quantity === 0 ? '' : String(quantity)}
                                     onChangeText={updateQuantity}
                                     style={styles.qtyInput}
+                                    selectTextOnFocus
+                                    maxLength={4}
                                 />
 
-                                <TouchableOpacity onPress={increaseQuantity} style={styles.qtyButton}>
+                                <TouchableOpacity onPress={increaseQuantity} disabled={quantity === 9999} style={[styles.qtyButton, quantity === 9999 && { backgroundColor: '#c9bdbd',opacity: 0.5 }]}>
                                     <Text style={styles.qtyText}>+</Text>
                                 </TouchableOpacity>
                             </View>
@@ -256,7 +272,8 @@ export default function AddProductsPage() {
                                 keyboardType="numeric"
                                 value={price}    
                                 placeholder="₱"
-                                onChangeText={setPrice}
+                                onChangeText={(text) => setPrice(limit4Digits(text))}
+                                maxLength={4}
                             />
                         </View>
                     </View>  
@@ -303,6 +320,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: '100%',
         height: '100%',
+        borderRadius: 3,
     },
     label: {
         color: '#411C0E',
@@ -354,7 +372,7 @@ const styles = StyleSheet.create({
     qtyInput: {
         borderWidth: 1,
         borderColor: '#ccc',
-        padding: 5,
+        padding: 2,
         width: 60,
         textAlign: 'center',
         borderRadius: 5,
@@ -378,6 +396,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderWidth: 2,
         borderColor: '#411C0E',
+        borderRadius: 5,
         marginBottom: 20,
         marginTop: 5,
     },
@@ -434,7 +453,7 @@ const styles = StyleSheet.create({
     },
 
     netWeightInput: {
-        width: '30%',
+        width: '40%',
         padding: 10,
     },
 
@@ -442,7 +461,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 5,
-        paddingHorizontal: 12,
+        paddingHorizontal: 5,
         height: '100%',
     },
 
@@ -453,7 +472,7 @@ const styles = StyleSheet.create({
         borderColor: '#411C0E',
         backgroundColor: '#fff',
         zIndex: 999,
-        left: 50,
+        left: 70,
         elevation: 10,
     },
 });

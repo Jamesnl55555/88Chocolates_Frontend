@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -15,11 +15,42 @@ type Props = {
   onSubmit: (code: string) => void;
   isLoading: boolean;
   onCancel?: () => void;
+  onResend?: () => void;
 };
 
-export default function VerifyCodeModal({ email, onSubmit, isLoading, onCancel }: Props) {
+export default function VerifyCodeModal({ email, onSubmit, isLoading, onCancel, onResend }: Props) {
   const [code, setCode] = useState("");
+  const [canResend, setCanResend] = useState(true);
+  const [timer, setTimer] = useState(30);
 
+  useEffect(() => {
+  let interval: any;
+
+  if (!canResend) {
+    interval = setInterval(() => {
+      setTimer(prev => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setCanResend(true);
+          return 30;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }
+
+  return () => clearInterval(interval);
+  }, [canResend]);
+
+  useEffect(() => {
+    setCode('');
+  }, [email]);
+
+  useEffect(() => {
+    if (code.length === 6) {
+      handlePress();
+    }
+  }, [code]);
   const handlePress = () => {
     if (!code) return alert("Please enter the code sent to your email");
     onSubmit(code);
@@ -45,7 +76,7 @@ export default function VerifyCodeModal({ email, onSubmit, isLoading, onCancel }
               placeholder="123456"
               keyboardType="number-pad"
               value={code}
-              onChangeText={setCode}
+              onChangeText={(text) => setCode(text.replace(/[^0-9]/g, ''))}
               maxLength={6}
               returnKeyType="done"
             />
@@ -56,9 +87,24 @@ export default function VerifyCodeModal({ email, onSubmit, isLoading, onCancel }
           <Text style={styles.buttonText}>{isLoading ? "Verifying..." : "Verify Code"}</Text>
         </Pressable>
 
+        <Pressable
+          style={styles.resendButton}
+          onPress={() => {
+            if (!canResend) return;
+
+            onResend?.();
+            setCanResend(false);
+            setTimer(30);
+          }}
+        >
+          <Text style={[styles.resendText, { opacity: canResend ? 1 : 0.5 }]}>
+            {canResend ? "Resend Code" : `Resend in ${timer}s`}
+          </Text>
+        </Pressable>
+
         {onCancel && (
           <Pressable style={styles.cancelContainer} onPress={onCancel}>
-            <Text style={styles.cancelButton}>Back to login</Text>
+            <Text style={styles.cancelButton}>Cancel</Text>
           </Pressable>
         )}
       </KeyboardAvoidingView>
@@ -151,6 +197,13 @@ const styles = StyleSheet.create({
   },
   cancelButton: { 
     color: "#1A00FF", 
+    fontWeight: "600",
+  },
+  resendButton: {
+    marginTop: 10,
+  },
+  resendText: {
+    color: "#1A00FF",
     fontWeight: "600",
   },
 });

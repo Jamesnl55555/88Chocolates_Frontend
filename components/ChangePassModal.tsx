@@ -12,16 +12,76 @@ type Props = {
     onSubmit: (password: string, passwordConfirmation: string) => void;
     onCancel?: () => void;
     isLoading: boolean;
-    confirmError?: string | null;
-    passwordError?: string | null;
 }
+type FormErrors = {
+  name?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+};
 
-export default function ChangePassModal({ onSubmit, onCancel, isLoading, confirmError, passwordError }: Props) {
+export default function ChangePassModal({ onSubmit, onCancel, isLoading }: Props) {
     const [password, setPassword] = useState("");
     const [password_confirmation, setPasswordConfirmation] = useState("");
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+    const [errors, setErrors] = useState<FormErrors>({});
 
+    const validatePassword = (password: string) => {
+        const errors: string[] = [];
+    
+        if (password.length < 8) {
+          errors.push('Must be at least 8 characters.');
+        }
+    
+        if (!/[A-Z]/.test(password)) {
+          errors.push('Must contain at least one uppercase letter.');
+        }
+    
+        if (!/[a-z]/.test(password)) {
+          errors.push('Must contain at least one lowercase letter.');
+        }
+        
+        if (!/[0-9]/.test(password)) {
+          errors.push('Must contain at least one number.');
+        }
+    
+        if (!/[^A-Za-z0-9]/.test(password)) {
+        errors.push('Must contain at least one special character.');
+        }
+    
+        if (/\s/.test(password)) {
+          errors.push('Must not contain spaces.');
+        }
+    
+        return errors;
+    };
+    const handleRegister = () => {
+        const newErrors: any = {};
+        if (!password) newErrors.password = 'Password is required.';
+        if (!password_confirmation)
+          newErrors.confirmPassword = 'Please confirm your password.';
+    
+        if (password) {
+          const passwordErrors = validatePassword(password);
+    
+          if (passwordErrors.length > 0) {
+            newErrors.password = passwordErrors.join('\n');
+          }
+        }
+    
+        if (password && password_confirmation && password !== password_confirmation) {
+          newErrors.confirmPassword = 'Passwords do not match. Please try again.';
+        }
+    
+        if (Object.keys(newErrors).length > 0) {
+          setErrors(newErrors);
+          return;
+        }
+
+        setErrors({});
+        onSubmit(password, password_confirmation);
+    };
     return (
         <View style={styles.backdrop}>
             <View style={styles.container}>
@@ -48,7 +108,9 @@ export default function ChangePassModal({ onSubmit, onCancel, isLoading, confirm
                         isVisible={isPasswordVisible}
                     />
                 </View>
-                {passwordError && <Text style={styles.error}>{passwordError}</Text>}
+                {errors.password && (
+                    <Text style={styles.error}>{errors.password}</Text>
+                )}
 
                 {/* Confirm Password */}
                 <Text style={styles.label}>Confirm Password:</Text>
@@ -65,14 +127,16 @@ export default function ChangePassModal({ onSubmit, onCancel, isLoading, confirm
                         isVisible={isConfirmVisible}
                     />
                 </View>
-                {confirmError && <Text style={styles.error}>{confirmError}</Text>}
+                {errors.confirmPassword && (
+                    <Text style={styles.error}>{errors.confirmPassword}</Text>
+                )}
             </View>
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     style={styles.confirmButton}
-                    onPress={() => onSubmit(password, password_confirmation)}
-                    disabled={isLoading}
+                    onPress={handleRegister}
+                    disabled={isLoading || !password || !password_confirmation}
                 >
                     <Text style={styles.buttonText}>{isLoading ? "Changing..." : "Change Password"}</Text>
                 </TouchableOpacity>

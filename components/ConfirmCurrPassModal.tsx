@@ -11,10 +11,12 @@ type Props = {
     onSubmit: (password: string) => void;
     onCancel?: () => void;
     isLoading: boolean;
+    error?: string | null;
 }
 
 export default function ConfirmCurrPassModal( { onSubmit, onCancel, isLoading }: Props ) {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const [password, setPassword] = useState("");
     return (
         <View style={styles.backdrop}>
@@ -28,8 +30,9 @@ export default function ConfirmCurrPassModal( { onSubmit, onCancel, isLoading }:
                 <Text style={{marginBottom: 5, fontWeight: 800, color: '#411C0E'}}>Password:</Text>
                 <View style={styles.inputWrapper}>
                     <TextInput style={styles.input} placeholder="***********" secureTextEntry={!isPasswordVisible} onChangeText={setPassword}/>
-                    <EyeComponent toggleVisibility= {() => {setIsPasswordVisible(!isPasswordVisible)}} isVisible={false} />
+                    <EyeComponent toggleVisibility= {() => {setIsPasswordVisible(!isPasswordVisible)}} isVisible={isPasswordVisible} />
                 </View>
+                {error && <Text style={styles.error}>{error}</Text>}
             </View>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.confirmbutton} onPress={() => onSubmit(password)} disabled={isLoading}>
@@ -116,5 +119,10 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    error: {
+        color: 'red',
+        marginTop: 5,
+        textAlign: 'center',
     }
 });

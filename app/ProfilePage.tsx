@@ -20,7 +20,8 @@ export default function ProfilePage() {
     const [changeProfileModalVisible, setChangeProfileModalVisible] = useState(false);
     const [currPassModalVisible, setCurrPassModalVisible] = useState(false);
     const [changePassModalVisible, setChangePassModalVisible] = useState(false);
-
+    const [currPassError, setCurrPassError] = useState<string | null>(null);
+    
     const router = useRouter();
     const auth = useAuth();
         useEffect(() => {
@@ -74,9 +75,11 @@ export default function ProfilePage() {
             setAlertMessage('Your password has been updated.');
         },
         onError: async (error: any) => {
-            console.error('Change Password API failed', error?.response?.status);
-            alert(error?.response?.status);
-        }
+            const message = error?.response?.data?.message || "Something went wrong. Please try again.";
+            setHeaderText("Password Change Failed");
+            setAlertMessage(message);
+            setAlertModalVisible(true);
+            }
     });
 
     const currPassSubmit = useMutation ({
@@ -84,12 +87,13 @@ export default function ProfilePage() {
             return api.post('/api/confPass', {password}).then(res => res.data);
         },
         onSuccess: async (data) => {
+            setCurrPassError(null);
             setCurrPassModalVisible(false);
             setChangePassModalVisible(true);
         },
         onError: async (error: any) => {
-            console.error('Change Password API failed', error?.response?.status);
-            alert(error?.response?.status);
+            const message = error?.response?.data?.message || "Incorrect password";
+            setCurrPassError(message);
         }
     });
 
@@ -156,8 +160,12 @@ export default function ProfilePage() {
             onSubmit={(password) =>
             currPassSubmit.mutate({ password: password })
             }
-            onCancel={() => setCurrPassModalVisible(false)}
+            onCancel={() => {
+                setCurrPassModalVisible(false);
+                setCurrPassError(null);
+            }}
             isLoading={currPassSubmit.isPending}
+            error={currPassError}
             />
             )}
 
