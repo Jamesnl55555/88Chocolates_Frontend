@@ -157,7 +157,7 @@ export default function TransactionsPage() {
 
     {/* Horizontal scroll for table */}
     <ScrollView horizontal>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, marginHorizontal: 20 }}>
         {/* Header row */}
         <View style={styles.header}>
           <View style={styles.headerCell}>
@@ -201,42 +201,50 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    flexDirection: "row",
-    backgroundColor: "#eee",
-    borderBottomWidth: 1,
-    borderColor: "#2b2828",
+    flexDirection: "row", 
+    backgroundColor: "#eee", 
+    borderBottomWidth: 1, 
+    borderColor: "#411C0E",
+    
   },
 
   headerCell: {
-    width: CELL_WIDTH,
-    padding: 10,
+    width: CELL_WIDTH, 
+    padding: 15, 
     borderWidth: 1,
-    borderColor: "#411C0E",
+    borderRightWidth: 1, 
+    borderLeftWidth: 1, 
+    borderColor: "#411C0E", 
     backgroundColor: "#FFEDD9",
-    alignItems: "center",
+    alignItems: "center", 
     justifyContent: "center",
   },
 
   headerText: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 14,
-    color: "#411C0E",
+    textAlign: 'center',
+    color: '#411C0E'
   },
 
   row: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderColor: "#411C0E",
+    flexDirection: "row", 
+    alignItems: "center", 
+    borderBottomWidth: 1, 
+    borderColor: "#411C0E", 
     minHeight: 60,
+    justifyContent: "center",
   },
 
   cell: {
-    width: CELL_WIDTH,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRightWidth: 1,
-    borderLeftWidth: 1,
-    borderColor: "#411C0E",
+    width: CELL_WIDTH, 
+    justifyContent: "center", 
+    alignItems: "center", 
+    borderRightWidth: 1, 
+    borderLeftWidth: 1, 
+    borderColor: "#411C0E", 
+    flexDirection: "row", 
+    height: "100%",
+    paddingVertical: 5,
   },
 });
