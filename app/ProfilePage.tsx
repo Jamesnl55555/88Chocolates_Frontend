@@ -24,6 +24,9 @@ export default function ProfilePage() {
     
     const router = useRouter();
     const auth = useAuth();
+    const [storeName, setStoreName] = useState(auth.user?.storeName ?? "88 Chocolates and More");
+    const [displayName, setDisplayName] = useState(auth.user?.name ?? "Username");
+    const [email, setEmail] = useState(auth.user?.email ?? "user@example.com");
         useEffect(() => {
         if (!auth.restoring && !auth.isAuthenticated) {
                 router.replace('/LoginPage');
@@ -42,11 +45,12 @@ export default function ProfilePage() {
         },
     });
 
-    const editProfileMutation = useMutation({
-    mutationFn: ({ storeName, name, profile_image }: { storeName: string; name: string, profile_image?: string | null; }) => {
+const editProfileMutation = useMutation({
+    mutationFn: ({ storeName, name, email: emailVal, profile_image }: { storeName: string; name: string; email: string; profile_image?: string | null; }) => {
         return api.put('/api/editprofile', {
         name: name,
         storeName: storeName,
+        email: emailVal,
         profile_image
         }).then(res => res.data);
     },
@@ -119,55 +123,78 @@ export default function ProfilePage() {
                     </Pressable>
                 </Pressable>
                 <View style={styles.boxContainer}>
-                <Text style={styles.subheading}>Store Name:</Text>
-                <View style={styles.inputBox}>
-                    <TextInput value={auth.user?.storeName ?? "88 Chocolates and More"} editable={false}/>
+                    <Text style={styles.subheading}>Store Name:</Text>
+                        <View style={styles.inputBox}>
+                            <TextInput style={{flex: 1, color: '#411C0E'}} 
+                                value={storeName} 
+                                onChangeText={setStoreName}
+                                editable={true}/>
+                        </View>
+
+                    <Text style={styles.subheading}>Username:</Text>
+                        <View style={styles.inputBox}>
+                            <TextInput style={{flex: 1, color: '#411C0E'}} 
+                                value={displayName} 
+                                onChangeText={setDisplayName}
+                                editable={true}
+                            />
+                        </View>
+
+                    <Text style={styles.subheading}>Email:</Text>
+                        <View style={styles.inputBox}>
+                            <TextInput value={auth.user?.email ?? "user@example.com"} editable={false} style={{ color: '#565656a5' }}/>
+                        </View>
                 </View>
-                <Text style={styles.subheading}>Username:</Text>
-                <View style={styles.inputBox}>
-                    <TextInput value={auth.user?.name ?? "Username"}  editable={false}/>
-                </View>
-                <Text style={styles.subheading}>Email:</Text>
-                <View style={styles.inputBox}>
-                    <TextInput value={auth.user?.email ?? "user@example.com"} editable={false}/>
-                </View>
-                </View>
+
                 <View style={styles.footerContainer}>
-                    <TouchableOpacity style={styles.buttons} onPress={() => setCurrPassModalVisible(true)}>
-                        <Text style={styles.buttonText}>Change Password</Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity style={styles.saveButton} onPress={() => {
+                            editProfileMutation.mutate({ 
+                                storeName, 
+                                name: displayName, 
+                                email,
+                                profile_image: auth.user?.profile_image ?? null 
+                            });
+                        }} disabled={editProfileMutation.isPending}>
+                            <Text style={styles.buttonText}>{editProfileMutation.isPending ? "Saving..." : "Save Profile"}</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.buttons} onPress={() => setCurrPassModalVisible(true)}>
+                            <Text style={styles.buttonText}>Change Password</Text>
+                        </TouchableOpacity>
+
                     <TouchableOpacity
-                    disabled={logoutMutation.isPending}
-                    onPress={logoutModalVisible ? () => setLogoutModalVisible(false) : () => setLogoutModalVisible(true)}
-                    style={styles.logoutButton}
+                        disabled={logoutMutation.isPending}
+                        onPress={logoutModalVisible ? () => setLogoutModalVisible(false) : () => setLogoutModalVisible(true)}
+                        style={styles.logoutButton}
                     >
                     <Text style={styles.buttonText}>Logout</Text>
                     </TouchableOpacity>
                 </View>
             </View>
+            
             {changeProfileModalVisible && (
             <NewProfileModal
-            onSubmit={(storename, name, image) =>
-            editProfileMutation.mutate({ storeName: storename, name: name, profile_image: image})
-            }
-            onCancel={() => setChangeProfileModalVisible(false)}
-            isSaving={editProfileMutation.isPending}
-            />
+                onSubmit={(image) =>
+                editProfileMutation.mutate({ storeName: storeName, name: displayName, email, profile_image: image})
+                }
+                onCancel={() => setChangeProfileModalVisible(false)}
+                isSaving={editProfileMutation.isPending}
+                />
             )}
 
             {currPassModalVisible && (
-            <ConfirmCurrPassModal
-            onSubmit={(password) =>
-            currPassSubmit.mutate({ password: password })
-            }
-            onCancel={() => {
-                setCurrPassModalVisible(false);
-                setCurrPassError(null);
-            }}
-            isLoading={currPassSubmit.isPending}
-            error={currPassError}
-            />
-            )}
+                <ConfirmCurrPassModal
+                onSubmit={(password) =>
+                currPassSubmit.mutate({ password: password })
+                }
+                onCancel={() => {
+                    setCurrPassModalVisible(false);
+                    setCurrPassError(null);
+                }}
+                isLoading={currPassSubmit.isPending}
+                error={currPassError}
+                />
+                )}
 
             {changePassModalVisible && (
                 <ChangePassModal
@@ -222,8 +249,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 24,
     paddingHorizontal: 12,
-    marginBottom: 15,
-    height: 50,
+    marginBottom: 10,
+    height: 45,
    },
    profile: {
     marginVertical: 25,    
@@ -267,8 +294,16 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     borderRadius: 24,
-    padding: 12,
-    marginTop: 20,
+    padding: 11,
+    marginTop: 30,
+   },
+   saveButton: {
+    backgroundColor: '#49A874',
+    width: '50%',
+    alignItems: 'center',
+    borderRadius: 24,
+    padding: 10,
+    marginTop: 10,
    },
    logoutButton: {
     backgroundColor: '#B00B0BCC',

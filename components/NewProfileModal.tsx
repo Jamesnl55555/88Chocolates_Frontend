@@ -2,21 +2,18 @@ import { useAuth } from "@/contexts/AuthContext";
 import { IconCamera, IconUserFilled } from "@tabler/icons-react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { uploadImage } from "../app/services/cloudinary";
 type Props = {
-    onSubmit: (storename: string, name: string, imageUrl?: string | null) => void;
+    onSubmit: (imageUrl?: string | null) => void;
     onCancel?: () => void;
     isSaving?: boolean;
     image?: string | null;
-
 };
 
 export default function NewProfileModal({ onSubmit, onCancel, isSaving, image }: Props){
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const auth = useAuth();
-    const [storename, setStoreName] = useState(auth.user?.storeName ?? "88 Chocolates and more");
-    const [name, setName] = useState(auth.user?.name ?? "user.user");
     const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ["images"],
@@ -40,24 +37,25 @@ export default function NewProfileModal({ onSubmit, onCancel, isSaving, image }:
     }
     };
     const handleSubmit = () => {
-        onSubmit(storename, name, imageUrl);
+        onSubmit(imageUrl ?? null);
         setImageUrl(null);
     };
 
     return (
         <View style={styles.backdrop}>
             <View style={styles.container}>
+                <Text style={{ fontWeight: 'bold', fontSize: 20 ,marginVertical: 15, color: '#411C0E' }}>Change Profile Picture</Text>
                 <View style={styles.profile}>
                     {auth.user?.profile_image ? (
                         imageUrl ? (
                             <Image
                                 source={{ uri: imageUrl }}
-                                style={{ width: '100%', height: '100%', borderRadius: 100 }}
+                                style={{ width: '100%', height: '100%', borderRadius: 100}}
                             />
                         ) : (
                             <Image
                                 source={{ uri: auth.user.profile_image }}
-                                style={{ width: '100%', height: '100%', borderRadius: 100    }}
+                                style={{ width: '100%', height: '100%', borderRadius: 100}}
                             />
                         )
                         ) : (
@@ -67,16 +65,7 @@ export default function NewProfileModal({ onSubmit, onCancel, isSaving, image }:
                         <IconCamera size={25} color="#fff" />
                     </TouchableOpacity>
                 </View>
-                <View style={styles.inputArea}>
-                    <Text style={styles.label}>Store Name:</Text>
-                    <View style={styles.input}>
-                        <TextInput placeholder={storename} value={storename} onChangeText={setStoreName} />
-                    </View>
-                    <Text style={styles.label}>Username:</Text>
-                    <View style={styles.input}>
-                        <TextInput placeholder={name} value={name} onChangeText={setName} />
-                    </View>
-                </View>
+
                 <View style={styles.buttonArea}>
                     <TouchableOpacity style={styles.buttonCancel} onPress={onCancel}>
                         <Text style={styles.text}>Cancel</Text>
@@ -133,27 +122,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    inputArea: {
-        marginTop: 10,
-        width: '100%',
-    },
-    input: {
-        borderWidth: 2,
-        borderColor: '#411C0E',
-        borderRadius: 50,
-        paddingVertical: 4,
-        paddingHorizontal: 15,
-        marginBottom: 15,
-    },
-    label: {
-        fontWeight: 800,
-        marginVertical: 5,
-        color: '#411C0E'
-    },
     buttonArea: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 10,
+        marginTop: 30,
         gap: 15,
     },
     buttonSave: {
