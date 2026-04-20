@@ -24,10 +24,12 @@ export default function MakeTransactionPage() {
     const [alertHeader, setAlertHeader] = useState('');
     const [confirmAlertVisible, setConfirmAlertVisible] = useState(false);
     const [productToDelete, setProductToDelete] = useState<any>(null);
+    const [latestTransactionNumber, setLatestTransactionNumber] = useState<number | null>(null);
 
     useFocusEffect(
     useCallback(() => {
         fetchProducts(1, searchTerm);
+        fetchLatestTransactionNumber();
     }, [searchTerm])
     );
 
@@ -58,7 +60,7 @@ export default function MakeTransactionPage() {
             const exists = prev.find(p => p.id === product.id);
             if (exists) return prev;
 
-            return [...prev, { id: product.id, quantity: 1, price: product.price }];
+            return [...prev, { id: product.id, quantity: 0, price: product.price }];
         });
     };
 
@@ -110,6 +112,16 @@ export default function MakeTransactionPage() {
             })
         );
     };
+    const fetchLatestTransactionNumber = async () => {
+        try {
+            const response = await api.get('/api/fetchLatestTransactionNumber');
+            setLatestTransactionNumber(response.data.latest_transaction_number + 1);
+        } catch (error) {
+            console.error('Error fetching latest transaction number:', error);
+            return null;
+        }
+    };
+
 
     const fetchProducts = async (page = 1, term = '') => {
         if (loading) return;
@@ -313,7 +325,13 @@ export default function MakeTransactionPage() {
                     <Path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="#411C0E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </Svg>
             </View>
-
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'  }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20 }}>
+                <Text style={styles.label}>Receipt No. 88CM-</Text>
+                <Text>
+                    {latestTransactionNumber !== null ? String(latestTransactionNumber).padStart(5, '0') : '00001'}
+                </Text>
+            </View>
             <View style={styles.date}>
                 <Text>{date.toLocaleDateString()}</Text>
                 <Svg width={15} height={15} viewBox="0 -1 15 13" fill="none">
@@ -321,7 +339,7 @@ export default function MakeTransactionPage() {
                         stroke="#1E1E1E" strokeLinecap="round" strokeLinejoin="round"/>
                 </Svg>
             </View>
-
+            </View>
             <View style={styles.container}>
                 <View style={styles.selectAll}>
                     <CheckboxComponent
@@ -358,7 +376,7 @@ export default function MakeTransactionPage() {
                     <Text style={{ fontWeight: 'bold' }}>P {total}</Text>
                 </View>
 
-                <TouchableOpacity style={styles.button} onPress={handleSubmitMutation}>
+                <TouchableOpacity style={[styles.button, { backgroundColor: selectedProducts.length === 0 ? '#8a8686' : '#411C0ECC' }]} onPress={handleSubmitMutation} disabled={selectedProducts.length === 0}>
                     <Text style={styles.buttonText}>Continue</Text>
                 </TouchableOpacity>
             </View>
@@ -468,7 +486,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold' 
     },
     button: {
-        backgroundColor: '#411C0ECC',
         padding: 15,
         alignItems: 'center',
         width: '50%',
@@ -487,5 +504,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     totalText: { fontSize: 16 },
-    image: { width: 70, height: 70 }
+    image: { width: 70, height: 70 },
+    label: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#411C0E',
+    },
 });
