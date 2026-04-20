@@ -3,6 +3,7 @@ import { IconUser } from '@tabler/icons-react-native';
 import { useNavigation, useRouter } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Svg, { Path } from 'react-native-svg';
 type AppHeaderProps = {
   routeName?: string;
 };
@@ -36,7 +37,17 @@ export default function AppHeader({ routeName }: AppHeaderProps) {
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
         {showBackButton && (
           <Pressable onPress={() => navigation.goBack()}>
-            <Text style={{ color: '#fff', fontSize: 18 }}>{'<'}</Text>
+            <Svg
+              width={24}
+              height={24}
+              viewBox="0 0 20 24"
+              fill="none"
+            >
+              <Path
+                d="M14 18L8 12L14 6L15.4 7.4L10.8 12L15.4 16.6L14 18Z"
+                fill="white"
+              />
+            </Svg>
           </Pressable>
         )}
         <Text style={styles.title}>{title}</Text>
@@ -75,7 +86,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
-    marginLeft: 10,
+    marginLeft: 5,
   },
   profileImage: {
     width: 36,
