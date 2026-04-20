@@ -14,9 +14,8 @@ type Props = {
     error?: string | null;
 }
 
-export default function ConfirmCurrPassModal( { onSubmit, onCancel, isLoading }: Props ) {
+export default function ConfirmCurrPassModal( { onSubmit, onCancel, isLoading, error }: Props ) {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const [password, setPassword] = useState("");
     return (
         <View style={styles.backdrop}>
