@@ -8,11 +8,11 @@ const ConfirmAlertModal = ({ onConfirm, onCancel}: Props) => {
             <Text style={styles.headerText}>Confirm Delete</Text>
             <Text style={styles.message}>Are you sure you want to delete the selected transactions?</Text>
             <View style={{flexDirection: 'row', justifyContent: 'space-evenly', width: '100%'}}>
-                <TouchableOpacity onPress={onConfirm} style={styles.Confbutton}>
-                <Text style={{color: '#fff', fontWeight: 800}}>Delete</Text>
-                </TouchableOpacity>
                 <TouchableOpacity onPress={onCancel} style={styles.Canbutton}>
                     <Text style={{color: '#fff', fontWeight: 800}}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onConfirm} style={styles.Confbutton}>
+                <Text style={{color: '#fff', fontWeight: 800}}>Delete</Text>
                 </TouchableOpacity>
             </View>
         </View>

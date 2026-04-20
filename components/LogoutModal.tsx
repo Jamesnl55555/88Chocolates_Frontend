@@ -12,12 +12,12 @@ export default function LogoutModal({onConfirm, onCancel, isLoading}: Props) {
                 <Text style={{fontSize: 20, fontWeight: 'bold', marginVertical: 8, color: '#5c3406'}}>Confirm Logout</Text>
                 <Text style={styles.message}>Are you sure you want to logout?</Text>
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.confirmbutton} onPress={onConfirm}>
-                        <Text style={styles.text}>{isLoading ? "Logging out..." : "Logout"}</Text>
-                    </TouchableOpacity>
                     <TouchableOpacity style={styles.cancelbutton} onPress={onCancel}>
                         <Text style={styles.text}>Cancel</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity style={styles.confirmbutton} onPress={onConfirm}>
+                        <Text style={styles.text}>{isLoading ? "Logging out..." : "Logout"}</Text>
+                    </TouchableOpacity> 
                 </View>
             </View>
         </View>

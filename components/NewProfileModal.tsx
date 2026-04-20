@@ -78,11 +78,11 @@ export default function NewProfileModal({ onSubmit, onCancel, isSaving, image }:
                     </View>
                 </View>
                 <View style={styles.buttonArea}>
-                    <TouchableOpacity style={styles.buttonSave} onPress={handleSubmit} disabled={isSaving}>
-                        <Text style={styles.text}>{isSaving ? "Saving..." : "Save"}</Text>
-                    </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonCancel} onPress={onCancel}>
                         <Text style={styles.text}>Cancel</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonSave} onPress={handleSubmit} disabled={isSaving}>
+                        <Text style={styles.text}>{isSaving ? "Saving..." : "Save"}</Text>
                     </TouchableOpacity>
                 </View>
             </View>

@@ -193,14 +193,15 @@ const styles = StyleSheet.create({
   cancelContainer: { 
     width: "60%", 
     alignItems: "center", 
-    marginTop: 5 
+    marginVertical: 5 
   },
   cancelButton: { 
-    color: "#1A00FF", 
+    color: "#B00B0BCC", 
     fontWeight: "600",
   },
   resendButton: {
     marginTop: 10,
+    marginBottom: 5,
   },
   resendText: {
     color: "#1A00FF",
