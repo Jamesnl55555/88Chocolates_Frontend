@@ -79,6 +79,52 @@ export default function AddProductsPage() {
         }
     };
 
+    function validateInputs() {
+        if (!name) {
+            setAlertHeader("Error!");
+            setAlertMessage("Please input a valid product name.");
+            setAlertVisible(true);
+            return false;
+        }
+        if (!price || isNaN(Number(price))) {
+            setAlertHeader("Error!");
+            setAlertMessage("Please input a valid price.");
+            setAlertVisible(true);
+            return false;
+        }
+        if (quantity === 0) {
+            setAlertHeader("Error!");
+            setAlertMessage("Please set a quantity.");
+            setAlertVisible(true);
+            return false;
+        }
+        if (quantity < 0 || quantity > 9999) {
+            setAlertHeader("Error!");
+            setAlertMessage("Quantity must be between 0 and 9999.");
+            setAlertVisible(true);
+            return false;
+        }
+        if (!category) {
+            setAlertHeader("Error!");
+            setAlertMessage("Please select a category.");
+            setAlertVisible(true);
+            return false;
+        }
+        if (!netWeightNumber || isNaN(Number(netWeightNumber)) || Number(netWeightNumber) <= 0) {
+            setAlertHeader("Error!");
+            setAlertMessage("Please input a valid net weight.");
+            setAlertVisible(true);
+            return false;
+        }
+        if (!netWeightUnit) {
+            setAlertHeader("Error!");
+            setAlertMessage("Please select a net weight unit.");
+            setAlertVisible(true);
+            return false;
+        }
+        return true;
+    }
+
     const addProduct = useMutation({
         mutationFn: ({ category, name, price, quantity }: any) =>
             api.post('/api/postproducts', {
@@ -109,7 +155,7 @@ export default function AddProductsPage() {
             setAlertMessage(
                 error?.response?.data?.message ||
                 error?.message ||
-                "Error adding product"
+                "Error adding product."
             );
         }
     });
@@ -117,6 +163,7 @@ export default function AddProductsPage() {
     text.replace(/\D/g, '').slice(0, 4);
 
     const handleSubmit = () => {
+        if (!validateInputs()) return;
         if (category && name && price && quantity) {
             addProduct.mutate({
                 category,

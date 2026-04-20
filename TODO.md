@@ -1,0 +1,1 @@
+1. [x] Edit app/AddProductsPage.tsx: Replace redundant function check with quantity === 0 validation&#10;2. [x] Test form submission with quantity=0 (expect error) and quantity>0 (pass)&#10;3. [x] Attempt completion

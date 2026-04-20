@@ -34,6 +34,40 @@ export default function EditProductModal() {
         setNetWeightUnit(parsedProduct?.netWeightUnit || '');
     }, [product]);
 
+    function validateInputs() {
+        if (!editProduct.name) {
+            setAlertHeader("Error!");
+            setAlertMessage("Please enter a product name.");
+            setAlertVisible(true);
+            return false;
+        }
+        if (!editProduct.category) {
+            setAlertHeader("Error!");
+            setAlertMessage("Please select a category.");
+            setAlertVisible(true);
+            return false;
+        }
+        if (isNaN(Number(editProduct.price)) || Number(editProduct.price) <= 0) {
+            setAlertHeader("Error!");
+            setAlertMessage("Please enter a valid price.");
+            setAlertVisible(true);
+            return false;
+        }
+        if (!netWeightNumber || isNaN(Number(netWeightNumber)) || Number(netWeightNumber) <= 0) {
+            setAlertHeader("Error!");
+            setAlertMessage("Please enter a valid net weight.");
+            setAlertVisible(true);
+            return false;   
+        }
+        if (isNaN(Number(editProduct.quantity)) || Number(editProduct.quantity) <= 0) {
+            setAlertHeader("Error!");
+            setAlertMessage("Please enter a valid quantity.");
+            setAlertVisible(true);
+            return false;
+        }
+        return true;
+    }
+
     const increaseQuantity = () => {
         setEditProduct((prev: any) => ({
             ...prev,
@@ -84,6 +118,7 @@ export default function EditProductModal() {
 
     const handleEditSubmit = async () => {
         if (!editProduct) return;
+        if (!validateInputs()) return;
 
         try {
             await api.post(`/api/update-product/${editProduct.id}`, {

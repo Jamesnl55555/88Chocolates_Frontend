@@ -10,7 +10,7 @@ const AlertModal = ({ message, headertext, onConfirm}: Props) => {
                 <Text style={styles.message}>{message}</Text>
                 
                 <TouchableOpacity onPress={onConfirm} style={styles.button}>
-                    <Text style={styles.buttonText}>Confirm</Text>
+                    <Text style={styles.buttonText}>OK</Text>
                 </TouchableOpacity>
             </View>
         </View>
