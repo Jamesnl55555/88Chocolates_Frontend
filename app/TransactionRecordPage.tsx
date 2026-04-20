@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView 
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 import api from "./services/api";
@@ -82,11 +83,12 @@ export default function TransactionsPage() {
   };
 
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0];
-    setSelectedDate(today);
-    fetchTransactions(1, today);
-    fetchMarkedDates();
-  }, []);
+  const today = new Date().toLocaleDateString("en-CA");
+
+  setSelectedDate(today);
+  fetchTransactions(1, today);
+  fetchMarkedDates();
+}, []);
 
   const loadMore = () => {
     if (loading) return;
@@ -111,6 +113,8 @@ export default function TransactionsPage() {
     });
   };
 
+
+  
   const renderItem = ({ item }: { item: any }) => (
     <TouchableOpacity
       style={styles.row}
@@ -132,25 +136,29 @@ export default function TransactionsPage() {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
-      <View style={styles.calendarContainer}>
-        <Calendar
-          markedDates={{
-            ...markedDates,
-            [selectedDate]: {
-              selected: true,
-              selectedColor: "#411C0E",
-            },
-          }}
-          onDayPress={(day) => {
-            setSelectedDate(day.dateString);
-            setCurrentPage(1);
-            fetchTransactions(1, day.dateString);
-          }}
-        />
-      </View>
+  <View style={{ flex: 1, backgroundColor: "#fff" }}>
+    {/* Calendar */}
+    <View style={styles.calendarContainer}>
+      <Calendar
+        markedDates={{
+          ...markedDates,
+          [selectedDate]: {
+            selected: true,
+            selectedColor: "#411C0E",
+          },
+        }}
+        onDayPress={(day) => {
+          setSelectedDate(day.dateString);
+          setCurrentPage(1);
+          fetchTransactions(1, day.dateString);
+        }}
+      />
+    </View>
 
+    {/* Horizontal scroll for table */}
+    <ScrollView horizontal>
       <View style={{ flex: 1 }}>
+        {/* Header row */}
         <View style={styles.header}>
           <View style={styles.headerCell}>
             <Text style={styles.headerText}>Transaction No.</Text>
@@ -166,11 +174,10 @@ export default function TransactionsPage() {
           </View>
         </View>
 
+        {/* FlatList rows */}
         <FlatList
           data={transactions}
-          keyExtractor={(item) =>
-            item.transaction_number.toString()
-          }
+          keyExtractor={(item) => item.transaction_number.toString()}
           renderItem={renderItem}
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
@@ -180,8 +187,9 @@ export default function TransactionsPage() {
           contentContainerStyle={{ paddingBottom: 80 }}
         />
       </View>
-    </View>
-  );
+    </ScrollView>
+  </View>
+);
 }
 
 const CELL_WIDTH = 140;
