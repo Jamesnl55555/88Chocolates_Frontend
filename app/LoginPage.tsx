@@ -166,7 +166,7 @@ export default function LoginPage() {
       setCode(inputCode);
       setResetPasswordVisible(true);
     },
-    onError: () => alert('Invalid code. Try again.'),
+    onError: () => alert('Invalid code! Please try again.'),
   });
 
   // RESET PASSWORD MUTATION

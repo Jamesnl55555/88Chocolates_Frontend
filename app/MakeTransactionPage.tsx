@@ -181,8 +181,8 @@ export default function MakeTransactionPage() {
         try {
             await api.post(`/api/delete-item/${id}`);
             setProducts(prev => prev.filter(p => p.id !== id));
-            setAlertHeader('Deletion Successfull!');
-            setAlertMessage('Transaction has been removed');
+            setAlertHeader('Deletion Successfull');
+            setAlertMessage('Transaction has been removed!');
             setConfirmAlertVisible(true);
         } catch (error) {
             console.error('Error deleting product:', error);
@@ -194,13 +194,13 @@ export default function MakeTransactionPage() {
             await Promise.all(selectedProducts.map(p => api.post(`/api/delete-item/${p.id}`)));
             setProducts(prev => prev.filter(p => !selectedProducts.some(sp => sp.id === p.id)));
             setSelectedProducts([]);
-            setAlertHeader('Deletion Successful!');
-            setAlertMessage('Selected transactions have been removed');
+            setAlertHeader('Deleted');
+            setAlertMessage('Selected transactions have been removed!');
             setConfirmAlertVisible(true);
         } catch (error) {
             console.error('Error deleting products:', error);
-            setAlertHeader('Error!');
-            setAlertMessage('Failed to delete some products.');
+            setAlertHeader('Error');
+            setAlertMessage('Failed to delete some products!');
             setConfirmAlertVisible(true);
         }
     };

@@ -53,13 +53,13 @@ export default function ReceiptPage() {
             });
             setIsLoading(false);
             if (response.data.success === true) {
-                setAlertHeader('Successful Transaction!');
-                setAlertMessage('Transaction has been recorded');
+                setAlertHeader('Successful Transaction');
+                setAlertMessage('Transaction has been recorded!');
                 setAlertModalVisible(true);
             }
         } catch (error: any) {
             console.log(error.response?.data);
-            setAlertHeader('Failed Transaction!');
+            setAlertHeader('Failed Transaction');
             setAlertMessage(error.response?.data.message);
             setAlertModalVisible(true);
         } finally {

@@ -52,7 +52,7 @@ export default function VerifyCodeModal({ email, onSubmit, isLoading, onCancel, 
     }
   }, [code]);
   const handlePress = () => {
-    if (!code) return alert("Please enter the code sent to your email");
+    if (!code) return alert("Please enter the code sent to your email.");
     onSubmit(code);
   };
 

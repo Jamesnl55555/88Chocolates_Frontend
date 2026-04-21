@@ -98,13 +98,13 @@ export default function InventoryPage() {
     try {
     await api.post(`/api/delete-item/${id}`);
     setProducts((prev) => prev.filter((p) => p.id !== id));
-    setAlertHeader("Deleted!");
-    setAlertMessage("Product removed successfully");
+    setAlertHeader("Deleted");
+    setAlertMessage("Product removed successfully!");
     setConfirmAlertVisible(true);
     } catch (error) {
     console.error("Error deleting product:", error);
-    setAlertHeader("Error!");
-    setAlertMessage("Failed to delete product.");
+    setAlertHeader("Error");
+    setAlertMessage("Failed to delete product!");
     setConfirmAlertVisible(true);
     }
     };
@@ -115,13 +115,13 @@ export default function InventoryPage() {
     await Promise.all(selectedProducts.map(p => api.post(`/api/delete-item/${p.id}`)));
     setProducts((prev) => prev.filter((p) => !selectedProducts.some((sp) => sp.id === p.id)));
     setSelectedProducts([]);
-    setAlertHeader("Deleted!");
-    setAlertMessage("Selected products removed successfully");
+    setAlertHeader("Deleted");
+    setAlertMessage("Selected products removed successfully!");
     setConfirmAlertVisible(true);
     } catch (error) {
     console.error("Error deleting products:", error);
-    setAlertHeader("Error!");
-    setAlertMessage("Failed to delete some products.");
+    setAlertHeader("Error");
+    setAlertMessage("Failed to delete some products!");
     setConfirmAlertVisible(true);
     }
     };

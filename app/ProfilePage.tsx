@@ -56,7 +56,7 @@ const editProfileMutation = useMutation({
     },
     onSuccess: async (data, variables) => {
         setHeaderText("Profile Updated Successfully");
-        setAlertMessage("Your profile has been updated.");
+        setAlertMessage("Your profile has been updated!");
         setAlertModalVisible(true);
         await auth.updateUser(data.user);
         setChangeProfileModalVisible(false);
@@ -76,7 +76,7 @@ const editProfileMutation = useMutation({
             setChangePassModalVisible(false);
             setAlertModalVisible(true);
             setHeaderText('Password Changed Successfully');
-            setAlertMessage('Your password has been updated.');
+            setAlertMessage('Your password has been updated!');
         },
         onError: async (error: any) => {
             const message = error?.response?.data?.message || "Something went wrong. Please try again.";

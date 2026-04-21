@@ -36,31 +36,31 @@ export default function EditProductModal() {
 
     function validateInputs() {
         if (!editProduct.name) {
-            setAlertHeader("Error!");
+            setAlertHeader("Error");
             setAlertMessage("Please enter a product name.");
             setAlertVisible(true);
             return false;
         }
         if (!editProduct.category) {
-            setAlertHeader("Error!");
+            setAlertHeader("Error");
             setAlertMessage("Please select a category.");
             setAlertVisible(true);
             return false;
         }
         if (isNaN(Number(editProduct.price)) || Number(editProduct.price) <= 0) {
-            setAlertHeader("Error!");
+            setAlertHeader("Error");
             setAlertMessage("Please enter a valid price.");
             setAlertVisible(true);
             return false;
         }
         if (!netWeightNumber || isNaN(Number(netWeightNumber)) || Number(netWeightNumber) <= 0) {
-            setAlertHeader("Error!");
+            setAlertHeader("Error");
             setAlertMessage("Please enter a valid net weight.");
             setAlertVisible(true);
             return false;   
         }
         if (isNaN(Number(editProduct.quantity)) || Number(editProduct.quantity) <= 0) {
-            setAlertHeader("Error!");
+            setAlertHeader("Error");
             setAlertMessage("Please enter a valid quantity.");
             setAlertVisible(true);
             return false;
@@ -106,7 +106,7 @@ export default function EditProductModal() {
                 setEditImageUrl(upload.secure_url);
             } catch (err) {
                 console.error('Upload failed', err);
-                alert('Image upload failed');
+                alert('Image upload failed!');
             }
         }
     };
@@ -132,14 +132,14 @@ export default function EditProductModal() {
                 is_archived: editProduct.is_archived ?? 0,
                 color_size: editProduct.color_size
             });
-            setAlertHeader("Success!");
-            setAlertMessage("Product updated successfully");
+            setAlertHeader("Success");
+            setAlertMessage("Product updated successfully!");
             setAlertVisible(true);
 
         } catch (error: any) {
             console.error('Error updating product:', error.response?.data || error);
-            setAlertHeader("Error!");
-            setAlertMessage("Failed to update product.");
+            setAlertHeader("Error");
+            setAlertMessage("Failed to update product!");
             setAlertVisible(true);
         }
     };

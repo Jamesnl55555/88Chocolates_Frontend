@@ -32,7 +32,7 @@ export default function NewProfileModal({ onSubmit, onCancel, isSaving, image }:
         setImageUrl(upload.secure_url);
         } catch (err) {
         console.error('Upload failed', err);
-        alert('Image upload failed. Try again.');
+        alert('Image upload failed! Please try again.');
         }
     }
     };

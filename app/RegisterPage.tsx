@@ -91,7 +91,7 @@ const RegisterPage: React.FC = () => {
   },
 
   onError: () => {
-    alert('Invalid or expired code');
+    alert('Invalid or expired code.');
   },
   });
 
@@ -100,11 +100,11 @@ const RegisterPage: React.FC = () => {
     api.post('/api/register-resend', { email }).then(res => res.data),
 
   onSuccess: () => {
-    alert('New code sent to your email');
+    alert('New code sent to your email.');
   },
 
   onError: () => {
-    alert('Failed to resend code');
+    alert('Failed to resend code. Please try again later.');
   },
   });
 

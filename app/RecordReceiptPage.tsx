@@ -42,7 +42,7 @@ export default function RecordReceiptPage() {
             } catch (error: any) {
                 console.log(error.response?.data);
                 setAlertHeader('Error');
-                setAlertMessage('Failed to load receipt');
+                setAlertMessage('Failed to load receipt!');
                 setAlertModalVisible(true);
             } finally {
                 setIsLoading(false);

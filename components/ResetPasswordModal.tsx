@@ -36,8 +36,8 @@ export default function ResetPasswordModal({
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
   const handlePress = () => {
-    if (!password || !passwordConfirmation) return alert("Please fill both fields");
-    if (password !== passwordConfirmation) return alert("Passwords do not match");
+    if (!password || !passwordConfirmation) return alert("Please fill both fields.");
+    if (password !== passwordConfirmation) return alert("Passwords do not match.");
     onSubmit(password, passwordConfirmation);
   };
 

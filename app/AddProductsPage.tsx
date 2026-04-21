@@ -72,8 +72,8 @@ export default function AddProductsPage() {
                 const upload = await uploadImage(uri);
                 setImageUrl(upload.secure_url);
             } catch (err) {
-                setAlertHeader("Error!");
-                setAlertMessage("Image upload failed.");
+                setAlertHeader("Error");
+                setAlertMessage("Image upload failed!");
                 setAlertVisible(true);
             }
         }
@@ -81,43 +81,43 @@ export default function AddProductsPage() {
 
     function validateInputs() {
         if (!name) {
-            setAlertHeader("Error!");
+            setAlertHeader("Error");
             setAlertMessage("Please input a valid product name.");
             setAlertVisible(true);
             return false;
         }
         if (!price || isNaN(Number(price))) {
-            setAlertHeader("Error!");
+            setAlertHeader("Error");
             setAlertMessage("Please input a valid price.");
             setAlertVisible(true);
             return false;
         }
         if (quantity === 0) {
-            setAlertHeader("Error!");
+            setAlertHeader("Error");
             setAlertMessage("Please set a quantity.");
             setAlertVisible(true);
             return false;
         }
         if (quantity < 0 || quantity > 9999) {
-            setAlertHeader("Error!");
+            setAlertHeader("Error");
             setAlertMessage("Quantity must be between 0 and 9999.");
             setAlertVisible(true);
             return false;
         }
         if (!category) {
-            setAlertHeader("Error!");
+            setAlertHeader("Error");
             setAlertMessage("Please select a category.");
             setAlertVisible(true);
             return false;
         }
         if (!netWeightNumber || isNaN(Number(netWeightNumber)) || Number(netWeightNumber) <= 0) {
-            setAlertHeader("Error!");
+            setAlertHeader("Error");
             setAlertMessage("Please input a valid net weight.");
             setAlertVisible(true);
             return false;
         }
         if (!netWeightUnit) {
-            setAlertHeader("Error!");
+            setAlertHeader("Error");
             setAlertMessage("Please select a net weight unit.");
             setAlertVisible(true);
             return false;
@@ -144,18 +144,18 @@ export default function AddProductsPage() {
             setNetWeightNumber('');
             setNetWeightUnit('');
             setImageUrl(null);
-            setAlertHeader("Success!");
-            setAlertMessage("Product added successfully");
+            setAlertHeader("Success");
+            setAlertMessage("Product added successfully!");
             setAlertVisible(true);
         },
         onError: (error : any) => {
             console.log("ADD PRODUCT ERROR:", error?.response?.data || error);
 
-            setAlertHeader("Error!");
+            setAlertHeader("Error");
             setAlertMessage(
                 error?.response?.data?.message ||
                 error?.message ||
-                "Error adding product."
+                "Error adding product!"
             );
         }
     });
@@ -174,8 +174,8 @@ export default function AddProductsPage() {
                 netWeightUnit: netWeightUnit,
             });
         } else {
-            setAlertHeader("Error!");
-            setAlertMessage("Please fill in all fields correctly");
+            setAlertHeader("Error");
+            setAlertMessage("Please fill in all fields correctly.");
             setAlertVisible(true);
         }
     };

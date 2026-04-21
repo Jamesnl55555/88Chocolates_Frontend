@@ -20,7 +20,7 @@ export default function ForgotPassModal({ onSubmit, onCancel, isLoading }: Props
   const [email, setEmail] = useState("");
 
   const handlePress = () => {
-    if (!email) return alert("Please enter your email");
+    if (!email) return alert("Please enter your email.");
     onSubmit(email);
   };
 
