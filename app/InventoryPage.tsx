@@ -1,9 +1,12 @@
 import AlertModal from "@/components/AlertModal";
 import CheckboxComponent from "@/components/CheckboxComponent";
 import ConfirmAlertModal from "@/components/ConfirmAlertModal";
-import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from "expo-router";
+
+import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
+
+
 import {
     ActivityIndicator,
     FlatList,
@@ -64,11 +67,13 @@ export default function InventoryPage() {
     }
     };
 
+    // Debounce search input
     useEffect(() => {
     const timeout = setTimeout(() => fetchProducts(1, searchTerm), 300);
     return () => clearTimeout(timeout);
     }, [searchTerm]);
 
+    // Load more products when reaching end of list
     const loadMore = () => {
     if (currentPage < lastPage && !loading) fetchProducts(currentPage + 1, searchTerm);
     };
@@ -82,6 +87,7 @@ export default function InventoryPage() {
     });
     };
 
+    // Toggle select all products
     const toggleSelectAll = () => {
     if (selectedProducts.length === products.length) setSelectedProducts([]);
     else setSelectedProducts(products.map((p) => ({ id: p.id })));
@@ -103,6 +109,7 @@ export default function InventoryPage() {
     }
     };
 
+    // Bulk delete products
     const handleBulkDelete = async () => {
     try {
     await Promise.all(selectedProducts.map(p => api.post(`/api/delete-item/${p.id}`)));
@@ -119,6 +126,7 @@ export default function InventoryPage() {
     }
     };
 
+    // Format time for display
     const formatTime = (dateString: string) => {
     if (!dateString) return "-";
     const date = new Date(dateString);
@@ -143,7 +151,13 @@ export default function InventoryPage() {
     <View style={styles.row}>
         <View style={styles.cell}>
         <CheckboxComponent isChecked={isSelected} onPress={() => toggleSelect(item)} />
-        <Image style={styles.image} source={{ uri: item.file_path }} />
+        {item.file_path && item.file_path.trim() !== '' ? (
+          <Image style={styles.image} source={{ uri: item.file_path }} />
+        ) : (
+          <View style={styles.placeholderImage}>
+            <Text style={{ fontSize: 12, color: '#999', textAlign: 'center' }}>No Image</Text>
+          </View>
+        )}
         </View>
         <View style={styles.cell}><Text>{item.name}</Text></View>
         <View style={styles.cell}><Text>{item.category}</Text></View>
@@ -373,7 +387,16 @@ headerText: {
     height: 70, 
     borderRadius: 5, 
     marginLeft: 5 
-},
+  },
+  placeholderImage: {
+    width: 70,
+    height: 70,
+    borderRadius: 5,
+    backgroundColor: '#f0f0f0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 5,
+  },
   overlay: { 
     position: 'absolute', 
     top: 0,
