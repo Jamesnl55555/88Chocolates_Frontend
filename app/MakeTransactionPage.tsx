@@ -238,7 +238,14 @@ export default function MakeTransactionPage() {
                 </View>
 
                 <View style={styles.info}>
-                    <Image source={{ uri: item.file_path }} style={styles.image} />
+                    {item.file_path && item.file_path.trim() !== '' ? (
+                      <Image source={{ uri: item.file_path }} style={styles.image} />
+                    ) : (
+                      <View style={styles.placeholderImage}>
+                        <Text style={{ fontSize: 12, color: '#999', textAlign: 'center' }}>No Image</Text>
+                      </View>
+                    )}
+
 
                     <View style={{ marginLeft: 10, flex: 1 }}>
                         <Text style={styles.name} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>
@@ -505,6 +512,14 @@ const styles = StyleSheet.create({
     },
     totalText: { fontSize: 16 },
     image: { width: 70, height: 70 },
+    placeholderImage: {
+      width: 70,
+      height: 70,
+      borderRadius: 5,
+      backgroundColor: '#f0f0f0',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     label: {
         fontSize: 16,
         fontWeight: 'bold',
