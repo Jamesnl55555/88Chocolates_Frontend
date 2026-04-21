@@ -387,12 +387,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#2FA262CC',
         paddingVertical: 12,
         paddingHorizontal: 25,
+        marginTop: 10,
         borderRadius: 50,
     },
     quantityPriceContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingHorizontal: 10,
     },
     PriceContainer: {
         flexDirection: 'column',
@@ -400,10 +400,11 @@ const styles = StyleSheet.create({
     netWeightQuantityContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginHorizontal: 5,
     },
     quantityContainer: {
         flexDirection: 'column',
+        marginRight: 15,
+        marginTop: 3,
     },
     qtyButton: {
         backgroundColor: '#eee',
@@ -444,7 +445,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: '#411C0E',
         borderRadius: 5,
-        marginBottom: 20,
+        marginBottom: 10,
         marginTop: 5,
     },
     alert: {
@@ -468,7 +469,7 @@ const styles = StyleSheet.create({
     dropdownButton: {
         padding: 10,
         borderWidth: 1,
-        marginTop: 10,
+        marginTop: 3,
         borderColor: '#411C0E',
         backgroundColor: '#fff',
         alignItems: 'center',
