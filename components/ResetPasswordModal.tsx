@@ -9,6 +9,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import AlertModal from "./AlertModal";
 import EyeComponent from "./EyeComponent";
 
 type Props = {
@@ -34,10 +35,23 @@ export default function ResetPasswordModal({
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertHeader, setAlertHeader] = useState("");
 
   const handlePress = () => {
-    if (!password || !passwordConfirmation) return alert("Please fill both fields.");
-    if (password !== passwordConfirmation) return alert("Passwords do not match.");
+    if (!password || !passwordConfirmation) {
+      setAlertHeader("Error");
+      setAlertMessage("Please fill both fields.");
+      setAlertVisible(true);
+      return;
+    }
+    if (password !== passwordConfirmation) {
+      setAlertHeader("Error");
+      setAlertMessage("Passwords do not match.");
+      setAlertVisible(true);
+      return;
+    }
     onSubmit(password, passwordConfirmation);
   };
 
@@ -52,8 +66,9 @@ export default function ResetPasswordModal({
         style={styles.modalContainer}
       >
         <Text style={styles.title}>Create New Password</Text>
-        <Text style={styles.subtitle}>Please enter your new password</Text>
+        <Text style={styles.subtitle}>Please enter your new password.</Text>
 
+        <Text style={styles.label}>Password:</Text>
         <View style={styles.inputWrapper}>
           <TextInput
             style={styles.input}
@@ -66,6 +81,7 @@ export default function ResetPasswordModal({
         </View>
         {passwordError && <Text style={styles.error}>{passwordError}</Text>}
 
+        <Text style={styles.label}>Confirm Password:</Text>
         <View style={styles.inputWrapper}>
           <TextInput
             style={styles.input}
@@ -88,6 +104,16 @@ export default function ResetPasswordModal({
           </Pressable>
         )}
       </KeyboardAvoidingView>
+
+      {alertVisible && (
+        <View style={styles.modalOverlay}>
+          <AlertModal
+            message={alertMessage}
+            headertext={alertHeader}
+            onConfirm={() => setAlertVisible(false)}
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -105,43 +131,92 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   modalContainer: {
-    width: 320,
+    width: '90%',
     minHeight: 350,
     maxHeight: 420,
     backgroundColor: "#fff",
-    borderRadius: 30,
+    borderRadius: 50,
     paddingHorizontal: 20,
     paddingTop: 20,
-    paddingBottom: 25,
+    paddingBottom: 17,
     justifyContent: "flex-start",
     alignItems: "center",
   },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 10 },
-  subtitle: { fontSize: 14, color: "#333", textAlign: "center", marginBottom: 15 },
+  title: { 
+    fontSize: 21, 
+    fontWeight: "800", 
+    marginTop: 15, 
+    marginBottom: 7,
+    color: '#411C0E',
+  },
+  subtitle: { 
+    fontSize: 15, 
+    color: '#411C0E',
+    textAlign: "center", 
+    marginBottom: 21, 
+  },
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#fff",
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#411C0E",
     paddingHorizontal: 12,
-    marginBottom: 10,
+    marginBottom: 20,
     width: "100%",
     height: 50,
   },
-  input: { flex: 1, height: 40, color: "#222" },
-  error: { color: "#a34e09", marginBottom: 10, fontSize: 12, alignSelf: "flex-start" },
+  label: {
+    fontWeight: "800",
+    color: '#411C0E',
+    marginRight: 10,
+    alignSelf: "flex-start",
+    marginBottom: 3,
+  },
+  input: { 
+    flex: 1, 
+    height: 40, 
+    color: "#222" 
+  },
+  error: { 
+    color: "#a34e09", 
+    marginBottom: 10, 
+    fontSize: 12, 
+    alignSelf: "flex-start" 
+  },
   button: {
-    width: "100%",
+    width: "60%",
     height: 50,
-    backgroundColor: "#411C0E",
-    borderRadius: 8,
+    backgroundColor: "#411C0ECC",
+    borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 7,
+    marginTop: 10,
   },
-  buttonText: { color: "#fff", fontWeight: "bold" },
-  cancelContainer: { width: "100%", alignItems: "center", marginTop: 5 },
-  cancelText: { color: "#3c0af0", fontWeight: "600" },
+  buttonText: { 
+    color: "#fff", 
+    fontWeight: "800",
+    fontSize: 15,
+  },
+  cancelContainer: { 
+    width: "100%", 
+    alignItems: "center", 
+    marginTop: 5 
+  },
+  cancelText: { 
+    color: "#3c0af0", 
+    fontWeight: "600" 
+  },
+  alertOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2000,
+  },
 });
