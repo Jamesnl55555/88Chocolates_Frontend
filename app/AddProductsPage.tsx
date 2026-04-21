@@ -1,5 +1,5 @@
 import AlertModal from "@/components/AlertModal";
-import { IconCamera, IconCaretDownFilled, IconCaretUpFilled } from '@tabler/icons-react-native';
+import { IconPhotoEdit, IconCaretDownFilled, IconCaretUpFilled } from '@tabler/icons-react-native';
 import { useMutation } from '@tanstack/react-query';
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState } from 'react';
@@ -200,8 +200,8 @@ export default function AddProductsPage() {
                         ) : (
                             <Text style={styles.imagePlaceholder}>+</Text>
                         )}
-                        <TouchableOpacity onPress={pickImage} style={styles.imageIconCamera}>
-                            <IconCamera size={24} color="#ffffff" />
+                        <TouchableOpacity onPress={pickImage} style={styles.photoIcon}>
+                            <IconPhotoEdit size={22} strokeWidth={2} color={'#fff'}/>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.dropdownContainer}>
@@ -367,7 +367,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: '100%',
         height: '100%',
-        borderRadius: 3,
     },
     label: {
         color: '#411C0E',
@@ -425,7 +424,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         borderRadius: 5,
     },
-    imageIconCamera: {
+    photoIcon: {
         position: 'absolute',
         bottom: -12,
         right: -15,
@@ -444,7 +443,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderWidth: 2,
         borderColor: '#411C0E',
-        borderRadius: 5,
         marginBottom: 10,
         marginTop: 5,
     },
