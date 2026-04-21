@@ -21,12 +21,11 @@ export default function EditProductModal() {
     const [netWeightNumber, setNetWeightNumber] = useState(String(parsedProduct?.netWeightNumber || ''));
     const [netWeightUnit, setNetWeightUnit] = useState(parsedProduct?.netWeightUnit || '');
 
-    const [showDropdown, setShowDropdown] = useState(false);
     const [showUnitDropdown, setShowUnitDropdown] = useState(false);
 
-    const categories = ['Chocolates', 'Candies', 'Drinks', 'Canned Goods', 'Instant Noodles', 'Chip Snacks']; 
     const units = ['g', 'kg', 'ml', 'L'];
 
+    // Initialize state with product data when component mounts or product changes
     useEffect(() => {
         setEditProduct(parsedProduct);
         setEditImageUrl(parsedProduct?.file_path || null);
@@ -34,6 +33,7 @@ export default function EditProductModal() {
         setNetWeightUnit(parsedProduct?.netWeightUnit || '');
     }, [product]);
 
+    // Validate inputs before submitting
     function validateInputs() {
         if (!editProduct.name) {
             setAlertHeader("Error");
@@ -41,12 +41,7 @@ export default function EditProductModal() {
             setAlertVisible(true);
             return false;
         }
-        if (!editProduct.category) {
-            setAlertHeader("Error");
-            setAlertMessage("Please select a category.");
-            setAlertVisible(true);
-            return false;
-        }
+        // Category validation removed - now read-only
         if (isNaN(Number(editProduct.price)) || Number(editProduct.price) <= 0) {
             setAlertHeader("Error");
             setAlertMessage("Please enter a valid price.");
@@ -68,6 +63,7 @@ export default function EditProductModal() {
         return true;
     }
 
+    // Functions to handle quantity changes
     const increaseQuantity = () => {
         setEditProduct((prev: any) => ({
             ...prev,
@@ -91,6 +87,7 @@ export default function EditProductModal() {
         }));
     };
 
+    // Function to pick and upload image
     const pickImageForEdit = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ["images"],
@@ -111,11 +108,13 @@ export default function EditProductModal() {
         }
     };
 
+    // Function to handle form submission
     const handleClose = () => {
         setAlertVisible(false);
         navigation.goBack();
     };
 
+    // Submit edited product data to the server
     const handleEditSubmit = async () => {
         if (!editProduct) return;
         if (!validateInputs()) return;
@@ -143,6 +142,8 @@ export default function EditProductModal() {
             setAlertVisible(true);
         }
     };
+    
+    // Function to close the modal without saving
     const onClose = () => {
         navigation.goBack();
     };
@@ -168,41 +169,10 @@ export default function EditProductModal() {
             </View>
             
             <View style={styles.dropdownContainer}>
-                <Text style={[styles.label, { marginBottom: -5 }]}>Category:</Text>
-
-                <TouchableOpacity
-                    style={styles.dropdownButton}
-                    onPress={() => setShowDropdown(prev => !prev)}
-                >
-                    <Text style={{ color: editProduct.category ? '#000' : '#999' }}>
-                        {editProduct.category || 'Category'}
-                    </Text>
-
-                    {showDropdown
-                        ? <IconCaretUpFilled size={16} />
-                        : <IconCaretDownFilled size={16} />
-                    }
-                </TouchableOpacity>
-
-                {showDropdown && (
-                    <View style={styles.dropdown}>
-                        {categories.map((item) => (
-                            <TouchableOpacity
-                                key={item}
-                                onPress={() => {
-                                    setEditProduct({
-                                        ...editProduct,
-                                        category: item
-                                    });
-                                    setShowDropdown(false);
-                                }}
-                                style={styles.dropdownItem}
-                            >
-                                <Text>{item}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                )}
+                <Text style={styles.label}>Category:</Text>
+                <Text style={styles.categoryDisplay}>
+                    {editProduct.category || 'No Category'}
+                </Text>
             </View>
 
             <Text style={styles.label}>Name:</Text>
@@ -241,7 +211,6 @@ export default function EditProductModal() {
                                         setNetWeightUnit(unit);
                                         setShowUnitDropdown(false);
                                     }}
-                                    style={styles.dropdownItem}
                                 >
                                     <Text>{unit}</Text>
                                 </TouchableOpacity>
@@ -376,16 +345,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginTop: 10,
-        marginHorizontal: 5,
         padding: 10,
     },
     PriceContainer: {
         flexDirection: 'column',
         marginLeft: -10,
-        marginTop: -10,
+        marginTop: -15,
     },
     quantityContainer: {
         flexDirection: 'column',
+        marginRight: 10,
     },
     qtyButton: {
         backgroundColor: '#eee',
@@ -440,34 +409,18 @@ const styles = StyleSheet.create({
         position: 'relative',
         marginBottom: 10,
     },
-    dropdownButton: {
+    categoryDisplay: {
         padding: 10,
-        borderWidth: 1,
-        marginTop: 10,
+        borderWidth: 2,
+        marginTop: 5,
         borderColor: '#411C0E',
         backgroundColor: '#fff',
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingHorizontal: 10,
-    },
-    dropdown: {
-        position: 'absolute',
-        width: '100%',
-        top: '100%',
-        borderWidth: 1,
-        borderColor: '#411C0E',
-        backgroundColor: '#fff',
-    },
-    dropdownItem: {
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#eee',
+        borderRadius: 0,
+        color: 'grey',
     },
     netWeightQuantityContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginHorizontal: 5,
     },
     netWeightContainer: {
         flexDirection: 'row',
@@ -500,5 +453,6 @@ const styles = StyleSheet.create({
         zIndex: 995,
         left: 50,
         elevation: 10,
+        padding: 5,
     },
 });
