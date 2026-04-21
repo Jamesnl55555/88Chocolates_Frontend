@@ -23,7 +23,7 @@ export default function AppHeader({ routeName }: AppHeaderProps) {
   if (routeName === 'ReceiptPage') title = 'Receipt';
   if (routeName === 'RecordReceiptPage') title = 'Receipt';
   if (routeName === 'InventoryPage') title = 'Inventory';
-  if (routeName === 'TransactionRecordPage') title = 'Transaction Records';
+  if (routeName === 'TransactionRecordPage') title = 'Transactions List';
   if (routeName === 'EditProductPage') title = 'Edit Product';
 
   const noBackRoutes = [
