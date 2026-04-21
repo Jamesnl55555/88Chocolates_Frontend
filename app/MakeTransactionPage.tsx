@@ -131,12 +131,12 @@ export default function MakeTransactionPage() {
                 params: { search: term, page }
             });
 
-            const newProducts = response.data.products;
+            const newProducts = response.data.products.filter((p: any) => p.quantity > 0);
 
             if (page === 1) {
                 setProducts(newProducts);
             } else {
-                setProducts(prev => [...prev, ...newProducts]);
+                setProducts(prev => [...prev.filter((p: any) => p.quantity > 0), ...newProducts]);
             }
 
             setCurrentPage(response.data.current_page);
