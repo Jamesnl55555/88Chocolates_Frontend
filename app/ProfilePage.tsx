@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     borderTopStartRadius: 10,
     borderTopEndRadius: 10, 
-    height: "93%",
+    height: "95%",
     width: "95%",
     alignItems: 'center',
    },
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 24,
     paddingHorizontal: 12,
-    marginBottom: 10,
+    marginBottom: 7,
     height: 45,
    },
    profile: {
@@ -263,8 +263,8 @@ const styles = StyleSheet.create({
     position: 'relative',       
     alignItems: 'center',
     justifyContent: 'center',
-    width: 150,
-    height: 150,
+    width: 130,
+    height: 130,
     },
    edit: {
     position: 'absolute',    
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     borderRadius: 24,
-    padding: 11,
+    padding: 10,
     marginTop: 30,
    },
    saveButton: {
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 24,
     padding: 12,
-    marginVertical: 10,
+    marginVertical: 8,
    },
    buttonText: {
     color: '#fff',
