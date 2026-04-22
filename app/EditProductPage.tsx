@@ -3,7 +3,7 @@ import { IconCaretDownFilled, IconCaretUpFilled, IconPhotoEdit } from '@tabler/i
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Image, KeyboardAvoidingView, ScrollView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import api from './services/api';
 import { uploadImage } from './services/cloudinary';
 
@@ -34,34 +34,34 @@ export default function EditProductModal() {
     }, [product]);
 
     // Validate inputs before submitting
-    function validateInputs() {
-        if (!editProduct.name) {
-            setAlertHeader("Error");
-            setAlertMessage("Please enter a product name.");
-            setAlertVisible(true);
-            return false;
-        }
-        // Category validation removed - now read-only
-        if (isNaN(Number(editProduct.price)) || Number(editProduct.price) <= 0) {
-            setAlertHeader("Error");
-            setAlertMessage("Please enter a valid price.");
-            setAlertVisible(true);
-            return false;
-        }
-        if (!netWeightNumber || isNaN(Number(netWeightNumber)) || Number(netWeightNumber) <= 0) {
-            setAlertHeader("Error");
-            setAlertMessage("Please enter a valid net weight.");
-            setAlertVisible(true);
-            return false;   
-        }
-        if (isNaN(Number(editProduct.quantity)) || Number(editProduct.quantity) <= 0) {
-            setAlertHeader("Error");
-            setAlertMessage("Please enter a valid quantity.");
-            setAlertVisible(true);
-            return false;
-        }
-        return true;
-    }
+    // function validateInputs() {
+    //     if (!editProduct.name) {
+    //         setAlertHeader("Error");
+    //         setAlertMessage("Please enter a product name.");
+    //         setAlertVisible(true);
+    //         return false;
+    //     }
+    //     // Category validation removed - now read-only
+    //     if (isNaN(Number(editProduct.price)) || Number(editProduct.price) <= 0) {
+    //         setAlertHeader("Error");
+    //         setAlertMessage("Please enter a valid price.");
+    //         setAlertVisible(true);
+    //         return false;
+    //     }
+    //     if (!netWeightNumber || isNaN(Number(netWeightNumber)) || Number(netWeightNumber) <= 0) {
+    //         setAlertHeader("Error");
+    //         setAlertMessage("Please enter a valid net weight.");
+    //         setAlertVisible(true);
+    //         return false;   
+    //     }
+    //     if (isNaN(Number(editProduct.quantity)) || Number(editProduct.quantity) <= 0) {
+    //         setAlertHeader("Error");
+    //         setAlertMessage("Please enter a valid quantity.");
+    //         setAlertVisible(true);
+    //         return false;
+    //     }
+    //     return true;
+    // }
 
     // Functions to handle quantity changes
     const increaseQuantity = () => {
@@ -117,9 +117,9 @@ export default function EditProductModal() {
     // Submit edited product data to the server
     const handleEditSubmit = async () => {
         if (!editProduct) return;
-        if (!validateInputs()) return;
 
         try {
+
             await api.post(`/api/update-product/${editProduct.id}`, {
                 name: editProduct.name,
                 category: editProduct.category,
@@ -138,7 +138,7 @@ export default function EditProductModal() {
         } catch (error: any) {
             console.error('Error updating product:', error.response?.data || error);
             setAlertHeader("Error");
-            setAlertMessage("Failed to update product!");
+            setAlertMessage("Failed to update product! Please try again.");
             setAlertVisible(true);
         }
     };
@@ -267,11 +267,11 @@ export default function EditProductModal() {
                 </View>
                 
                 <View style={styles.buttons}>
-                    <TouchableOpacity onPress={handleEditSubmit} style={styles.saveButton}>
-                        <Text style={styles.save}>Save</Text>
-                    </TouchableOpacity>
                     <TouchableOpacity onPress={onClose} style={styles.cancelButon}>
                         <Text style={styles.cancel}>Cancel</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleEditSubmit} style={styles.saveButton}>
+                        <Text style={styles.save}>Save</Text>
                     </TouchableOpacity>
                 </View>
                 </View>

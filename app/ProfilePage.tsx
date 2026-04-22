@@ -86,6 +86,16 @@ const editProfileMutation = useMutation({
             }
     });
 
+    const validateProfile = () => {
+        if (!storeName.trim() || !displayName.trim()) {
+            setHeaderText("Error");
+            setAlertMessage("Please fill in all required fields.");
+            setAlertModalVisible(true);
+            return false;
+        }
+        return true;
+    };
+
     const currPassSubmit = useMutation ({
         mutationFn: ({password}: {password: string}) => {
             return api.post('/api/confPass', {password}).then(res => res.data);
@@ -151,12 +161,14 @@ const editProfileMutation = useMutation({
 
                 <View style={styles.footerContainer}>
                         <TouchableOpacity style={styles.saveButton} onPress={() => {
-                            editProfileMutation.mutate({ 
-                                storeName, 
-                                name: displayName, 
-                                email,
-                                profile_image: auth.user?.profile_image ?? null 
-                            });
+                            if (validateProfile()) {
+                                editProfileMutation.mutate({ 
+                                    storeName, 
+                                    name: displayName, 
+                                    email,
+                                    profile_image: auth.user?.profile_image ?? null 
+                                });
+                            }
                         }} disabled={editProfileMutation.isPending}>
                             <Text style={styles.buttonText}>{editProfileMutation.isPending ? "Saving..." : "Save Profile"}</Text>
                         </TouchableOpacity>

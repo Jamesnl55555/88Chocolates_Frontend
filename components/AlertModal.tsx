@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     message: {
         fontSize: 15,
         marginBottom: 25,
+        marginHorizontal: 40,
         textAlign: 'center',
         color: '#333',
     },
