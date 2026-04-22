@@ -186,7 +186,7 @@ export default function InventoryPage() {
                         borderColor: "#411C0E", 
                         flexDirection: "row", 
                         height: "100%",
-                        paddingVertical: 5, paddingRight: 40}}>
+                        paddingVertical: 5, paddingRight: 40,}}>
             <CheckboxComponent isChecked={isSelected} onPress={() => toggleSelect(item)} />
             <Text style={{fontWeight: 'bold'}}>{item.id}</Text>
         </View>
@@ -200,10 +200,10 @@ export default function InventoryPage() {
           </View>
         )}
         </View>
-        <View style={styles.cell}><Text>{item.name}</Text></View>
-        <View style={styles.cell}><Text>{item.category}</Text></View>
-        <View style={styles.cell}><Text>₱{item.price}</Text></View>
-        <View style={styles.cell}><Text>{item.quantity <= 0 ? "Out of stock" : item.quantity}</Text></View>
+        <View style={styles.cell}><Text style={{ flex: 1, textAlign: 'center', flexWrap: 'wrap' }}>{item.name}</Text></View>
+        <View style={styles.cell}><Text style={{ flex: 1, textAlign: 'center', flexWrap: 'wrap' }}>{item.category}</Text></View>
+        <View style={styles.cell}><Text style={{ flex: 1, textAlign: 'center', flexWrap: 'wrap' }}>₱{item.price}</Text></View>
+        <View style={styles.cell}><Text style={{ flex: 1, textAlign: 'center', flexWrap: 'wrap' }}>{item.quantity <= 0 ? "Out of stock" : item.quantity}</Text></View>
         <View style={styles.cell}>
         <View style={{ flexDirection: "row", gap: 15 }}>
             <TouchableOpacity onPress={() => openEditProductPage(item)}>
@@ -425,17 +425,19 @@ headerText: {
     borderColor: "#411C0E", 
     minHeight: 60,
     justifyContent: "center",
+    
 },
   cell: { 
     width: CELL_WIDTH, 
     justifyContent: "center", 
-    alignItems: "center", 
+    alignItems: "center",
     borderRightWidth: 1, 
     borderLeftWidth: 1, 
     borderColor: "#411C0E", 
     flexDirection: "row", 
     height: "100%",
     paddingVertical: 5,
+    paddingHorizontal: 10,
 },
   image: { 
     width: 70, 
