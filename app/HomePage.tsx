@@ -1,13 +1,15 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from "expo-router";
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import api from './services/api';
 
 
 export default function HomePage() {
     const [customerCount, setCustomerCount] = useState(0);
     const [revenue, setRevenue] = useState(0);
+    const [dailyTransactions, setDailyTransactions] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
     const today = new Date();
     const formattedDate = today.toLocaleDateString("en-GB", {
         day: "numeric",
@@ -22,19 +24,39 @@ export default function HomePage() {
         }
     }, [auth.restoring, auth.isAuthenticated]);
     
+    const todayDate = new Date().toISOString().split('T')[0];
+
+    const fetchDailyStats = async () => {
+      setRefreshing(true);
+      try {
+        const res = await api.get('/api/fetchtransactions', {
+          params: { page: 1, date: todayDate },
+        });
+        const txns = res.data.transactions || [];
+        setDailyTransactions(txns);
+        setCustomerCount(txns.length);
+        setRevenue(txns.reduce((sum: number, t: any) => sum + Number(t.total_amount || 0), 0));
+      } catch (err) {
+        console.error('Error fetching daily transactions:', err);
+        setCustomerCount(0);
+        setRevenue(0);
+      } finally {
+        setRefreshing(false);
+      }
+    };
+
     useEffect(() => {
-    api.get('/api/fetchLatestTransactions')
-    .then(res => {
-      setCustomerCount(res.data.distinct_minutes ?? 0);
-      setRevenue(Number(res.data.total_amount) ?? 0);
-    })
-    .catch(err => {
-      console.error('Error fetching latest transactions:', err);
-      setCustomerCount(0);
-      setRevenue(0);
-    });
+      fetchDailyStats();
     }, []);
     
+    useEffect(() => {
+      const interval = setInterval(() => {
+        fetchDailyStats();
+      }, 30000); // Poll every 30 seconds
+
+      return () => clearInterval(interval);
+    }, []);
+
     return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
         <View style={styles.container}>
@@ -60,14 +82,21 @@ export default function HomePage() {
         <View style={styles.date}>
             <Text style={styles.dateText}>{formattedDate}</Text>
         </View>
-        <View style={styles.boxesContainer}>
+        <View style={[styles.boxesContainer, { position: 'relative' }]}>
+            <TouchableOpacity 
+              style={{ position: 'absolute', top: -10, right: 0, zIndex: 1, padding: 5 }} 
+              onPress={fetchDailyStats}
+              disabled={refreshing}
+            >
+              <ActivityIndicator size="small" color="#411C0E" animating={refreshing} />
+            </TouchableOpacity>
             <View style={styles.box}>
                 <Text style={styles.boxHeadText}>{customerCount ?? 0}</Text>
-                <Text style={styles.boxText}>Customer Count</Text>
+                <Text style={styles.boxText}>Customers Today</Text>
             </View>
             <View style={styles.box}>
-                <Text style={styles.boxHeadText}>₱{revenue?.toFixed(2) ?? '0.00'}</Text>
-                <Text style={styles.boxText}>Revenue</Text>
+                <Text style={styles.boxHeadText}>₱{revenue?.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? '0.00'}</Text>
+                <Text style={styles.boxText}>Revenue Today</Text>
             </View>
         </View>
         </View>
