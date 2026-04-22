@@ -301,7 +301,7 @@ export default function MakeTransactionPage() {
 
                             <TextInput
                                 keyboardType="numeric"
-                                value={selectedItem ? String(selectedItem.quantity) : ''}
+                                value={selectedItem ? String(selectedItem.quantity) : '0'}
                                 onChangeText={(text) => updateQuantity(item, text)}
                                 style={styles.input}
                             />

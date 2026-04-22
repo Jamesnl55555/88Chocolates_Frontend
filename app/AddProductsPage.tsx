@@ -27,6 +27,7 @@ export default function AddProductsPage() {
     const units = ['g', 'kg', 'ml', 'L'];
     const categories = ['Chocolates', 'Candies', 'Drinks', 'Canned Goods', 'Instant Noodles', 'Chip Snacks']; 
 
+    
     useEffect(() => {
         const fetchLatestProductId = async () => {
             try {
