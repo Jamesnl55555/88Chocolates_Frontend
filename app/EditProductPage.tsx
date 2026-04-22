@@ -33,35 +33,40 @@ export default function EditProductModal() {
         setNetWeightUnit(parsedProduct?.netWeightUnit || '');
     }, [product]);
 
-    // Validate inputs before submitting
-    // function validateInputs() {
-    //     if (!editProduct.name) {
-    //         setAlertHeader("Error");
-    //         setAlertMessage("Please enter a product name.");
-    //         setAlertVisible(true);
-    //         return false;
-    //     }
-    //     // Category validation removed - now read-only
-    //     if (isNaN(Number(editProduct.price)) || Number(editProduct.price) <= 0) {
-    //         setAlertHeader("Error");
-    //         setAlertMessage("Please enter a valid price.");
-    //         setAlertVisible(true);
-    //         return false;
-    //     }
-    //     if (!netWeightNumber || isNaN(Number(netWeightNumber)) || Number(netWeightNumber) <= 0) {
-    //         setAlertHeader("Error");
-    //         setAlertMessage("Please enter a valid net weight.");
-    //         setAlertVisible(true);
-    //         return false;   
-    //     }
-    //     if (isNaN(Number(editProduct.quantity)) || Number(editProduct.quantity) <= 0) {
-    //         setAlertHeader("Error");
-    //         setAlertMessage("Please enter a valid quantity.");
-    //         setAlertVisible(true);
-    //         return false;
-    //     }
-    //     return true;
-    // }
+// Validate inputs before submitting
+    function validateInputs() {
+        if (!editProduct.name || editProduct.name.trim() === "") {
+            setAlertHeader("Error");
+            setAlertMessage("Please enter a product name.");
+            setAlertVisible(true);
+            return false;
+        }
+        if (!editProduct.price || isNaN(Number(editProduct.price)) || Number(editProduct.price) <= 0) {
+            setAlertHeader("Error");
+            setAlertMessage("Please enter a valid price.");
+            setAlertVisible(true);
+            return false;
+        }
+        if (!netWeightNumber || netWeightNumber.trim() === "" || isNaN(Number(netWeightNumber)) || Number(netWeightNumber) <= 0) {
+            setAlertHeader("Error");
+            setAlertMessage("Please enter a valid net weight number.");
+            setAlertVisible(true);
+            return false;
+        }
+        if (!netWeightUnit || netWeightUnit.trim() === "") {
+            setAlertHeader("Error");
+            setAlertMessage("Please select a net weight unit.");
+            setAlertVisible(true);
+            return false;
+        }
+        if (!editProduct.quantity || isNaN(Number(editProduct.quantity)) || Number(editProduct.quantity) <= 0) {
+            setAlertHeader("Error");
+            setAlertMessage("Please enter a valid quantity.");
+            setAlertVisible(true);
+            return false;
+        }
+        return true;
+    }
 
     // Functions to handle quantity changes
     const increaseQuantity = () => {
@@ -117,6 +122,8 @@ export default function EditProductModal() {
     // Submit edited product data to the server
     const handleEditSubmit = async () => {
         if (!editProduct) return;
+
+        if (!validateInputs()) return;
 
         try {
 
