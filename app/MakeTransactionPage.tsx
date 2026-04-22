@@ -334,10 +334,10 @@ export default function MakeTransactionPage() {
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'  }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20 }}>
-                <Text style={styles.label}>Receipt No. 88CM-</Text>
+                {/* <Text style={styles.label}>Receipt No. 88CM-</Text>
                 <Text>
                     {latestTransactionNumber !== null ? String(latestTransactionNumber).padStart(5, '0') : '00001'}
-                </Text>
+                </Text> */}
             </View>
             <View style={styles.date}>
                 <Text>{date.toLocaleDateString()}</Text>
@@ -384,7 +384,7 @@ export default function MakeTransactionPage() {
                 </View>
 
                 <TouchableOpacity style={[styles.button, { backgroundColor: selectedProducts.length === 0 ? '#8a8686' : '#411C0ECC' }]} onPress={handleSubmitMutation} disabled={selectedProducts.length === 0}>
-                    <Text style={styles.buttonText}>Continue</Text>
+                    <Text style={styles.buttonText}>Checkout</Text>
                 </TouchableOpacity>
             </View>
            

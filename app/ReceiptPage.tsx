@@ -157,7 +157,7 @@ export default function ReceiptPage() {
                     disabled={isLoading}
                 >
                     <Text style={styles.buttonText}>
-                        {isLoading ? 'Processing...' : 'Checkout'}
+                        {isLoading ? 'Processing...' : 'Confirm'}
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.buttonCancel} onPress={handleCancel}>
