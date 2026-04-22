@@ -9,6 +9,7 @@ export default function HomePage() {
     const [customerCount, setCustomerCount] = useState(0);
     const [revenue, setRevenue] = useState(0);
     const [dailyTransactions, setDailyTransactions] = useState([]);
+    const [lastFetchedDate, setLastFetchedDate] = useState<string | null>(null);
     const [refreshing, setRefreshing] = useState(false);
     const today = new Date();
     const formattedDate = today.toLocaleDateString("en-GB", {
@@ -16,6 +17,7 @@ export default function HomePage() {
         month: "long",
         year: "numeric",
     });
+    const localTodayDate = today.toLocaleDateString("en-CA");
     const router = useRouter();
     const auth = useAuth();
     useEffect(() => {
@@ -24,9 +26,17 @@ export default function HomePage() {
         }
     }, [auth.restoring, auth.isAuthenticated]);
     
-    const todayDate = new Date().toISOString().split('T')[0];
-
     const fetchDailyStats = async () => {
+      const todayDate = localTodayDate;
+
+      if (lastFetchedDate !== null && todayDate !== lastFetchedDate) {
+        // New day hit: reset to zero immediately
+        setCustomerCount(0);
+        setRevenue(0);
+        setDailyTransactions([]);
+        setLastFetchedDate(todayDate);
+      }
+
       setRefreshing(true);
       try {
         const res = await api.get('/api/fetchtransactions', {
@@ -36,10 +46,12 @@ export default function HomePage() {
         setDailyTransactions(txns);
         setCustomerCount(txns.length);
         setRevenue(txns.reduce((sum: number, t: any) => sum + Number(t.total_amount || 0), 0));
+        setLastFetchedDate(todayDate);
       } catch (err) {
         console.error('Error fetching daily transactions:', err);
         setCustomerCount(0);
         setRevenue(0);
+        setLastFetchedDate(todayDate);
       } finally {
         setRefreshing(false);
       }
