@@ -146,9 +146,6 @@ export default function TransactionsPage() {
       <View style={styles.cell}>
         <Text>₱{item.total_amount}</Text>
       </View>
-      <View style={styles.cell}>
-        <Text>{item.payment_method || "Cash"}</Text>
-      </View>
     </TouchableOpacity>
   );
 
@@ -209,16 +206,13 @@ export default function TransactionsPage() {
         {/* Header row */}
         <View style={styles.header}>
           <View style={styles.headerCell}>
-            <Text style={styles.headerText}>Transaction No.</Text>
+            <Text style={styles.headerText}>Receipt No.</Text>
           </View>
           <View style={styles.headerCell}>
             <Text style={styles.headerText}>Time</Text>
           </View>
           <View style={styles.headerCell}>
             <Text style={styles.headerText}>Total Amount</Text>
-          </View>
-          <View style={styles.headerCell}>
-            <Text style={styles.headerText}>Payment Method</Text>
           </View>
         </View>
 

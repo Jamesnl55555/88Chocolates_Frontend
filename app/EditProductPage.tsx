@@ -164,7 +164,7 @@ export default function EditProductModal() {
                         >
             <View style={{ marginTop: 20, marginHorizontal: -25, padding: 20, borderWidth: 1 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                    <Text style={styles.label}>Product No.</Text>
+                    <Text style={{ marginTop: 0, color: '#411C0E', fontWeight: 'bold' }}>Product No.</Text>
                     <Text>{String(editProduct.product_number).padStart(5, '0')}</Text>
                 </View>
 <TouchableOpacity 
@@ -413,8 +413,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderWidth: 2,
         borderColor: '#411C0E',
-        width: 130,
-        height: 130,
+        width: 125,
+        height: 125,
         marginBottom: 15,
         marginTop: 5,
     },
