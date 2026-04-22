@@ -1,5 +1,5 @@
 import AlertModal from "@/components/AlertModal";
-import { IconCamera, IconCaretDownFilled, IconCaretUpFilled } from '@tabler/icons-react-native';
+import { IconCaretDownFilled, IconCaretUpFilled, IconPhotoEdit } from '@tabler/icons-react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -164,17 +164,13 @@ export default function EditProductModal() {
                     <Text>Upload Image</Text>
                 )}
                 <TouchableOpacity onPress={pickImageForEdit} style={styles.imageIconCamera}>
-                    <IconCamera size={22} color="#ffffff" />
+                    <IconPhotoEdit strokeWidth={2} size={22} color="#f5f5f5"/>
                 </TouchableOpacity>
             </View>
-            
-            <View style={styles.dropdownContainer}>
-                <Text style={styles.label}>Category:</Text>
-                <Text style={styles.categoryDisplay}>
-                    {editProduct.category || 'No Category'}
-                </Text>
-            </View>
 
+            <Text style={styles.label}>Category:</Text>
+            <Text style={{ backgroundColor: '#f5f5f5', color: '#666',  borderWidth: 2, borderColor: '#411C0E', padding: 10, marginBottom: 10}}>{editProduct.category || 'N/A'}</Text>
+            
             <Text style={styles.label}>Name:</Text>
             <TextInput
                 style={styles.input}
@@ -211,6 +207,7 @@ export default function EditProductModal() {
                                         setNetWeightUnit(unit);
                                         setShowUnitDropdown(false);
                                     }}
+                                    style={styles.dropdownItem}
                                 >
                                     <Text>{unit}</Text>
                                 </TouchableOpacity>
@@ -262,6 +259,7 @@ export default function EditProductModal() {
                 </TouchableOpacity>
             </View>
             </View>
+            
             {alertVisible && (
             <View style={styles.alert}>
             <AlertModal
@@ -299,7 +297,7 @@ const styles = StyleSheet.create({
         borderColor: '#411C0E',
         padding: 10,
         marginBottom: 10, 
-        borderRadius: 25,
+        borderRadius: 50,
         },
     image: { 
         alignSelf: 'center',
@@ -350,11 +348,10 @@ const styles = StyleSheet.create({
     PriceContainer: {
         flexDirection: 'column',
         marginLeft: -10,
-        marginTop: -15,
+        marginTop: -10,
     },
     quantityContainer: {
         flexDirection: 'column',
-        marginRight: 10,
     },
     qtyButton: {
         backgroundColor: '#eee',
@@ -409,14 +406,29 @@ const styles = StyleSheet.create({
         position: 'relative',
         marginBottom: 10,
     },
-    categoryDisplay: {
+    dropdownButton: {
         padding: 10,
-        borderWidth: 2,
-        marginTop: 5,
+        borderWidth: 1,
+        marginTop: 10,
         borderColor: '#411C0E',
         backgroundColor: '#fff',
-        borderRadius: 0,
-        color: 'grey',
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 10,
+    },
+    dropdown: {
+        position: 'absolute',
+        width: '100%',
+        top: '100%',
+        borderWidth: 1,
+        borderColor: '#411C0E',
+        backgroundColor: '#fff',
+    },
+    dropdownItem: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
     },
     netWeightQuantityContainer: {
         flexDirection: 'row',
@@ -453,6 +465,5 @@ const styles = StyleSheet.create({
         zIndex: 995,
         left: 50,
         elevation: 10,
-        padding: 5,
     },
 });
