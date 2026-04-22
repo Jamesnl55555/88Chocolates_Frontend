@@ -171,7 +171,7 @@ export default function EditProductModal() {
                     {editImageUrl ? (
                         <Image source={{ uri: editImageUrl }} style={styles.image} />
                     ) : (
-                        <Text>Upload Image</Text>
+                        <Text style={{ display: 'flex', justifyContent: 'center', alignSelf: 'center', textAlign: 'center' }}>Upload Image</Text>
                     )}
                     <TouchableOpacity onPress={pickImageForEdit} style={styles.imageIconCamera}>
                         <IconPhotoEdit strokeWidth={2} size={22} color="#f5f5f5"/>
@@ -405,6 +405,7 @@ const styles = StyleSheet.create({
     },
     imageContainer: {
         position: 'relative',
+        justifyContent: 'center',
         alignSelf: 'center',
         borderWidth: 2,
         borderColor: '#411C0E',
