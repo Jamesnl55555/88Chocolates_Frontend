@@ -1,1 +1,0 @@
-- [x] Add placeholderImage style to styles in RecordReceiptPage.tsx&#10;- [x] Replace Image block with conditional rendering in renderItem&#10;- [x] Verify edits successful (reviewed diffs - styles added, conditional rendering applied matching other pages like InventoryPage.tsx)

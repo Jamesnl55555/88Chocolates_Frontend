@@ -92,10 +92,16 @@ export default function ReceiptPage() {
                 </View>
 
                 <View style={styles.info}>
-                    <Image
-                        source={{ uri: item.file_path }}
-                        style={styles.image}
-                    />
+                    {item.file_path && item.file_path.trim() !== '' ? (
+                        <Image
+                            source={{ uri: item.file_path }}
+                            style={styles.image}
+                        />
+                    ) : (
+                        <View style={styles.placeholderImage}>
+                            <Text style={{ fontSize: 12, color: '#999', textAlign: 'center' }}>No Image</Text>
+                        </View>
+                    )}
 
                     <View style={{ marginLeft: 10 }}>
                         <Text style={styles.name}>{item.name}</Text>
@@ -213,6 +219,17 @@ const styles = StyleSheet.create({
     image: {
         width: 70,
         height: 70,
+        borderRadius: 5
+    },
+    placeholderImage: {
+        width: 70,
+        height: 70,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f0f0f0',
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#ddd'
     },
     date: {
         marginTop: 20,
