@@ -3,7 +3,7 @@ import { IconPhotoEdit, IconCaretDownFilled, IconCaretUpFilled } from '@tabler/i
 import { useMutation } from '@tanstack/react-query';
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, KeyboardAvoidingView, ScrollView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { uploadImage } from "../app/services/cloudinary";
 import api from './services/api';
 
@@ -186,6 +186,11 @@ export default function AddProductsPage() {
 
     return (
         <View style={{ backgroundColor: '#fff', flex: 1 }}>
+            <KeyboardAvoidingView 
+                            behavior={Platform.OS === "ios" ? "padding" : "height"}
+                            style={{ flex: 1 }}
+                            keyboardVerticalOffset={100}
+                        >
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={styles.container}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
@@ -210,8 +215,8 @@ export default function AddProductsPage() {
                     style={styles.dropdownButton}
                     onPress={() => setShowDropdown(prev => !prev)}
                     >
-                    <Text style={{ color: category ? '#000' : '#999' }}>
-                        {category || 'Category'}
+                    <Text style={{ color: category ? '#000' : '#0000007f' }}>
+                        {category || 'Select Category'}
                     </Text>
                     {showDropdown ? <IconCaretUpFilled size={16} /> : <IconCaretDownFilled size={16} />}
                     </TouchableOpacity>
@@ -332,7 +337,7 @@ export default function AddProductsPage() {
                 </View>
                 
             </ScrollView>
-            
+            </KeyboardAvoidingView>
 
             {alertVisible && (
                 <View style={styles.alert}>
