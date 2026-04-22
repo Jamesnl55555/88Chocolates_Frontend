@@ -138,7 +138,7 @@ export default function TransactionsPage() {
       onPress={() => goToReceiptPage(item.transaction_number)}
     >
       <View style={styles.cell}>
-        <Text>{String(item.transaction_number).padStart(5, "0")}</Text>
+        <Text>{String(item.transaction_number).padStart(6, "0")}</Text>
       </View>
       <View style={styles.cell}>
         <Text>{formatTime(item.created_at)}</Text>

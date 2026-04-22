@@ -116,7 +116,7 @@ export default function RecordReceiptPage() {
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingTop: 20 }}>
                     <Text style={styles.label}>Receipt No. 88CM-</Text>
                     <Text>
-                        {latestTransactionNumber !== null ? String(latestTransactionNumber).padStart(5, '0') : '00001'}
+                        {latestTransactionNumber !== null ? String(latestTransactionNumber).padStart(6, '0') : '000001'}
                     </Text>
                 </View>
                 {/* Date */}
