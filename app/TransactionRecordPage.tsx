@@ -162,6 +162,11 @@ export default function TransactionsPage() {
                 <Path d="M10 1.08301V3.24967M5 1.08301V3.24967M1.875 5.41634H13.125M3.125 2.16634H11.875C12.5654 2.16634 13.125 2.65137 13.125 3.24967V10.833C13.125 11.4313 12.5654 11.9163 11.875 11.9163H3.125C2.43464 11.9163 1.875 11.4313 1.875 10.833V3.24967C1.875 2.65137 2.43464 2.16634 3.125 2.16634Z" 
                     stroke="#1E1E1E" strokeLinecap="round" strokeLinejoin="round"/>
             </Svg>
+
+            <Svg width={15} height={18} viewBox="5 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-down">
+              <Path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <Path d="M6 9l6 6l6 -6" />
+            </Svg>
       </View>
     </TouchableOpacity>
 
@@ -267,10 +272,11 @@ const styles = StyleSheet.create({
     date: { 
       marginTop: 15,
       marginBottom: 10,
-      marginRight: 10,
+      marginRight: 20,
       borderWidth: 1,
       paddingVertical: 2,
-      paddingHorizontal: 10,
+      paddingLeft: 10,
+      paddingRight: 3,
       alignSelf: 'flex-end',
       flexDirection: 'row',
       gap: 10,

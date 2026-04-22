@@ -180,7 +180,7 @@ export default function EditProductModal() {
 
 
                 <Text style={styles.label}>Category:</Text>
-                <Text style={{ backgroundColor: '#f5f5f5', color: '#666',  borderWidth: 2, borderColor: '#411C0E', padding: 10, marginBottom: 10}}>{editProduct.category || 'N/A'}</Text>
+                <Text style={{ backgroundColor: '#f5f5f5', color: '#666',  borderWidth: 2, borderColor: '#411C0E', padding: 10, marginBottom: 3}}>{editProduct.category || 'N/A'}</Text>
                 
                 <Text style={styles.label}>Name:</Text>
                 <TextInput
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: '#411C0E',
         padding: 10,
-        marginBottom: 10, 
+        marginBottom: 5, 
         borderRadius: 50,
         },
     image: { 
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
     quantityPriceContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 10,
+        marginTop: 3,
         padding: 10,
     },
     PriceContainer: {
@@ -370,6 +370,8 @@ const styles = StyleSheet.create({
     },
     quantityContainer: {
         flexDirection: 'column',
+        marginRight: 15,
+        marginTop: 3,
     },
     qtyButton: {
         backgroundColor: '#eee',
@@ -404,10 +406,10 @@ const styles = StyleSheet.create({
     imageContainer: {
         position: 'relative',
         alignSelf: 'center',
-        borderWidth: 1,
+        borderWidth: 2,
         borderColor: '#411C0E',
-        width: 120, 
-        height: 120, 
+        width: 130,
+        height: 130,
         marginBottom: 15,
         marginTop: 5,
     },
@@ -422,7 +424,7 @@ const styles = StyleSheet.create({
     dropdownContainer: {
         zIndex: 10,
         position: 'relative',
-        marginBottom: 10,
+        marginBottom: 5,
     },
     dropdownButton: {
         padding: 10,
