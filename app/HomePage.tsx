@@ -87,15 +87,15 @@ export default function HomePage() {
                 styles.makeButton,
                 pressed && styles.makeButtonPressed,
             ]}
-            onPress={() => router.push('/InventoryPage')}
+            onPress={() => router.push('/AddProductsPage')}
         >
-            <Text style={styles.makeText}>MANAGE INVENTORY</Text>
+            <Text style={styles.makeText}>ADD PRODUCT</Text>
         </Pressable>
 
         <View style={styles.date}>
             <Text style={styles.dateText}>{formattedDate}</Text>
         </View>
-        
+
         <View style={[styles.boxesContainer, { position: 'relative' }]}>
             <TouchableOpacity 
               style={{ position: 'absolute', top: -10, right: 0, zIndex: 1, padding: 5 }} 
