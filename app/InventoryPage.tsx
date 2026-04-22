@@ -176,7 +176,7 @@ export default function InventoryPage() {
         <View style={styles.cell}><Text>₱{item.price}</Text></View>
         <View style={styles.cell}><Text>{item.quantity <= 0 ? "Out of stock" : item.quantity}</Text></View>
         <View style={styles.cell}>
-        <View style={{ flexDirection: "row", gap: 10 }}>
+        <View style={{ flexDirection: "row", gap: 15 }}>
             <TouchableOpacity onPress={() => openEditProductPage(item)}>
                 <Svg width={25} height={25} viewBox="0 -2 24 24" fill="none">
                     <G clipPath="url(#clip0_884_4043)">
@@ -190,16 +190,17 @@ export default function InventoryPage() {
                     </Defs>
                 </Svg>
             </TouchableOpacity>
+            
             <TouchableOpacity
-            onPress={() => {
-                setProductToDelete(item.id);
-                setAlertVisible(true);
-            }}
-            >
-            <Svg width={25} height={25} viewBox="-3 0 24 24" fill="none">
-                <Path d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z" 
-                    fill="#B00B0B" fillOpacity="0.8"/>
-            </Svg>
+                onPress={() => {
+                    setProductToDelete(item.id);
+                    setAlertVisible(true);
+                }}
+                >
+                <Svg width={25} height={25} viewBox="-3 0 24 24" fill="none">
+                    <Path d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z" 
+                        fill="#B00B0B" fillOpacity="0.8"/>
+                </Svg>
             </TouchableOpacity>
         </View>
         </View>
@@ -208,7 +209,7 @@ export default function InventoryPage() {
     };
 
     return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+    <View style={{ flex: 1, backgroundColor: '#fff', paddingBottom: 30 }}>
     {/* Search */}
     <View style={styles.navbar}>
         <View style={styles.searchContainer}>
@@ -254,9 +255,9 @@ export default function InventoryPage() {
     </View>
 
     {/* Table */}
-    <ScrollView horizontal style={{ width: '90%', alignSelf: 'center', backgroundColor: '#fff'}}>
-        <View>
-<View style={styles.header}>
+    <ScrollView horizontal style={{ width: '90%', alignSelf: 'center', backgroundColor: '#fff',  }}>
+        <View style={{ paddingBottom: 80 }}>
+            <View style={styles.header}>
             <View style={styles.headerCell}>
                 <Text style={styles.headerText}>Product No.</Text>
             </View>
@@ -281,7 +282,7 @@ export default function InventoryPage() {
         </View>
 
         <FlatList
-            contentContainerStyle={{ paddingBottom: 100 }}
+            contentContainerStyle={{ paddingBottom: 5 }}
             data={products}
             keyExtractor={(item) => item.id.toString()}
             renderItem={renderItem}
@@ -320,7 +321,7 @@ const CELL_WIDTH = 140;
 const styles = StyleSheet.create({
   navbar: { paddingHorizontal: 10, paddingTop: 10, backgroundColor: "#fff", zIndex: 1 },
   searchContainer: { 
-    marginVertical: 15,
+    marginVertical: 10,
     borderRadius: 40,
     width: '95%',
     backgroundColor: '#FFFFFF',

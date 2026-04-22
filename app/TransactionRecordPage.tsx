@@ -150,7 +150,7 @@ export default function TransactionsPage() {
   );
 
   return (
-  <View style={{ flex: 1, backgroundColor: "#fff" }}>
+  <View style={{ flex: 1, backgroundColor: "#fff", paddingBottom: 30 }}>
     {/* Clickable Date Picker */}
     <TouchableOpacity onPress={() => setShowCalendarModal(true)} >
       <View style={styles.date}>
@@ -201,8 +201,8 @@ export default function TransactionsPage() {
     </Modal>
 
     {/* Horizontal scroll for table */}
-    <ScrollView horizontal>
-      <View style={{ flex: 1, marginHorizontal: 20 }}>
+    <ScrollView horizontal style={{ width: '90%', alignSelf: 'center', backgroundColor: '#fff',  }}>
+      <View style={{ flex: 1, marginBottom: 80 }}>
         {/* Header row */}
         <View style={styles.header}>
           <View style={styles.headerCell}>
@@ -226,7 +226,7 @@ export default function TransactionsPage() {
           ListFooterComponent={
             loading ? <ActivityIndicator size="small" /> : null
           }
-          contentContainerStyle={{ paddingBottom: 80 }}
+          contentContainerStyle={{ paddingBottom: 5 }}
         />
       </View>
     </ScrollView>
