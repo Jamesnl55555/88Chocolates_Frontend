@@ -5,8 +5,8 @@ import ConfirmAlertModal from '@/components/ConfirmAlertModal';
 import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import Svg, { ClipPath, Defs, G, Path, Rect } from 'react-native-svg';
+import { ActivityIndicator, Image, SectionList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import Svg, { Path } from 'react-native-svg';
 import api from './services/api';
 
 export default function MakeTransactionPage() {
@@ -18,6 +18,7 @@ export default function MakeTransactionPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [lastPage, setLastPage] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [sections, setSections] = useState<{ title: string; data: any[] }[]>([]);
     const router = useRouter();
     const [alertVisible, setAlertVisible] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
@@ -141,6 +142,39 @@ export default function MakeTransactionPage() {
 
             setCurrentPage(response.data.current_page);
             setLastPage(response.data.last_page);
+            
+            // Group products by category
+            const grouped = newProducts.reduce((acc: { [key: string]: any[] }, product: any) => {
+                const cat = product.category || 'Uncategorized';
+                if (!acc[cat]) acc[cat] = [];
+                acc[cat].push(product);
+                return acc;
+            }, {} as { [key: string]: any[] });
+            
+            const sectionsData = Object.keys(grouped)
+                .sort()
+                .map(category => ({ title: category, data: grouped[category] }));
+            
+            if (page === 1) {
+                setSections(sectionsData);
+            } else {
+                setSections(prev => {
+                    const newGrouped: { [key: string]: any[] } = {};
+                    prev.forEach(sec => {
+                        newGrouped[sec.title] = [...sec.data];
+                    });
+                    sectionsData.forEach(sec => {
+                        if (newGrouped[sec.title]) {
+                            newGrouped[sec.title].push(...sec.data);
+                        } else {
+                            newGrouped[sec.title] = [...sec.data];
+                        }
+                    });
+                    return Object.keys(newGrouped)
+                        .sort()
+                        .map(cat => ({ title: cat, data: newGrouped[cat] }));
+                });
+            }
         } catch (error) {
             console.error('Error fetching products:', error);
         } finally {
@@ -171,6 +205,8 @@ export default function MakeTransactionPage() {
                 price: p.price
             })));
         }
+        // Regroup after select all to sync
+        groupProducts();
     };
 
     const clampQuantity = (value: number, max: number) => {
@@ -181,6 +217,7 @@ export default function MakeTransactionPage() {
         try {
             await api.post(`/api/delete-item/${id}`);
             setProducts(prev => prev.filter(p => p.id !== id));
+            groupProducts();
             setAlertHeader('Deletion Successfull');
             setAlertMessage('Transaction has been removed!');
             setConfirmAlertVisible(true);
@@ -189,10 +226,26 @@ export default function MakeTransactionPage() {
         }
     };
 
+    const groupProducts = () => {
+        const grouped = products.reduce((acc: { [key: string]: any[] }, product: any) => {
+            const cat = product.category || 'Uncategorized';
+            if (!acc[cat]) acc[cat] = [];
+            acc[cat].push(product);
+            return acc;
+        }, {} as { [key: string]: any[] });
+
+        const sectionsData = Object.keys(grouped)
+            .sort()
+            .map(category => ({ title: category, data: grouped[category] }));
+        
+        setSections(sectionsData);
+    };
+
     const handleBulkDelete = async () => {
         try {
             await Promise.all(selectedProducts.map(p => api.post(`/api/delete-item/${p.id}`)));
             setProducts(prev => prev.filter(p => !selectedProducts.some(sp => sp.id === p.id)));
+            groupProducts();
             setSelectedProducts([]);
             setAlertHeader('Deleted');
             setAlertMessage('Selected transactions have been removed!');
@@ -205,34 +258,16 @@ export default function MakeTransactionPage() {
         }
     };
 
-    const renderItem = ({ item }: { item: any }) => {
+    const renderProduct = (item: any) => {
         const selectedItem = selectedProducts.find(p => p.id === item.id);
 
         return (
-            <View style={styles.product}>
+            <View style={[styles.product, { marginBottom: 5 }]}>
                 <View style={styles.productHeader}>
                     <CheckboxComponent
                         isChecked={!!selectedItem}
                         onPress={() => toggleSelect(item)}
                     />
-                    <Text style={{ fontWeight: 'bold', fontSize: 20, maxWidth: '70%', color: '#411C0E' }} numberOfLines={1} ellipsizeMode="tail">{item.category}</Text>
-
-                    <TouchableOpacity onPress={() => openEditProductPage(item)} style={{ marginLeft: 'auto', marginRight: 10 }}>
-                        <Svg width={20} height={20} viewBox="0 0 20 20" fill="none">
-                            <G clipPath="url(#clip0_884_4043)">
-                                <Path d="M9.1665 3.3332H3.33317C2.89114 3.3332 2.46722 3.50879 2.15466 3.82135C1.8421 4.13391 1.6665 4.55784 1.6665 4.99986V16.6665C1.6665 17.1086 1.8421 17.5325 2.15466 17.845C2.46722 18.1576 2.89114 18.3332 3.33317 18.3332H14.9998C15.4419 18.3332 15.8658 18.1576 16.1783 17.845C16.4909 17.5325 16.6665 17.1086 16.6665 16.6665V10.8332M15.4165 2.0832C15.748 1.75168 16.1977 1.56543 16.6665 1.56543C17.1353 1.56543 17.585 1.75168 17.9165 2.0832C18.248 2.41472 18.4343 2.86436 18.4343 3.3332C18.4343 3.80204 18.248 4.25168 17.9165 4.5832L9.99984 12.4999L6.6665 13.3332L7.49984 9.99986L15.4165 2.0832Z" 
-                                stroke="#411C0E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </G>
-                            <Defs>
-                                <ClipPath id="clip0_884_4043">
-                                    <Rect width="20" height="20" fill="white"/>
-                                </ClipPath>
-                            </Defs>
-                        </Svg>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={{ flexDirection: 'row', marginBottom: 15 }}>
                     <Text style={{ fontWeight: 'bold', color: '#411C0E', fontSize: 20 }}>Product No.</Text>
                     <Text style={{ marginLeft: 'auto', marginRight: 10 }}>{String(item.id).padStart(5, '0')}</Text>
                 </View>
@@ -245,7 +280,6 @@ export default function MakeTransactionPage() {
                         <Text style={{ fontSize: 12, color: '#999', textAlign: 'center' }}>No Image</Text>
                       </View>
                     )}
-
 
                     <View style={{ marginLeft: 10, flex: 1 }}>
                         <Text style={styles.name} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>
@@ -283,20 +317,13 @@ export default function MakeTransactionPage() {
                             </TouchableOpacity>
                         </View>
                     </View>
-
-                    <TouchableOpacity
-                        onPress={() => { setProductToDelete(item.id); setAlertVisible(true)}}
-                        style={{ marginLeft: 'auto', marginRight: 10, marginTop: 50 }}
-                    >
-                        <Svg width={25} height={25} viewBox="-3 0 24 24" fill="none">
-                            <Path d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z" 
-                                fill="#B00B0B" fillOpacity="0.8"/>
-                        </Svg>
-                    </TouchableOpacity>
                 </View>
             </View>
         );
     };
+
+    const renderItem = () => null; // No-op since products rendered in section header
+    
 
     const handleSubmitMutation = async () => {
         const cartItems = selectedProducts.map(p => {
@@ -329,15 +356,13 @@ export default function MakeTransactionPage() {
                     style={{ flex: 1, marginLeft: 10 }}
                 />
                 <Svg width="25" height="25" viewBox="0 0 25 25" fill="none">
-                    <Path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="#411C0E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <Path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" 
+                        stroke="#411C0E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </Svg>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'  }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20 }}>
-                {/* <Text style={styles.label}>Receipt No. 88CM-</Text>
-                <Text>
-                    {latestTransactionNumber !== null ? String(latestTransactionNumber).padStart(5, '0') : '00001'}
-                </Text> */}
+                
             </View>
             <View style={styles.date}>
                 <Text>{date.toLocaleDateString()}</Text>
@@ -368,10 +393,24 @@ export default function MakeTransactionPage() {
                 </View>
 
                 <View style={styles.productContainer}>
-                    <FlatList
-                        data={products}
+                    <SectionList
+                        sections={sections}
                         keyExtractor={(item) => item.id.toString()}
                         renderItem={renderItem}
+                        renderSectionHeader={({ section }: { section: { title: string; data: any[] } }) => (
+                            // Render section header with category title and products in that category
+                            <View style={styles.sectionHeader}>
+                                <View style={{ backgroundColor: '#56565620', paddingVertical: 10, paddingHorizontal: 15,  }}>
+                                    <Text style={{ fontWeight: '800', fontSize: 18, color: '#411C0E', }}>
+                                    {section.title.toLocaleUpperCase()} ({section.data.length})
+                                </Text>
+                                </View>
+                                {/* Products based on their category */}
+                                <View style={styles.sectionItems}>
+                                    {section.data.map(renderProduct)}
+                                </View>
+                            </View>
+                        )}
                         onEndReached={loadMore}
                         onEndReachedThreshold={0.5}
                         ListFooterComponent={loading ? <ActivityIndicator size="small" /> : null}
@@ -421,7 +460,7 @@ const styles = StyleSheet.create({
         alignItems: 'center' 
     },
     searchContainer: {
-        marginVertical: 15,
+        marginTop: 15,
         borderRadius: 40,
         width: '90%',
         backgroundColor: '#FFFFFF',
@@ -436,7 +475,7 @@ const styles = StyleSheet.create({
     product: { 
         padding: 10, 
         marginBottom: 10, 
-        borderWidth: 1, 
+        borderTopWidth: 1, 
         width: '100%' 
     },
     date: {
@@ -452,7 +491,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F4F4F4',
     },
     selectAll: {
-        borderWidth: 1,
+        borderWidth: 2,
         flexDirection: 'row',
         alignItems: 'center',
         width: '90%',
@@ -468,10 +507,12 @@ const styles = StyleSheet.create({
         alignItems: 'center' 
     },
     name: { 
-        fontSize: 15,
+        fontSize: 16,
         maxWidth: '70%',
         flexShrink: 1,
         flexWrap: 'wrap',
+        marginBottom: 3,
+        marginTop: 5,
     },
     details: { 
         fontSize: 15, 
@@ -510,12 +551,20 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
-    totalText: { fontSize: 16 },
-    image: { width: 70, height: 70 },
+    totalText: { 
+        fontSize: 16 
+    },
+    image: { 
+        width: 70, 
+        height: 70,
+        marginTop: 10,
+        marginLeft: 5, 
+    },
     placeholderImage: {
       width: 70,
       height: 70,
-      borderRadius: 5,
+      marginTop: 10, 
+      marginLeft: 5, 
       backgroundColor: '#f0f0f0',
       justifyContent: 'center',
       alignItems: 'center',
@@ -524,5 +573,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         color: '#411C0E',
+    },
+    sectionHeader: {
+        backgroundColor: '#fff',
+        borderWidth: 2,
+        borderColor: '#411C0E',
+        marginBottom: 10,
+        borderRadius: 3,
+    },
+    sectionItems: {
+        borderTopWidth: 0.5,
+        borderColor: '#411C0E',
     },
 });
