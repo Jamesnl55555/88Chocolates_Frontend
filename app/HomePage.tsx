@@ -91,9 +91,11 @@ export default function HomePage() {
         >
             <Text style={styles.makeText}>MANAGE INVENTORY</Text>
         </Pressable>
+
         <View style={styles.date}>
             <Text style={styles.dateText}>{formattedDate}</Text>
         </View>
+        
         <View style={[styles.boxesContainer, { position: 'relative' }]}>
             <TouchableOpacity 
               style={{ position: 'absolute', top: -10, right: 0, zIndex: 1, padding: 5 }} 

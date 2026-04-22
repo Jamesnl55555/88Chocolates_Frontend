@@ -1,7 +1,6 @@
 
 import AlertModal from '@/components/AlertModal';
 import CheckboxComponent from '@/components/CheckboxComponent';
-import ConfirmAlertModal from '@/components/ConfirmAlertModal';
 import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
@@ -14,7 +13,7 @@ export default function MakeTransactionPage() {
     const [selectedProducts, setSelectedProducts] = useState<any[]>([]);
     const [products, setProducts] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [date, setDate] = useState(new Date());
+    // const [date, setDate] = useState(new Date());
     const [currentPage, setCurrentPage] = useState(1);
     const [lastPage, setLastPage] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -26,6 +25,13 @@ export default function MakeTransactionPage() {
     const [confirmAlertVisible, setConfirmAlertVisible] = useState(false);
     const [productToDelete, setProductToDelete] = useState<any>(null);
     const [latestTransactionNumber, setLatestTransactionNumber] = useState<number | null>(null);
+
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
 
     useFocusEffect(
     useCallback(() => {
@@ -213,19 +219,6 @@ export default function MakeTransactionPage() {
         return Math.max(0, Math.min(value, max));
     };
 
-    const handleDelete = async (id: number) => {
-        try {
-            await api.post(`/api/delete-item/${id}`);
-            setProducts(prev => prev.filter(p => p.id !== id));
-            groupProducts();
-            setAlertHeader('Deletion Successfull');
-            setAlertMessage('Transaction has been removed!');
-            setConfirmAlertVisible(true);
-        } catch (error) {
-            console.error('Error deleting product:', error);
-        }
-    };
-
     const groupProducts = () => {
         const grouped = products.reduce((acc: { [key: string]: any[] }, product: any) => {
             const cat = product.category || 'Uncategorized';
@@ -241,22 +234,6 @@ export default function MakeTransactionPage() {
         setSections(sectionsData);
     };
 
-    const handleBulkDelete = async () => {
-        try {
-            await Promise.all(selectedProducts.map(p => api.post(`/api/delete-item/${p.id}`)));
-            setProducts(prev => prev.filter(p => !selectedProducts.some(sp => sp.id === p.id)));
-            groupProducts();
-            setSelectedProducts([]);
-            setAlertHeader('Deleted');
-            setAlertMessage('Selected transactions have been removed!');
-            setConfirmAlertVisible(true);
-        } catch (error) {
-            console.error('Error deleting products:', error);
-            setAlertHeader('Error');
-            setAlertMessage('Failed to delete some products!');
-            setConfirmAlertVisible(true);
-        }
-    };
 
     const renderProduct = (item: any) => {
         const selectedItem = selectedProducts.find(p => p.id === item.id);
@@ -360,18 +337,17 @@ export default function MakeTransactionPage() {
                         stroke="#411C0E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </Svg>
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'  }}>
+
+<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'  }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20 }}>
-                
             </View>
+
             <View style={styles.date}>
-                <Text>{date.toLocaleDateString()}</Text>
-                <Svg width={15} height={15} viewBox="0 -1 15 13" fill="none">
-                    <Path d="M10 1.08301V3.24967M5 1.08301V3.24967M1.875 5.41634H13.125M3.125 2.16634H11.875C12.5654 2.16634 13.125 2.65137 13.125 3.24967V10.833C13.125 11.4313 12.5654 11.9163 11.875 11.9163H3.125C2.43464 11.9163 1.875 11.4313 1.875 10.833V3.24967C1.875 2.65137 2.43464 2.16634 3.125 2.16634Z" 
-                        stroke="#1E1E1E" strokeLinecap="round" strokeLinejoin="round"/>
-                </Svg>
+                <Text style={styles.dateText}>{formattedDate}</Text>
             </View>
+
             </View>
+            
             <View style={styles.container}>
                 <View style={styles.selectAll}>
                     <CheckboxComponent
@@ -472,16 +448,14 @@ const styles = StyleSheet.create({
         width: '100%' 
     },
     date: {
-        marginTop: 15,
-        marginBottom: 10,
+        marginTop: 17,
         marginRight: 20,
-        borderWidth: 1,
-        paddingVertical: 2,
-        paddingHorizontal: 10,
-        alignSelf: 'flex-end',
-        flexDirection: 'row',
-        gap: 10,
-        backgroundColor: '#F4F4F4',
+        marginBottom: 3,
+    },
+    dateText: {
+        fontSize: 17,
+        fontWeight: 'bold',
+        color: '#411C0E',
     },
     selectAll: {
         borderWidth: 2,

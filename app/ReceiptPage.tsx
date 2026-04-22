@@ -21,8 +21,15 @@ export default function ReceiptPage() {
     const [alertModalVisible, setAlertModalVisible] = useState(false);
     const [latestTransactionNumber, setLatestTransactionNumber] = useState<number | null>(null);
 
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+
     const parsedCart = cart ? JSON.parse(cart as string) : [];
-    const date = new Date();
+    // const date = new Date();
 
     const total = parsedCart.reduce(
         (acc: number, item: any) => acc + item.quantity * (item.price || 0), 0);
@@ -120,7 +127,6 @@ export default function ReceiptPage() {
 
     return (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
-            {/* DATE */}
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'  }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingTop: 20 }}>
                     <Text style={styles.label}>Receipt No. 88CM-</Text>
@@ -128,13 +134,15 @@ export default function ReceiptPage() {
                         {latestTransactionNumber !== null ? String(latestTransactionNumber).padStart(5, '0') : '00001'}
                     </Text>
                 </View>
-                <View style={styles.date}>
-                    <Text style={{ color: '#411C0E' }}>{date.toLocaleDateString()}</Text>
-                    <Svg width={15} height={15} viewBox="0 -1 15 13" fill="none">
-                        <Path d="M10 1.08301V3.24967M5 1.08301V3.24967M1.875 5.41634H13.125M3.125 2.16634H11.875C12.5654 2.16634 13.125 2.65137 13.125 3.24967V10.833C13.125 11.4313 12.5654 11.9163 11.875 11.9163H3.125C2.43464 11.9163 1.875 11.4313 1.875 10.833V3.24967C1.875 2.65137 2.43464 2.16634 3.125 2.16634Z" 
-                            stroke="#411C0E" strokeLinecap="round" strokeLinejoin="round"/>
-                    </Svg>
-                </View>
+                {/* Date */}
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'  }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20 }}>
+                            </View>
+                
+                            <View style={styles.date}>
+                                <Text style={styles.dateText}>{formattedDate}</Text>
+                            </View>
+                        </View>
             </View>
             
 
@@ -232,16 +240,14 @@ const styles = StyleSheet.create({
         borderColor: '#ddd'
     },
     date: {
-        marginTop: 20,
-        marginBottom: 5,
-        borderWidth: 1,
-        paddingHorizontal: 10,
-        paddingVertical: 2,
-        alignSelf: 'flex-end',
-        flexDirection: 'row',
-        gap: 10,
-        right: 20,
-        backgroundColor: '#F4F4F4'
+        marginTop: 17,
+        marginRight: 20,
+        marginBottom: 3,
+    },
+    dateText: {
+        fontSize: 17,
+        fontWeight: 'bold',
+        color: '#411C0E',
     },
     total: {
         borderWidth: 1,

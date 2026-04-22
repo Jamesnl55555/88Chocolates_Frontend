@@ -29,7 +29,7 @@ export default function InventoryPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [lastPage, setLastPage] = useState(1);
     const [loading, setLoading] = useState(false);
-    const [date, setDate] = useState(new Date());
+    // const [date, setDate] = useState(new Date());
     const [modalVisible, setModalVisible] = useState(false);
     const [currentProduct, setCurrentProduct] = useState<any>(null);
 
@@ -41,6 +41,12 @@ export default function InventoryPage() {
     const [confirmMessage, setConfirmMessage] = useState("");
     const [productName, setProductName] = useState(""); 
 
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
 
     useFocusEffect(
     useCallback(() => {
@@ -249,12 +255,13 @@ export default function InventoryPage() {
         </View>
         
         {/* Date */}
-        <View style={styles.date}>
-        <Text>{date.toLocaleDateString()}</Text>
-            <Svg width={15} height={15} viewBox="0 -1 15 13" fill="none">
-                <Path d="M10 1.08301V3.24967M5 1.08301V3.24967M1.875 5.41634H13.125M3.125 2.16634H11.875C12.5654 2.16634 13.125 2.65137 13.125 3.24967V10.833C13.125 11.4313 12.5654 11.9163 11.875 11.9163H3.125C2.43464 11.9163 1.875 11.4313 1.875 10.833V3.24967C1.875 2.65137 2.43464 2.16634 3.125 2.16634Z" 
-                    stroke="#1E1E1E" strokeLinecap="round" strokeLinejoin="round"/>
-            </Svg>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'  }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20 }}>
+            </View>
+
+            <View style={styles.date}>
+                <Text style={styles.dateText}>{formattedDate}</Text>
+            </View>
         </View>
     </View>
 
@@ -291,7 +298,7 @@ export default function InventoryPage() {
                 <Text style={styles.headerText}>Product No.</Text>
             </View>
             <View style={styles.headerCell}>
-                <Text style={styles.headerText}>Images</Text>
+                <Text style={styles.headerText}>Image</Text>
             </View>
             <View style={styles.headerCell}>
                 <Text style={styles.headerText}>Product Name</Text>
@@ -367,18 +374,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
    },
-  date: { 
-    marginTop: 15,
-    marginBottom: 10,
-    marginRight: 10,
-    borderWidth: 1,
-    paddingVertical: 2,
-    paddingHorizontal: 10,
-    alignSelf: 'flex-end',
-    flexDirection: 'row',
-    gap: 10,
-    backgroundColor: '#F4F4F4',
-   },
+  date: {
+        marginTop: 17,
+        marginRight: 10,
+        marginBottom: 3,
+    },
+    dateText: {
+        fontSize: 17,
+        fontWeight: 'bold',
+        color: '#411C0E',
+    },
   toolbar: { 
     flexDirection: "row", 
     alignItems: "center", 
