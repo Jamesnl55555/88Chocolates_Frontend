@@ -4,7 +4,7 @@ import ConfirmCurrPassModal from "@/components/ConfirmCurrPassModal";
 import LogoutModal from "@/components/LogoutModal";
 import NewProfileModal from "@/components/NewProfileModal";
 import { useAuth } from "@/contexts/AuthContext";
-import { IconEdit, IconUserFilled } from "@tabler/icons-react-native";
+import { IconPhotoEdit, IconUserFilled } from "@tabler/icons-react-native";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -119,7 +119,7 @@ const editProfileMutation = useMutation({
                         onPress={() => setChangeProfileModalVisible(true)}
                         accessibilityLabel="Edit profile"
                     >
-                        <IconEdit size={20} color="#FFFFFF" />
+                        <IconPhotoEdit size={22} strokeWidth={2} color={'#fff'}/>
                     </Pressable>
                 </Pressable>
                 <View style={styles.boxContainer}>
@@ -265,8 +265,8 @@ const styles = StyleSheet.create({
     },
    edit: {
     position: 'absolute',    
-    bottom: 0,
-    right: 0,
+    bottom: -7,
+    right: -5,
     width: 40,
     height: 40,
     borderRadius: 50,

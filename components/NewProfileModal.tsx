@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { IconCamera, IconUserFilled } from "@tabler/icons-react-native";
+import { IconLibraryPhoto , IconUserFilled } from "@tabler/icons-react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -62,7 +62,7 @@ export default function NewProfileModal({ onSubmit, onCancel, isSaving, image }:
                             <IconUserFilled size={90} />
                     )}
                     <TouchableOpacity onPress={pickImage} style={styles.edit }>
-                        <IconCamera size={25} color="#fff" />
+                        <IconLibraryPhoto size={22} strokeWidth={2} color={'#fff'} />
                     </TouchableOpacity>
                 </View>
 
