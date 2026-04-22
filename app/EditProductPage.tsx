@@ -59,12 +59,6 @@ export default function EditProductModal() {
             setAlertVisible(true);
             return false;
         }
-        if (!editProduct.quantity || isNaN(Number(editProduct.quantity)) || Number(editProduct.quantity) <= 0) {
-            setAlertHeader("Error");
-            setAlertMessage("Please enter a valid quantity.");
-            setAlertVisible(true);
-            return false;
-        }
         return true;
     }
 
@@ -79,7 +73,7 @@ export default function EditProductModal() {
     const decreaseQuantity = () => {
         setEditProduct((prev: any) => ({
             ...prev,
-            quantity: Math.max(1, Number(prev.quantity || 1) - 1)
+            quantity: Math.max(0, Number(prev.quantity || 0) - 1)
         }));
     };
 
@@ -88,7 +82,7 @@ export default function EditProductModal() {
 
         setEditProduct((prev: any) => ({
             ...prev,
-            quantity: numeric === '' ? 1 : parseInt(numeric)
+            quantity: numeric === '' ? 0 : parseInt(numeric)
         }));
     };
 
