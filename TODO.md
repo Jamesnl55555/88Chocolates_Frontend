@@ -1,11 +1,10 @@
-
-# Edit Product Page - Add Uneditable Category
+# Keyboard Avoiding View for EditProductPage
 
 ## Steps:
-1. [ ] Create TODO.md with plan breakdown (current).
-2. ✅ Edit app/EditProductPage.tsx: Insert uneditable category field after image container, before Name input.
-3. ✅ Update TODO.md to mark step 3 complete.
-4. ✅ Test the change (manual: run app, edit product).
-5. ✅ Complete task with attempt_completion.
+- [x] 1. Plan created and approved
+- [x] 2. Edit app/EditProductPage.tsx with KeyboardAvoidingView
+- [x] 3. Test inputs focus/keyboard behavior
+- [x] 4. Verify no breakage (dropdown, image picker, alert, save)
+- [x] 5. Complete task
 
-Current progress: All steps complete.
+

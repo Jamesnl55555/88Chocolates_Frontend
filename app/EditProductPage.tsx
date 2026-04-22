@@ -3,7 +3,7 @@ import { IconCaretDownFilled, IconCaretUpFilled, IconPhotoEdit } from '@tabler/i
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, KeyboardAvoidingView, ScrollView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import api from './services/api';
 import { uploadImage } from './services/cloudinary';
 
@@ -152,113 +152,127 @@ export default function EditProductModal() {
 
     return (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
-            <View style={{ margin: 20, padding: 20, borderWidth: 1 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                <Text style={styles.label}>Product No.</Text>
-                <Text>{String(editProduct.product_number).padStart(5, '0')}</Text>
-            </View>
-            <View style={styles.imageContainer}>
-                {editImageUrl ? (
-                    <Image source={{ uri: editImageUrl }} style={styles.image} />
-                ) : (
-                    <Text>Upload Image</Text>
-                )}
-                <TouchableOpacity onPress={pickImageForEdit} style={styles.imageIconCamera}>
-                    <IconPhotoEdit strokeWidth={2} size={22} color="#f5f5f5"/>
-                </TouchableOpacity>
-            </View>
-
-            <Text style={styles.label}>Category:</Text>
-            <Text style={{ backgroundColor: '#f5f5f5', color: '#666',  borderWidth: 2, borderColor: '#411C0E', padding: 10, marginBottom: 10}}>{editProduct.category || 'N/A'}</Text>
-            
-            <Text style={styles.label}>Name:</Text>
-            <TextInput
-                style={styles.input}
-                value={editProduct.name}
-                onChangeText={(text) => setEditProduct({ ...editProduct, name: text })}
-            />
-            <View style={styles.netWeightQuantityContainer}>
-                <View>
-                <Text style={styles.label}>Net Weight:</Text>
-
-                <View style={styles.netWeightContainer}>
-                    <TextInput
-                        style={styles.netWeightInput}
-                        keyboardType="numeric"
-                        value={netWeightNumber}
-                        onChangeText={setNetWeightNumber}
-                        placeholder="0"
-                    />
-
-                    <TouchableOpacity
-                        style={styles.unitButton}
-                        onPress={() => setShowUnitDropdown(prev => !prev)}
-                    >
-                        <Text>{netWeightUnit || 'Unit'}</Text>
-                        {showUnitDropdown ? <IconCaretUpFilled size={16} /> : <IconCaretDownFilled size={16} />}
-                    </TouchableOpacity>
-
-                    {showUnitDropdown && (
-                        <View style={styles.unitDropdown}>
-                            {units.map(unit => (
-                                <TouchableOpacity
-                                    key={unit}
-                                    onPress={() => {
-                                        setNetWeightUnit(unit);
-                                        setShowUnitDropdown(false);
-                                    }}
-                                    style={styles.dropdownItem}
-                                >
-                                    <Text>{unit}</Text>
-                                </TouchableOpacity>
-                            ))}
-                        </View>
+            <KeyboardAvoidingView 
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={{ flex: 1 }}
+                keyboardVerticalOffset={100}
+            >
+                <ScrollView
+                          contentContainerStyle={styles.scrollContainer}
+                          keyboardShouldPersistTaps="handled"
+                          showsVerticalScrollIndicator={true}
+                        >
+            <View style={{ marginTop: 20, marginHorizontal: -25, padding: 20, borderWidth: 1 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                    <Text style={styles.label}>Product No.</Text>
+                    <Text>{String(editProduct.product_number).padStart(5, '0')}</Text>
+                </View>
+                <View style={styles.imageContainer}>
+                    {editImageUrl ? (
+                        <Image source={{ uri: editImageUrl }} style={styles.image} />
+                    ) : (
+                        <Text>Upload Image</Text>
                     )}
+                    <TouchableOpacity onPress={pickImageForEdit} style={styles.imageIconCamera}>
+                        <IconPhotoEdit strokeWidth={2} size={22} color="#f5f5f5"/>
+                    </TouchableOpacity>
                 </View>
-                </View>
-                
-                <View style={styles.quantityContainer}>
-                    <Text style={[styles.label, { alignSelf: 'center' }]}>Quantity:</Text>
-                    
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <TouchableOpacity onPress={() => decreaseQuantity()} style={styles.qtyButton}>
-                            <Text style={styles.qtyText}>-</Text>
-                        </TouchableOpacity>
 
+
+                <Text style={styles.label}>Category:</Text>
+                <Text style={{ backgroundColor: '#f5f5f5', color: '#666',  borderWidth: 2, borderColor: '#411C0E', padding: 10, marginBottom: 10}}>{editProduct.category || 'N/A'}</Text>
+                
+                <Text style={styles.label}>Name:</Text>
+                <TextInput
+                    style={styles.input}
+                    value={editProduct.name}
+                    onChangeText={(text) => setEditProduct({ ...editProduct, name: text })}
+                />
+                <View style={styles.netWeightQuantityContainer}>
+                    <View>
+                    <Text style={styles.label}>Net Weight:</Text>
+
+                    <View style={styles.netWeightContainer}>
                         <TextInput
+                            style={styles.netWeightInput}
                             keyboardType="numeric"
-                            value={String(editProduct.quantity)}
-                            onChangeText={updateQuantity}
-                            style={styles.qtyInput}
+                            value={netWeightNumber}
+                            onChangeText={setNetWeightNumber}
+                            placeholder="0"
                         />
 
-                        <TouchableOpacity onPress={increaseQuantity} style={styles.qtyButton}>
-                            <Text style={styles.qtyText}>+</Text>
+                        <TouchableOpacity
+                            style={styles.unitButton}
+                            onPress={() => setShowUnitDropdown(prev => !prev)}
+                        >
+                            <Text>{netWeightUnit || 'Unit'}</Text>
+                            {showUnitDropdown ? <IconCaretUpFilled size={16} /> : <IconCaretDownFilled size={16} />}
                         </TouchableOpacity>
+
+                        {showUnitDropdown && (
+                            <View style={styles.unitDropdown}>
+                                {units.map(unit => (
+                                    <TouchableOpacity
+                                        key={unit}
+                                        onPress={() => {
+                                            setNetWeightUnit(unit);
+                                            setShowUnitDropdown(false);
+                                        }}
+                                        style={styles.dropdownItem}
+                                    >
+                                        <Text>{unit}</Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        )}
+                    </View>
+                    </View>
+                
+                    <View style={styles.quantityContainer}>
+                        <Text style={[styles.label, { alignSelf: 'center' }]}>Quantity:</Text>
+                        
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <TouchableOpacity onPress={() => decreaseQuantity()} style={styles.qtyButton}>
+                                <Text style={styles.qtyText}>-</Text>
+                            </TouchableOpacity>
+
+                            <TextInput
+                                keyboardType="numeric"
+                                value={String(editProduct.quantity)}
+                                onChangeText={updateQuantity}
+                                style={styles.qtyInput}
+                            />
+
+                            <TouchableOpacity onPress={increaseQuantity} style={styles.qtyButton}>
+                                <Text style={styles.qtyText}>+</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
-            </View>
-            <View style={styles.quantityPriceContainer}>
-                <View style={styles.PriceContainer}>
-                    <Text style={styles.label}>Price:</Text>
-                    <TextInput
-                    style={[styles.input, { width: 100 }]}
-                    keyboardType="numeric"
-                    value={String(editProduct.price)}
-                    onChangeText={(text) => setEditProduct({ ...editProduct, price: text })}
-                    />
-                   
-                </View>     
-            </View>
-            <View style={styles.buttons}>
-                <TouchableOpacity onPress={handleEditSubmit} style={styles.saveButton}>
-                    <Text style={styles.save}>Save</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={onClose} style={styles.cancelButon}>
-                    <Text style={styles.cancel}>Cancel</Text>
-                </TouchableOpacity>
-            </View>
-            </View>
+                <View style={styles.quantityPriceContainer}>
+                    <View style={styles.PriceContainer}>
+                        <Text style={styles.label}>Price:</Text>
+                        <TextInput
+                        style={[styles.input, { width: 100 }]}
+                        keyboardType="numeric"
+                        value={String(editProduct.price)}
+                        onChangeText={(text) => setEditProduct({ ...editProduct, price: text })}
+                        />
+                    
+                    </View>     
+                </View>
+                
+                <View style={styles.buttons}>
+                    <TouchableOpacity onPress={handleEditSubmit} style={styles.saveButton}>
+                        <Text style={styles.save}>Save</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={onClose} style={styles.cancelButon}>
+                        <Text style={styles.cancel}>Cancel</Text>
+                    </TouchableOpacity>
+                </View>
+                </View>
+            </ScrollView>
+            </KeyboardAvoidingView>
             
             {alertVisible && (
             <View style={styles.alert}>
@@ -281,12 +295,16 @@ const styles = StyleSheet.create({
         alignItems: 'center' 
     },
     modalContainer: { 
-        width: '90%', 
+        width: '95%', 
         backgroundColor: '#fff', 
         padding: 20, 
         borderRadius: 10, 
         maxHeight: '90%' 
     },
+    scrollContainer: {
+        flexGrow: 1,
+        alignItems: 'center',
+  },
     title: { 
         fontSize: 20, 
         fontWeight: 'bold', 
