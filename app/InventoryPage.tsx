@@ -149,8 +149,20 @@ export default function InventoryPage() {
     const isSelected = selectedProducts.some((p) => p.id === item.id);
     return (
     <View style={styles.row}>
+        <View style={{ justifyContent: "space-around", 
+                        width: CELL_WIDTH, 
+                        alignItems: "center", 
+                        borderRightWidth: 1, 
+                        borderLeftWidth: 1, 
+                        borderColor: "#411C0E", 
+                        flexDirection: "row", 
+                        height: "100%",
+                        paddingVertical: 5, paddingRight: 40}}>
+            <CheckboxComponent isChecked={isSelected} onPress={() => toggleSelect(item)} />
+            <Text style={{fontWeight: 'bold'}}>{item.id}</Text>
+        </View>
         <View style={styles.cell}>
-        <CheckboxComponent isChecked={isSelected} onPress={() => toggleSelect(item)} />
+        
         {item.file_path && item.file_path.trim() !== '' ? (
           <Image style={styles.image} source={{ uri: item.file_path }} />
         ) : (
@@ -244,7 +256,10 @@ export default function InventoryPage() {
     {/* Table */}
     <ScrollView horizontal style={{ width: '90%', alignSelf: 'center', backgroundColor: '#fff'}}>
         <View>
-        <View style={styles.header}>
+<View style={styles.header}>
+            <View style={styles.headerCell}>
+                <Text style={styles.headerText}>Product No.</Text>
+            </View>
             <View style={styles.headerCell}>
                 <Text style={styles.headerText}>Images</Text>
             </View>
