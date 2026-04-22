@@ -379,7 +379,7 @@ export default function MakeTransactionPage() {
                             onPress={toggleSelectAll}
                             />
                             <Text style={{ marginLeft: 5 }}>Select All</Text>
-                            {selectedProducts.length > 0 && (
+                            {/* {selectedProducts.length > 0 && (
                             <TouchableOpacity
                                 style={{ marginLeft: "auto", marginRight: 10 }}
                                 onPress={() => { setProductToDelete(null); setAlertVisible(true); }}
@@ -389,7 +389,7 @@ export default function MakeTransactionPage() {
                                         fill="#B00B0B" fillOpacity="0.8"/>
                                 </Svg>
                             </TouchableOpacity>
-                            )}
+                            )} */}
                 </View>
 
                 <View style={styles.productContainer}>
@@ -427,14 +427,7 @@ export default function MakeTransactionPage() {
                 </TouchableOpacity>
             </View>
            
-            {alertVisible && (
-                <View style={{position: 'absolute', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
-                <ConfirmAlertModal
-                    onConfirm={() =>{setAlertVisible(false); if (productToDelete) { handleDelete(productToDelete); } else { handleBulkDelete(); }}}
-                    onCancel={() => setAlertVisible(false)}
-                />
-                </View>
-            )}
+
             {confirmAlertVisible && (
                 <View style={{position: 'absolute', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%'}}>
                 <AlertModal

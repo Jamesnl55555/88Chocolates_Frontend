@@ -38,6 +38,9 @@ export default function InventoryPage() {
     const [productToDelete, setProductToDelete] = useState<any>(null);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertHeader, setAlertHeader] = useState("");
+    const [confirmMessage, setConfirmMessage] = useState("");
+    const [productName, setProductName] = useState(""); 
+
 
     useFocusEffect(
     useCallback(() => {
@@ -98,14 +101,14 @@ export default function InventoryPage() {
     try {
     await api.post(`/api/delete-item/${id}`);
     setProducts((prev) => prev.filter((p) => p.id !== id));
-    setAlertHeader("Deleted");
+    setAlertHeader("Success");
     setAlertMessage("Product removed successfully!");
-    setConfirmAlertVisible(true);
+    setAlertVisible(true);
     } catch (error) {
     console.error("Error deleting product:", error);
     setAlertHeader("Error");
     setAlertMessage("Failed to delete product!");
-    setConfirmAlertVisible(true);
+    setAlertVisible(true);
     }
     };
 
@@ -115,18 +118,38 @@ export default function InventoryPage() {
     await Promise.all(selectedProducts.map(p => api.post(`/api/delete-item/${p.id}`)));
     setProducts((prev) => prev.filter((p) => !selectedProducts.some((sp) => sp.id === p.id)));
     setSelectedProducts([]);
-    setAlertHeader("Deleted");
+    setAlertHeader("Success");
     setAlertMessage("Selected products removed successfully!");
-    setConfirmAlertVisible(true);
+    setAlertVisible(true);
     } catch (error) {
     console.error("Error deleting products:", error);
     setAlertHeader("Error");
     setAlertMessage("Failed to delete some products!");
-    setConfirmAlertVisible(true);
+    setAlertVisible(true);
     }
     };
 
     // Format time for display
+    // Confirm delete handlers
+    const confirmDelete = () => {
+      if (productToDelete && productToDelete.id) {
+        handleDelete(productToDelete.id);
+      } else {
+        handleBulkDelete();
+      }
+      setConfirmAlertVisible(false);
+      setProductToDelete(null);
+      setProductName("");
+      setConfirmMessage("");
+    }; 
+
+    const cancelDelete = () => {
+      setConfirmAlertVisible(false);
+      setProductToDelete(null);
+      setProductName("");
+      setConfirmMessage("");
+    };
+
     const formatTime = (dateString: string) => {
     if (!dateString) return "-";
     const date = new Date(dateString);
@@ -193,8 +216,9 @@ export default function InventoryPage() {
             
             <TouchableOpacity
                 onPress={() => {
-                    setProductToDelete(item.id);
-                    setAlertVisible(true);
+                    setProductToDelete(item);
+                    setProductName(item.name || "this product");
+                    setConfirmAlertVisible(true);
                 }}
                 >
                 <Svg width={25} height={25} viewBox="-3 0 24 24" fill="none">
@@ -244,7 +268,12 @@ export default function InventoryPage() {
         {selectedProducts.length > 0 && (
         <TouchableOpacity
             style={{ marginLeft: "auto", marginRight: 10 }}
-            onPress={() => { setProductToDelete(null); setAlertVisible(true); }}
+        onPress={() => { 
+              setProductToDelete(null); 
+              setProductName("");
+              setConfirmMessage(`Delete ${selectedProducts.length} selected product(s)? This action cannot be undone.`);
+              setConfirmAlertVisible(true); 
+            }} 
         >
             <Svg width={25} height={25} viewBox="-3 0 24 24" fill="none">
                 <Path d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z" 
@@ -292,23 +321,28 @@ export default function InventoryPage() {
         />
         </View>
     </ScrollView>
-    {/* Confirm Delete */}
-    {alertVisible && (
+    
+
+    {/* Confirm Delete Modal */}
+    {confirmAlertVisible && (
         <View style={styles.overlay}>
-        <ConfirmAlertModal
-            onConfirm={() => { setAlertVisible(false); if (productToDelete) { handleDelete(productToDelete); } else { handleBulkDelete(); } }}
-            onCancel={() => setAlertVisible(false)}
+        <ConfirmAlertModal 
+            headertext="Confirm Delete" 
+            message={confirmMessage}
+            productName={productName}
+            onConfirm={confirmDelete}
+            onCancel={cancelDelete}
         />
+
         </View>
     )}
-
-    {/* Alert */}
-    {confirmAlertVisible && (
+    {/* Success/Error Alert */}
+    {alertVisible && (
         <View style={styles.overlay}>
         <AlertModal
             message={alertMessage}
             headertext={alertHeader}
-            onConfirm={() => setConfirmAlertVisible(false)}
+            onConfirm={() => setAlertVisible(false)}
         />
         </View>
     )}

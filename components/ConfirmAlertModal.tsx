@@ -1,12 +1,21 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-type Props = { onConfirm: () => void, onCancel: () => void};
-const ConfirmAlertModal = ({ onConfirm, onCancel}: Props) => {
+type Props = { onConfirm: () => void, onCancel: () => void, headertext: string, message: string, productName?: string };
+const ConfirmAlertModal = ({ onConfirm, onCancel, headertext, message, productName }: Props) => {
     return (
         <View style={styles.backdrop}>
             <View style={styles.container}>
-            <Text style={styles.headerText}>Confirm Delete</Text>
-            <Text style={styles.message}>Are you sure you want to delete the selected transactions?</Text>
+                <Text style={styles.headerText}>{headertext}</Text>
+{productName ? (
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center',  }}>
+        <Text style={styles.message}>Delete </Text>
+        <Text style={[styles.message, { fontWeight: 'bold' }]}>{productName}</Text><Text style={styles.message}>?</Text>
+        <Text style={styles.message}> This action cannot be undone.</Text>
+    </View>
+) : (
+  <Text style={styles.message}>{message}</Text>
+)}
+                
             <View style={{flexDirection: 'row', justifyContent: 'space-evenly', width: '100%'}}>
                 <TouchableOpacity onPress={onCancel} style={styles.Canbutton}>
                     <Text style={{color: '#fff', fontWeight: 800}}>Cancel</Text>
@@ -46,14 +55,15 @@ const styles = StyleSheet.create({
     },
     message: {
         fontSize: 15,
-        marginBottom: 25,
         textAlign: 'center',
         color: '#333',
+        marginVertical: 1,
+        flexWrap: 'wrap',
     },
     headerText:{
         fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 15,
+        marginBottom: 10,
         marginTop: 20,
         textAlign: 'center',
         width: '60%',
@@ -66,6 +76,7 @@ const styles = StyleSheet.create({
         width: '45%',
         borderRadius: 30,
         marginBottom: 8,
+        marginTop: 25,
     },
     Canbutton: {
         backgroundColor: '#565656CC',
@@ -74,5 +85,6 @@ const styles = StyleSheet.create({
         width: '45%',
         borderRadius: 30,
         marginBottom: 8,
+        marginTop: 25,
     },
 })
