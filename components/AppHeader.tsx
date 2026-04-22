@@ -55,7 +55,7 @@ export default function AppHeader({ routeName }: AppHeaderProps) {
       </View>
       
 
-      {user.profile_image && routeName !== 'ReceiptPage' && routeName !== 'RecordReceiptPage' ? (
+{user.profile_image ? (
         <Pressable onPress={() => router.push('/ProfilePage')}>
           <Image
             source={{ uri: user.profile_image }}
