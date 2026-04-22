@@ -104,6 +104,7 @@ const editProfileMutation = useMutation({
     return (
         <View style={styles.container}>
             <View style={styles.card}>
+                {/*  */}
                 <Pressable onPress={() => setChangeProfileModalVisible(true)} 
                     style={styles.profile}>
                     {auth.user?.profile_image ? (
@@ -114,6 +115,7 @@ const editProfileMutation = useMutation({
                     ) : (
                         <IconUserFilled size={90} />
                     )}
+
                     <Pressable
                         style={styles.edit}
                         onPress={() => setChangeProfileModalVisible(true)}
@@ -121,6 +123,7 @@ const editProfileMutation = useMutation({
                     >
                         <IconPhotoEdit size={22} strokeWidth={2} color={'#fff'}/>
                     </Pressable>
+
                 </Pressable>
                 <View style={styles.boxContainer}>
                     <Text style={styles.subheading}>Store Name:</Text>

@@ -167,7 +167,11 @@ export default function EditProductModal() {
                     <Text style={styles.label}>Product No.</Text>
                     <Text>{String(editProduct.product_number).padStart(5, '0')}</Text>
                 </View>
-                <View style={styles.imageContainer}>
+<TouchableOpacity 
+                    style={styles.imageContainer}
+                    onPress={pickImageForEdit}
+                    activeOpacity={0.7}
+                >
                     {editImageUrl ? (
                         <Image source={{ uri: editImageUrl }} style={styles.image} />
                     ) : (
@@ -176,7 +180,7 @@ export default function EditProductModal() {
                     <TouchableOpacity onPress={pickImageForEdit} style={styles.imageIconCamera}>
                         <IconPhotoEdit strokeWidth={2} size={22} color="#f5f5f5"/>
                     </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
 
 
                 <Text style={styles.label}>Category:</Text>

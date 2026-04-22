@@ -1,9 +1,9 @@
 import AlertModal from "@/components/AlertModal";
-import { IconPhotoEdit, IconCaretDownFilled, IconCaretUpFilled } from '@tabler/icons-react-native';
+import { IconCaretDownFilled, IconCaretUpFilled, IconPhotoEdit } from '@tabler/icons-react-native';
 import { useMutation } from '@tanstack/react-query';
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState } from 'react';
-import { Image, KeyboardAvoidingView, ScrollView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { uploadImage } from "../app/services/cloudinary";
 import api from './services/api';
 
@@ -199,16 +199,25 @@ export default function AddProductsPage() {
                             {latestProductId !== null ? String(latestProductId).padStart(5, '0') : '00001'}
                         </Text>
                     </View>
+
+                    {/* image */}
                     <View style={styles.imageContainer}>
-                        {imageUrl ? (
-                            <Image source={{ uri: imageUrl }} style={styles.image} />
-                        ) : (
-                            <Text style={styles.imagePlaceholder}>+</Text>
-                        )}
-                        <TouchableOpacity onPress={pickImage} style={styles.photoIcon}>
-                            <IconPhotoEdit size={22} strokeWidth={2} color={'#fff'}/>
+                        <TouchableOpacity 
+                            style={styles.touchableOverlay} 
+                            onPress={pickImage}
+                            activeOpacity={0.7}
+                        >
+                            {imageUrl ? (
+                                <Image source={{ uri: imageUrl }} style={styles.image} />
+                            ) : (
+                                <Text style={styles.imagePlaceholder}>+</Text>
+                            )}
+                            <View style={styles.photoIcon}>
+                                <IconPhotoEdit size={22} strokeWidth={2} color={'#fff'}/>
+                            </View>
                         </TouchableOpacity>
                     </View>
+
                     <View style={styles.dropdownContainer}>
                     <Text style={[styles.label, {marginTop: 20}]}>Category:</Text>
                     <TouchableOpacity
@@ -428,6 +437,11 @@ const styles = StyleSheet.create({
         width: 60,
         textAlign: 'center',
         borderRadius: 5,
+    },
+    touchableOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     photoIcon: {
         position: 'absolute',

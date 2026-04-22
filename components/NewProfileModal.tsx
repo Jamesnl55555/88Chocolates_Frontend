@@ -45,7 +45,11 @@ export default function NewProfileModal({ onSubmit, onCancel, isSaving, image }:
         <View style={styles.backdrop}>
             <View style={styles.container}>
                 <Text style={{ fontWeight: 'bold', fontSize: 20 ,marginVertical: 15, color: '#411C0E' }}>Change Profile Picture</Text>
-                <View style={styles.profile}>
+<TouchableOpacity 
+                    style={styles.profile}
+                    onPress={pickImage}
+                    activeOpacity={0.7}
+                >
                     {auth.user?.profile_image ? (
                         imageUrl ? (
                             <Image
@@ -64,7 +68,7 @@ export default function NewProfileModal({ onSubmit, onCancel, isSaving, image }:
                     <TouchableOpacity onPress={pickImage} style={styles.edit }>
                         <IconLibraryPhoto size={22} strokeWidth={2} color={'#fff'} />
                     </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
 
                 <View style={styles.buttonArea}>
                     <TouchableOpacity style={styles.buttonCancel} onPress={onCancel}>
