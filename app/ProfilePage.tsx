@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
    },
    profile: {
     marginVertical: 25,    
-    borderWidth: 10,
+    borderWidth: 7,
     borderRadius: 100,
     borderColor: '#411C0E',
     position: 'relative',       

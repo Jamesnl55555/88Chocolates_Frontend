@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
         position: 'relative',
         justifyContent: 'center',
         alignSelf: 'center',
-        borderWidth: 2,
+        borderWidth: 3,
         borderColor: '#411C0E',
         width: 125,
         height: 125,
