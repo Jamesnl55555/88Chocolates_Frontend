@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { IconLibraryPhoto , IconUserFilled } from "@tabler/icons-react-native";
+import { IconLibraryPhoto, IconUserFilled } from "@tabler/icons-react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -40,30 +40,23 @@ export default function NewProfileModal({ onSubmit, onCancel, isSaving, image }:
         onSubmit(imageUrl ?? null);
         setImageUrl(null);
     };
-
+    const displayImage = imageUrl || auth.user?.profile_image;
     return (
         <View style={styles.backdrop}>
             <View style={styles.container}>
                 <Text style={{ fontWeight: 'bold', fontSize: 20 ,marginVertical: 15, color: '#411C0E' }}>Change Profile Picture</Text>
-<TouchableOpacity 
+                <TouchableOpacity 
                     style={styles.profile}
                     onPress={pickImage}
                     activeOpacity={0.7}
                 >
-                    {auth.user?.profile_image ? (
-                        imageUrl ? (
-                            <Image
-                                source={{ uri: imageUrl }}
-                                style={{ width: '100%', height: '100%', borderRadius: 100}}
-                            />
-                        ) : (
-                            <Image
-                                source={{ uri: auth.user.profile_image }}
-                                style={{ width: '100%', height: '100%', borderRadius: 100}}
-                            />
-                        )
-                        ) : (
-                            <IconUserFilled size={90} />
+                    {displayImage ? (
+                        <Image
+                            source={{ uri: displayImage }}
+                            style={{ width: '100%', height: '100%', borderRadius: 100 }}
+                        />
+                    ) : (
+                        <IconUserFilled size={90} />
                     )}
                     <TouchableOpacity onPress={pickImage} style={styles.edit }>
                         <IconLibraryPhoto size={22} strokeWidth={2} color={'#fff'} />

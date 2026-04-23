@@ -93,6 +93,12 @@ const editProfileMutation = useMutation({
             setAlertModalVisible(true);
             return false;
         }
+        if (displayName.trim().length < 3) {
+            setHeaderText("Error");
+            setAlertMessage("Username must be at least 3 characters.");
+            setAlertModalVisible(true);
+            return false;
+        }
         return true;
     };
 

@@ -140,7 +140,11 @@ const RegisterPage: React.FC = () => {
   const handleRegister = () => {
     const newErrors: any = {};
 
-    if (!name.trim()) newErrors.name = 'Username is required.';
+    if (!name.trim()) {
+      newErrors.name = 'Username is required.';
+    } else if (name.trim().length < 3) {
+      newErrors.name = 'Username must be at least 3 characters.';
+    }
     if (!email.trim()) newErrors.email = 'E-mail is required.';
     if (!password) newErrors.password = 'Password is required.';
     if (!confirmPassword)
