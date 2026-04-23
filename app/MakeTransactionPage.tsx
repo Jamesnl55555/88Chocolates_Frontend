@@ -236,6 +236,7 @@ export default function MakeTransactionPage() {
 
 
     const renderProduct = (item: any) => {
+        if (!item) return null;
         const selectedItem = selectedProducts.find(p => p.id === item.id);
 
         return (
@@ -246,7 +247,7 @@ export default function MakeTransactionPage() {
                         onPress={() => toggleSelect(item)}
                     />
                     <Text style={{ fontWeight: 'bold', color: '#411C0E', fontSize: 20 }}>Product No.</Text>
-                    <Text style={{ marginLeft: 'auto', marginRight: 10 }}>{String(item.id).padStart(5, '0')}</Text>
+                    <Text style={{ marginLeft: 'auto', marginRight: 10 }}>{String(item.product_number).padStart(6, '0')}</Text>
                 </View>
 
                 <View style={styles.info}>
@@ -314,6 +315,7 @@ export default function MakeTransactionPage() {
                 quantity: p.quantity,
                 category: product?.category,
                 file_path: product?.file_path,
+                product_number: product?.product_number,
             };
         });
 
@@ -371,7 +373,7 @@ export default function MakeTransactionPage() {
                 <View style={styles.productContainer}>
                     <SectionList
                         sections={sections}
-                        keyExtractor={(item) => item.id.toString()}
+                        keyExtractor={(item, index) => item?.id?.toString() ?? index.toString()}
                         renderItem={renderItem}
                         renderSectionHeader={({ section }: { section: { title: string; data: any[] } }) => (
                             // Render section header with category title and products in that category
@@ -383,7 +385,11 @@ export default function MakeTransactionPage() {
                                 </View>
                                 {/* Products based on their category */}
                                 <View style={styles.sectionItems}>
-                                    {section.data.map(renderProduct)}
+                                    {Array.isArray(section.data) && section.data.map((item) => (
+                                        <View key={item.id}>
+                                            {renderProduct(item)}
+                                        </View>
+                                    ))}
                                 </View>
                             </View>
                         )}

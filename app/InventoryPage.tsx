@@ -188,7 +188,7 @@ export default function InventoryPage() {
                         height: "100%",
                         paddingVertical: 5, paddingRight: 40,}}>
             <CheckboxComponent isChecked={isSelected} onPress={() => toggleSelect(item)} />
-            <Text style={{fontWeight: 'bold'}}>{item.id}</Text>
+            <Text style={{fontWeight: 'bold'}}>{String(item.product_number).padStart(5, '0')}</Text>
         </View>
         <View style={styles.cell}>
         

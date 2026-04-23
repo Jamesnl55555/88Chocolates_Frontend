@@ -9,7 +9,6 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
-import Svg, { Path } from 'react-native-svg';
 import api from "./services/api";
 
 export default function ReceiptPage() {
@@ -94,8 +93,8 @@ export default function ReceiptPage() {
                 </View>
 
                 <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-                    <Text style={{ fontWeight: 'bold' }}>Product ID:</Text>
-                    <Text style={{ marginLeft: 'auto', marginRight: 10, fontSize: 16 }}>{item.id}</Text>
+                    <Text style={{ fontWeight: 'bold' }}>Product No.</Text>
+                    <Text style={{ marginLeft: 'auto', marginRight: 10, fontSize: 16 }}>{String(item.product_number).padStart(6, '0')}</Text>
                 </View>
 
                 <View style={styles.info}>

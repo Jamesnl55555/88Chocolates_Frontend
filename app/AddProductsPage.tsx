@@ -312,7 +312,7 @@ export default function AddProductsPage() {
 
                                 <TextInput
                                     keyboardType="number-pad"
-                                    value={quantity === 0 ? '' : String(quantity)}
+                                    value={quantity === 0 ? '0' : String(quantity)}
                                     onChangeText={updateQuantity}
                                     style={styles.qtyInput}
                                     selectTextOnFocus

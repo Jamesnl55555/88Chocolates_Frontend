@@ -47,18 +47,6 @@ export default function EditProductModal() {
             setAlertVisible(true);
             return false;
         }
-        if (!netWeightNumber || netWeightNumber.trim() === "" || isNaN(Number(netWeightNumber)) || Number(netWeightNumber) <= 0) {
-            setAlertHeader("Error");
-            setAlertMessage("Please enter a valid net weight number.");
-            setAlertVisible(true);
-            return false;
-        }
-        if (!netWeightUnit || netWeightUnit.trim() === "") {
-            setAlertHeader("Error");
-            setAlertMessage("Please select a net weight unit.");
-            setAlertVisible(true);
-            return false;
-        }
         return true;
     }
 
