@@ -245,12 +245,16 @@ export default function EditProductModal() {
                 <View style={styles.quantityPriceContainer}>
                     <View style={styles.PriceContainer}>
                         <Text style={styles.label}>Price:</Text>
-                        <TextInput
-                        style={[styles.input, { width: 100 }]}
-                        keyboardType="numeric"
-                        value={String(editProduct.price)}
-                        onChangeText={(text) => setEditProduct({ ...editProduct, price: text })}
-                        />
+                        <View style={{ width: 100, borderWidth: 2, borderColor: '#411C0E', alignItems: 'center', flexDirection: 'row', borderRadius: 50, }}>
+                                <Text style={{ fontWeight: 'bold', marginLeft: 10, color: '#411C0E',  }}>₱</Text>
+                                    <TextInput
+                                    keyboardType="numeric"
+                                    value={String(editProduct.price)}
+                                    style={{ width: 135,  }}
+                                    onChangeText={(text) => setEditProduct({ ...editProduct, price: text })}
+                                    maxLength={4}
+                                />
+                            </View>
                     
                     </View>     
                 </View>

@@ -287,14 +287,17 @@ export default function AddProductsPage() {
                     <View style={styles.quantityPriceContainer}>
                         <View style={styles.PriceContainer}>
                             <Text style={styles.label}>Price:</Text>
-                            <TextInput
-                                style={[styles.input, { width: 100 }]}
-                                keyboardType="numeric"
-                                value={price}    
-                                placeholder="₱"
-                                onChangeText={(text) => setPrice(limit4Digits(text))}
-                                maxLength={4}
-                            />
+                            <View style={{ width: 135, borderWidth: 2, borderColor: '#411C0E', alignItems: 'center', flexDirection: 'row', borderRadius: 50, marginBottom: 12, }}>
+                                <Text style={{ fontWeight: 'bold', marginLeft: 10, color: '#411C0E',  }}>₱</Text>
+                                    <TextInput
+                                    keyboardType="numeric"
+                                    value={price} 
+                                    style={{ width: 135,  }}
+                                    onChangeText={(text) => setPrice(limit4Digits(text))}
+                                    maxLength={4}
+                                />
+                            </View>
+                            
                         </View>
                     </View>  
                     <View style={styles.buttons}>
@@ -479,8 +482,9 @@ const styles = StyleSheet.create({
     },
 
     netWeightInput: {
-        width: '40%',
+        width: '38%',
         padding: 10,
+        marginLeft: 3,
     },
 
     unitButton: {
