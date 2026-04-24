@@ -1,3 +1,4 @@
+import { validatePassword } from '@/utils/passwordValidation';
 import { useState } from 'react';
 import {
     StyleSheet,
@@ -27,35 +28,6 @@ export default function ChangePassModal({ onSubmit, onCancel, isLoading }: Props
     const [isConfirmVisible, setIsConfirmVisible] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
 
-    const validatePassword = (password: string) => {
-        const errors: string[] = [];
-    
-        if (password.length < 8) {
-          errors.push('Must be at least 8 characters.');
-        }
-    
-        if (!/[A-Z]/.test(password)) {
-          errors.push('Must contain at least one uppercase letter.');
-        }
-    
-        if (!/[a-z]/.test(password)) {
-          errors.push('Must contain at least one lowercase letter.');
-        }
-        
-        if (!/[0-9]/.test(password)) {
-          errors.push('Must contain at least one number.');
-        }
-    
-        if (!/[^A-Za-z0-9]/.test(password)) {
-        errors.push('Must contain at least one special character.');
-        }
-    
-        if (/\s/.test(password)) {
-          errors.push('Must not contain spaces.');
-        }
-    
-        return errors;
-    };
     const handleRegister = () => {
         const newErrors: any = {};
         if (!password) newErrors.password = 'Password is required.';
@@ -64,7 +36,6 @@ export default function ChangePassModal({ onSubmit, onCancel, isLoading }: Props
     
         if (password) {
           const passwordErrors = validatePassword(password);
-    
           if (passwordErrors.length > 0) {
             newErrors.password = passwordErrors.join('\n');
           }

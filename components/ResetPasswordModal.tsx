@@ -1,3 +1,4 @@
+import { validatePassword } from "@/utils/passwordValidation";
 import React, { useState } from "react";
 import {
   Keyboard,
@@ -38,6 +39,7 @@ export default function ResetPasswordModal({
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertHeader, setAlertHeader] = useState("");
+  const [pError, setPError] = useState<string | null>(null);
 
   const handlePress = () => {
     if (!password || !passwordConfirmation) {
@@ -52,6 +54,12 @@ export default function ResetPasswordModal({
       setAlertVisible(true);
       return;
     }
+    const passwordErrors = validatePassword(password);
+    if (passwordErrors.length > 0) {
+      setPError(passwordErrors.join("\n"));
+      return;
+    }
+    
     onSubmit(password, passwordConfirmation);
   };
 
@@ -75,11 +83,14 @@ export default function ResetPasswordModal({
             placeholder="New Password"
             secureTextEntry={!isPasswordVisible}
             value={password}
-            onChangeText={setPassword}
+            onChangeText={(text) => {
+              setPassword(text);
+              setPError(null);
+            }}
           />
           <EyeComponent toggleVisibility={() => setIsPasswordVisible(!isPasswordVisible)} isVisible={isPasswordVisible} />
         </View>
-        {passwordError && <Text style={styles.error}>{passwordError}</Text>}
+        {pError && <Text style={styles.error}>{pError}</Text>}
 
         <Text style={styles.label}>Confirm Password:</Text>
         <View style={styles.inputWrapper}>
@@ -133,7 +144,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     width: '90%',
     minHeight: 350,
-    maxHeight: 420,
+    flexGrow: 0,
     backgroundColor: "#fff",
     borderRadius: 50,
     paddingHorizontal: 20,

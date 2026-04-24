@@ -1,6 +1,6 @@
+import { triggerLogout } from '@/utils/authEvents';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
-
 // 1. Define the base configuration
 const api: AxiosInstance = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL,
@@ -23,10 +23,13 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 api.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  (res) => res,
+  async (error) => {
     if (error.response?.status === 401) {
+      await AsyncStorage.removeItem('userToken');
+      triggerLogout();
     }
+
     return Promise.reject(error);
   }
 );

@@ -1,4 +1,6 @@
+import { setLogoutHandler } from '@/utils/authEvents';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export type User = {
@@ -25,6 +27,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userToken, setUserToken] = useState<string | null>(null);
   const [restoring, setRestoring] = useState(true);
   const [user, setUser] = useState<User>(null);
+
+  useEffect(() => {
+    setLogoutHandler(() => {
+      signOut();
+      router.replace('/LoginPage');
+    });
+  }, []);
 
   // Restore token & user from AsyncStorage
   useEffect(() => {

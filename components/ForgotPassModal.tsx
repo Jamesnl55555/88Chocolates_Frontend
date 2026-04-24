@@ -1,22 +1,23 @@
 import React, { useState } from "react";
 import {
-    Keyboard,
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 
 type Props = {
   onSubmit: (email: string) => void;
   onCancel?: () => void;
   isLoading: boolean;
+  emailError?: string | null;
 };
 
-export default function ForgotPassModal({ onSubmit, onCancel, isLoading }: Props) {
+export default function ForgotPassModal({ onSubmit, onCancel, isLoading, emailError }: Props) {
   const [email, setEmail] = useState("");
 
   const handlePress = () => {
@@ -50,6 +51,8 @@ export default function ForgotPassModal({ onSubmit, onCancel, isLoading }: Props
             returnKeyType="done"
           />
         </View>
+
+        {emailError && <Text style={styles.error}>{emailError}</Text>}
 
         <Pressable
           style={styles.button}
@@ -157,5 +160,11 @@ const styles = StyleSheet.create({
   cancelButton: { 
     color: "#1A00FF", 
     fontWeight: "600",
+  },
+  error: { 
+    color: "#a34e09", 
+    marginBottom: 10, 
+    fontSize: 12, 
+    alignSelf: "flex-start" 
   },
 });

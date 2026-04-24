@@ -313,9 +313,9 @@ export default function MakeTransactionPage() {
                 netWeightNumber: product?.netWeightNumber,
                 netWeightUnit: product?.netWeightUnit,
                 quantity: p.quantity,
+                product_number: product?.product_number,
                 category: product?.category,
                 file_path: product?.file_path,
-                product_number: product?.product_number,
             };
         });
 

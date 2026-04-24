@@ -96,10 +96,10 @@ export default function LoginPage() {
   const loginMutation = useMutation({
     mutationFn: ({ email, pass }: { email: string; pass: string }) =>
       api.post('/api/login', { email, password: pass, remember: rememberMeChecked }).then(res => res.data),
-    onMutate: () => {
-      setEmailError(null);
-      setPasswordError(null);
-    },
+    // onMutate: () => {
+    //   setEmailError(null);
+    //   setPasswordError(null);
+    // },
     onSuccess: async (data) => {  
     console.log("LOGIN RESPONSE USER:", data.user);    
       setEmailError(null);
@@ -108,8 +108,9 @@ export default function LoginPage() {
       router.replace('/HomePage');
     },
     onError: (error: any) => {
+    
     const data = error?.response?.data;
-
+    console.log('LOGIN ERROR RESPONSE:', data);
     if (!data) {
       setEmailError('Network error. Please check your connection.');
       setPasswordError(null);
@@ -155,7 +156,9 @@ export default function LoginPage() {
       setForgotPassVisible(false);
       setVerifyCodeVisible(true);
     },
-    onError: (error: any) => alert(error.response?.data?.message ?? 'Failed to send reset code.'),
+    onError: (error: any) => {
+      setEmailError(error?.response?.data?.message);
+    },
   });
 
   // VERIFY CODE MUTATION
@@ -280,6 +283,7 @@ export default function LoginPage() {
             setForgotPassVisible(false);
             resetAllVariables();
           }}
+          emailError={emailError}
         />
       )}
       {verifyCodeVisible && (
