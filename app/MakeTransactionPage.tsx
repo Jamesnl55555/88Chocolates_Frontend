@@ -419,7 +419,7 @@ export default function MakeTransactionPage() {
                         )}
                         onEndReached={loadMore}
                         onEndReachedThreshold={0.5}
-                        ListFooterComponent={loading ? <ActivityIndicator size="small" /> : null}
+                        ListFooterComponent={loading ? <ActivityIndicator size="large" color="#411C0E" style={{ marginTop: 20 }} /> : null}
                         ListEmptyComponent={
                             !loading ? (
                                 <View style={styles.emptyContainer}>
