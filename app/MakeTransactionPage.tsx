@@ -420,6 +420,18 @@ export default function MakeTransactionPage() {
                         onEndReached={loadMore}
                         onEndReachedThreshold={0.5}
                         ListFooterComponent={loading ? <ActivityIndicator size="small" /> : null}
+                        ListEmptyComponent={
+                            !loading ? (
+                                <View style={styles.emptyContainer}>
+                                    <Svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                        <Path d="M44 38C44 39.0609 43.5786 40.0783 42.8284 40.8284C42.0783 41.5786 41.0609 42 40 42H8C6.93913 42 5.92172 41.5786 5.17157 40.8284C4.42143 40.0783 4 39.0609 4 38V10C4 8.93913 4.42143 7.92172 5.17157 7.17157C5.92172 6.42143 6.93913 6 8 6H18L22 12H40C41.0609 12 42.0783 12.4214 42.8284 13.1716C43.5786 13.9217 44 14.9391 44 16V38Z" stroke="#411C0E" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+                                        <Path d="M30 22L18 34M18 22L30 34" stroke="#411C0E" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </Svg>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 16, textAlign: 'center', color: '#411C0E', marginTop: 15 }}>There&apos;s nothing here yet.</Text>
+                                        <Text style={styles.emptyText}>Please add a product to proceed with a transaction.</Text>
+                                </View>
+                            ) : null
+                        }
                     />
                 </View>
 
@@ -585,6 +597,20 @@ const styles = StyleSheet.create({
         borderColor: '#411C0E',
         marginBottom: 10,
         borderRadius: 3,
+    },
+    emptyContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 40,
+    },
+    emptyText: {
+        fontSize: 15,
+        color: '#411C0E',
+        fontWeight: '400',
+        marginTop: 5, 
+        marginHorizontal: 50,
+        textAlign: 'center',
+        
     },
     sectionItems: {
         borderTopWidth: 0.5,
