@@ -218,12 +218,13 @@ const styles = StyleSheet.create({
     date: {
         marginTop: 30,
         flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '53%'
     },
     dateText: {
         fontSize: 18,
         fontWeight: 'bold',
         color: '#411C0E',
-        marginRight: 50
     },
     boxesContainer: {
         flexDirection: 'row',
