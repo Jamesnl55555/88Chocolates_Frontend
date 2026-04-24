@@ -159,8 +159,8 @@ const editProfileMutation = useMutation({
                         </View>
 
                     <Text style={styles.subheading}>Email:</Text>
-                        <View style={[styles.inputBox, {backgroundColor: '#f5f5f5'}]}>
-                            <TextInput value={auth.user?.email ?? "user@example.com"} editable={false} style={{ color: '#666666', }}/>
+                        <View style={[styles.inputBox, {backgroundColor: '#e4e4e4'}]}>
+                            <TextInput value={auth.user?.email ?? "user@example.com"} editable={false} style={{ color: '#5f5f5f', }}/>
                         </View>
                 </View>
 

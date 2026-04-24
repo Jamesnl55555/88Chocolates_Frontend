@@ -155,7 +155,7 @@ export default function HomePage() {
             </View>
         </View>
 
-            <View style={[styles.stockBox, { backgroundColor: '#FFFCB1' }]}>
+            <View style={[styles.stockBox, { backgroundColor: '#fefba1' }]}>
                 <Text style={styles.boxHeadText}>{lowStockCount}</Text>
                 <Text style={styles.boxText}>Low Stock Item/s</Text>
             </View>

@@ -3,7 +3,7 @@ import AlertModal from '@/components/AlertModal';
 import CheckboxComponent from '@/components/CheckboxComponent';
 import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Image, SectionList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Svg, { Path } from 'react-native-svg';
 import api from './services/api';
@@ -26,6 +26,11 @@ export default function MakeTransactionPage() {
     const [productToDelete, setProductToDelete] = useState<any>(null);
     const [latestTransactionNumber, setLatestTransactionNumber] = useState<number | null>(null);
 
+    const searchTermRef = useRef(searchTerm);
+    useEffect(() => {
+        searchTermRef.current = searchTerm;
+    }, [searchTerm]);
+
     const today = new Date();
     const formattedDate = today.toLocaleDateString("en-GB", {
         day: "numeric",
@@ -35,9 +40,9 @@ export default function MakeTransactionPage() {
 
     useFocusEffect(
     useCallback(() => {
-        fetchProducts(1, searchTerm);
+        fetchProducts(1, searchTermRef.current);
         fetchLatestTransactionNumber();
-    }, [searchTerm])
+    }, [])
     );
 
     const openEditProductPage = (product: any) => {
@@ -234,6 +239,20 @@ export default function MakeTransactionPage() {
         setSections(sectionsData);
     };
 
+    const filteredSections = useMemo(() => {
+        if (!searchTerm) return sections;
+        const term = searchTerm.toLowerCase();
+        return sections
+            .map(section => ({
+                ...section,
+                data: section.data.filter((p: any) =>
+                    p.name?.toLowerCase().includes(term) ||
+                    p.category?.toLowerCase().includes(term) ||
+                    String(p.product_number).padStart(6, '0').includes(term)
+                )
+            }))
+            .filter(section => section.data.length > 0);
+    }, [sections, searchTerm]);
 
     const renderProduct = (item: any) => {
         if (!item) return null;
@@ -377,7 +396,7 @@ export default function MakeTransactionPage() {
 
                 <View style={styles.productContainer}>
                     <SectionList
-                        sections={sections}
+                        sections={filteredSections}
                         keyExtractor={(item, index) => item?.id?.toString() ?? index.toString()}
                         renderItem={renderItem}
                         renderSectionHeader={({ section }: { section: { title: string; data: any[] } }) => (
@@ -474,6 +493,7 @@ const styles = StyleSheet.create({
     },
     selectAll: {
         borderWidth: 1,
+        borderColor: '#411C0E',
         flexDirection: 'row',
         alignItems: 'center',
         width: '90%',
@@ -518,10 +538,10 @@ const styles = StyleSheet.create({
         color: '#FFEDD9',
     },
     button: {
-        padding: 15,
+        padding: 13,
         alignItems: 'center',
         width: '50%',
-        borderRadius: 40
+        borderRadius: 50
     },
     buttonText: { 
         color: '#fff', 
@@ -533,7 +553,8 @@ const styles = StyleSheet.create({
         padding: 10,
         width: '90%',
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        backgroundColor: '#FFEDD9',
     },
     totalText: { 
         fontSize: 16 

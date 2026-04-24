@@ -4,7 +4,7 @@ import ConfirmAlertModal from "@/components/ConfirmAlertModal";
 import { useRouter } from "expo-router";
 
 import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 
 import {
@@ -41,6 +41,11 @@ export default function InventoryPage() {
     const [confirmMessage, setConfirmMessage] = useState("");
     const [productName, setProductName] = useState(""); 
 
+    const searchTermRef = useRef(searchTerm);
+    useEffect(() => {
+        searchTermRef.current = searchTerm;
+    }, [searchTerm]);
+
     const today = new Date();
     const formattedDate = today.toLocaleDateString("en-GB", {
         day: "numeric",
@@ -50,8 +55,8 @@ export default function InventoryPage() {
 
     useFocusEffect(
     useCallback(() => {
-    fetchProducts(1, searchTerm);
-    }, [searchTerm])
+    fetchProducts(1, searchTermRef.current);
+    }, [])
     );
 
     // Fetch products with pagination and search
@@ -87,6 +92,17 @@ export default function InventoryPage() {
     if (currentPage < lastPage && !loading) fetchProducts(currentPage + 1, searchTerm);
     };
 
+    // Case-insensitive filtering for displayed products
+    const filteredProducts = useMemo(() => {
+        if (!searchTerm) return products;
+        const term = searchTerm.toLowerCase();
+        return products.filter((p: any) =>
+            p.name?.toLowerCase().includes(term) ||
+            p.category?.toLowerCase().includes(term) ||
+            String(p.product_number).padStart(6, '0').includes(term)
+        );
+    }, [products, searchTerm]);
+
     // Toggle select a product
     const toggleSelect = (product: any) => {
     setSelectedProducts((prev) => {
@@ -105,34 +121,36 @@ export default function InventoryPage() {
     // Delete product
     const handleDelete = async (id: number) => {
     try {
-    await api.post(`/api/delete-item/${id}`);
-    setProducts((prev) => prev.filter((p) => p.id !== id));
-    setAlertHeader("Success");
-    setAlertMessage("Product removed successfully!");
-    setAlertVisible(true);
-    } catch (error) {
-    console.error("Error deleting product:", error);
-    setAlertHeader("Error");
-    setAlertMessage("Failed to delete product!");
-    setAlertVisible(true);
-    }
+        await api.post(`/api/delete-item/${id}`);
+        setProducts((prev) => prev.filter((p) => p.id !== id));
+        setAlertHeader("Success");
+        setAlertMessage("Product removed successfully!");
+        setAlertVisible(true);
+        } 
+        catch (error) {
+            console.error("Error deleting product:", error);
+            setAlertHeader("Error");
+            setAlertMessage("Failed to delete product!");
+            setAlertVisible(true);
+        }
     };
 
     // Bulk delete products
     const handleBulkDelete = async () => {
     try {
-    await Promise.all(selectedProducts.map(p => api.post(`/api/delete-item/${p.id}`)));
-    setProducts((prev) => prev.filter((p) => !selectedProducts.some((sp) => sp.id === p.id)));
-    setSelectedProducts([]);
-    setAlertHeader("Success");
-    setAlertMessage("Selected products removed successfully!");
-    setAlertVisible(true);
-    } catch (error) {
-    console.error("Error deleting products:", error);
-    setAlertHeader("Error");
-    setAlertMessage("Failed to delete some products!");
-    setAlertVisible(true);
-    }
+        await Promise.all(selectedProducts.map(p => api.post(`/api/delete-item/${p.id}`)));
+        setProducts((prev) => prev.filter((p) => !selectedProducts.some((sp) => sp.id === p.id)));
+        setSelectedProducts([]);
+        setAlertHeader("Success");
+        setAlertMessage("Selected products removed successfully!");
+        setAlertVisible(true);
+        } 
+        catch (error) {
+            console.error("Error deleting products:", error);
+            setAlertHeader("Error");
+            setAlertMessage("Failed to delete some products!");
+            setAlertVisible(true);
+            }
     };
 
     // Format time for display
@@ -177,7 +195,7 @@ export default function InventoryPage() {
     const renderItem = ({ item }: { item: any }) => {
     const isSelected = selectedProducts.some((p) => p.id === item.id);
     return (
-    <View style={[styles.row, item.quantity <=10 && item.quantity > 0 ? { backgroundColor: '#dd942e' } : item.quantity <= 0 ? { backgroundColor: '#a00b0b' } : {}]}>
+    <View style={[styles.row, item.quantity <=10 && item.quantity > 0 ? { backgroundColor: '#fefba1' } : item.quantity <= 0 ? { backgroundColor: '#FFB4B4' } : {}]}>
         <View style={{ justifyContent: "space-around", 
                         width: CELL_WIDTH, 
                         alignItems: "center", 
@@ -319,7 +337,7 @@ export default function InventoryPage() {
 
         <FlatList
             contentContainerStyle={{ paddingBottom: 5 }}
-            data={products}
+            data={filteredProducts}
             keyExtractor={(item) => item.id.toString()}
             renderItem={renderItem}
             onEndReached={loadMore}
@@ -375,7 +393,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
    },
   date: {
-        marginTop: 17,
+        marginTop: 5,
         marginRight: 10,
         marginBottom: 3,
     },
@@ -392,12 +410,12 @@ const styles = StyleSheet.create({
     flexDirection: "row", 
     alignItems: "center", 
     paddingHorizontal: 10, 
-    paddingVertical: 5, 
+    paddingVertical: 3, 
     borderWidth: 1, 
     borderColor: "#411C0E", 
     backgroundColor: "#f9f9f9", 
     marginHorizontal: 20,
-    marginBottom: 10,
+    marginBottom: 5,
 },
   header: { 
     flexDirection: "row", 
@@ -444,14 +462,14 @@ headerText: {
     paddingHorizontal: 10,
 },
   image: { 
-    width: 70, 
-    height: 70, 
+    width: 65, 
+    height: 65, 
     borderRadius: 5, 
     marginLeft: 5 
   },
   placeholderImage: {
-    width: 70,
-    height: 70,
+    width: 65,
+    height: 65,
     borderRadius: 5,
     backgroundColor: '#f0f0f0',
     justifyContent: 'center',

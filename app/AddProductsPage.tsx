@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
     },
     dropdownButton: {
         padding: 10,
-        borderWidth: 1,
+        borderWidth: 1.8,
         marginTop: 3,
         borderColor: '#411C0E',
         backgroundColor: '#fff',

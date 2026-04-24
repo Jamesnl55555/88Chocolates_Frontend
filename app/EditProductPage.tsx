@@ -173,7 +173,7 @@ export default function EditProductModal() {
 
 
                 <Text style={styles.label}>Category:</Text>
-                <Text style={{ backgroundColor: '#f5f5f5', color: '#666666',  borderWidth: 2, borderColor: '#411C0E', padding: 10, marginBottom: 3}}>{editProduct.category || 'N/A'}</Text>
+                <Text style={{ backgroundColor: '#e4e4e4', color: '#5f5f5f',  borderWidth: 1.5, borderColor: '#411C0E', padding: 10, marginBottom: 3}}>{editProduct.category || 'N/A'}</Text>
                 
                 <Text style={styles.label}>Name:</Text>
                 <TextInput
