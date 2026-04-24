@@ -87,14 +87,14 @@ export default function ReceiptPage() {
         return (
             <View style={styles.product}>
                 <View style={styles.productHeader}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 20 }}>
-                        {item.name}
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#411C0E', }}>
+                        {item.category}
                     </Text>
                 </View>
 
-                <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-                    <Text style={{ fontWeight: 'bold' }}>Product No.</Text>
-                    <Text style={{ marginLeft: 'auto', marginRight: 10, fontSize: 16 }}>{String(item.product_number).padStart(6, '0')}</Text>
+                <View style={{ flexDirection: 'row', marginBottom: 10,  }}>
+                    <Text style={{ fontWeight: 'bold', color: '#411C0E', }}>Product No.</Text>
+                    <Text style={{ marginLeft: 'auto', marginRight: 10, fontSize: 16, color: '#411C0E', }}>{String(item.product_number).padStart(6, '0')}</Text>
                 </View>
 
                 <View style={styles.info}>
@@ -244,9 +244,13 @@ const styles = StyleSheet.create({
         marginBottom: 3,
     },
     dateText: {
-        fontSize: 17,
+        fontSize: 16,
         fontWeight: 'bold',
         color: '#411C0E',
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: '#411C0E',
+        padding: 5
     },
     total: {
         borderWidth: 1,

@@ -232,9 +232,13 @@ const styles = StyleSheet.create({
         marginBottom: 3,
     },
     dateText: {
-        fontSize: 17,
+        fontSize: 16,
         fontWeight: 'bold',
         color: '#411C0E',
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: '#411C0E',
+        padding: 5
     },
     total: {
         borderWidth: 1,

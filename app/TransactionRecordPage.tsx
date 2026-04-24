@@ -242,6 +242,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignSelf: 'flex-end',
+    borderWidth: 1,
+    height: 'auto',
   },
   modalOverlay: {
     flex: 1,
