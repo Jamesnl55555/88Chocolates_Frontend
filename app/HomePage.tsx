@@ -45,8 +45,6 @@ export default function HomePage() {
           params: { page: 1, date: todayDate },
         });
         const txns = res.data.transactions || [];
-        setLowStockCount(res.data.low_stock_count || 0);
-        setOutOfStockCount(res.data.out_of_stock_count || 0);
 
         setDailyTransactions(txns);
         setCustomerCount(txns.length);
@@ -62,13 +60,46 @@ export default function HomePage() {
       }
     };
 
+    const fetchStockCounts = async () => {
+      try {
+        let allProducts: any[] = [];
+        const firstRes = await api.get('/api/fetchproducts', {
+          params: { page: 1, search: '' },
+        });
+        allProducts = [...firstRes.data.products];
+        const lastPage = firstRes.data.last_page;
+
+        const pageRequests = [];
+        for (let p = 2; p <= lastPage; p++) {
+          pageRequests.push(api.get('/api/fetchproducts', {
+            params: { page: p, search: '' },
+          }));
+        }
+
+        const responses = await Promise.all(pageRequests);
+        responses.forEach(res => {
+          allProducts = [...allProducts, ...res.data.products];
+        });
+
+        const lowStock = allProducts.filter((p: any) => p.quantity > 0 && p.quantity <= 10).length;
+        const outOfStock = allProducts.filter((p: any) => p.quantity <= 0).length;
+
+        setLowStockCount(lowStock);
+        setOutOfStockCount(outOfStock);
+      } catch (err) {
+        console.error('Error fetching stock counts:', err);
+      }
+    };
+
     useEffect(() => {
       fetchDailyStats();
+      fetchStockCounts();
     }, []);
     
     useEffect(() => {
       const interval = setInterval(() => {
         fetchDailyStats();
+        fetchStockCounts();
       }, 30000); // Poll every 30 seconds
 
       return () => clearInterval(interval);
@@ -77,7 +108,7 @@ export default function HomePage() {
     return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
         <View style={styles.container}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 10, marginTop: 20, color: '#411C0E' }}>WELCOME, {(auth.user?.name ?? 'User').toUpperCase()}!</Text>
+        <Text style={{ fontSize: 24, fontWeight: 'bold', marginVertical: 10, color: '#411C0E' }}>WELCOME, {(auth.user?.name ?? 'User').toUpperCase()}!</Text>
         <Pressable
             style={({ pressed }) => [
                 styles.makeButton,
@@ -90,24 +121,29 @@ export default function HomePage() {
         <Pressable
             style={({ pressed }) => [
                 styles.makeButton,
-                pressed && styles.makeButtonPressed,
+                pressed && styles.makeButtonPressed, , {marginBottom: -2,}
             ]}
             onPress={() => router.push('/AddProductsPage')}
         >
             <Text style={styles.makeText}>ADD PRODUCT</Text>
         </Pressable>
 
+
         <View style={styles.date}>
             <Text style={styles.dateText}>{formattedDate}</Text>
+            <ActivityIndicator size="small" color="#411C0E" animating={refreshing} />
         </View>
+ 
 
         <View style={[styles.boxesContainer, { position: 'relative' }]}>
+            
             <TouchableOpacity 
               style={{ position: 'absolute', top: -10, right: 0, zIndex: 1, padding: 5 }} 
               onPress={fetchDailyStats}
               disabled={refreshing}
             >
-              <ActivityIndicator size="small" color="#411C0E" animating={refreshing} />
+                
+            
             </TouchableOpacity>
             <View style={styles.box}>
                 <Text style={styles.boxHeadText}>{customerCount ?? 0}</Text>
@@ -117,18 +153,18 @@ export default function HomePage() {
                 <Text style={styles.boxHeadText}>₱{revenue?.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? '0.00'}</Text>
                 <Text style={styles.boxText}>Revenue Today</Text>
             </View>
-            
         </View>
-        <View style={{ flexDirection: "row" }}>
-            <View style={styles.box}>
-                <Text style={styles.boxHeadText}>{outOfStockCount}</Text>
-                <Text style={styles.boxText}>Out of Stock</Text>
-            </View>
-            <View style={styles.box}>
+
+            <View style={[styles.stockBox, { backgroundColor: '#FFFCB1' }]}>
                 <Text style={styles.boxHeadText}>{lowStockCount}</Text>
-                <Text style={styles.boxText}>Low Stock</Text>
+                <Text style={styles.boxText}>Low Stock Items</Text>
             </View>
+
+            <View style={[styles.stockBox, { backgroundColor: '#FFB4B4' }]}>
+                <Text style={styles.boxHeadText}>{outOfStockCount}</Text>
+                <Text style={styles.boxText}>Out of Stock Items</Text>
             </View>
+            
         </View>
     </View>
 
@@ -161,16 +197,18 @@ const styles = StyleSheet.create({
     },
     date: {
         marginTop: 30,
+        flexDirection: 'row',
     },
     dateText: {
         fontSize: 18,
         fontWeight: 'bold',
         color: '#411C0E',
+        marginRight: 50
     },
     boxesContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 5,
+        marginVertical: 5,
     },
     box: {
         backgroundColor: '#FFFFFF',
@@ -182,6 +220,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingHorizontal: 5,
+    },
+    stockBox: {
+        backgroundColor: '#FFFFFF',
+        width: '100%',
+        height: 100,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#411C0E',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 5,
+        marginVertical: 3,
     },
     boxHeadText: {
         fontSize: 24,
