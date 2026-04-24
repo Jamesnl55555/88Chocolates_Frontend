@@ -147,7 +147,7 @@ export default function HomePage() {
             </TouchableOpacity>
             <View style={styles.box}>
                 <Text style={styles.boxHeadText}>{customerCount ?? 0}</Text>
-                <Text style={styles.boxText}>Customers Today</Text>
+                <Text style={styles.boxText}>Transaction/s Today</Text>
             </View>
             <View style={styles.box}>
                 <Text style={styles.boxHeadText}>₱{revenue?.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? '0.00'}</Text>
@@ -157,12 +157,12 @@ export default function HomePage() {
 
             <View style={[styles.stockBox, { backgroundColor: '#FFFCB1' }]}>
                 <Text style={styles.boxHeadText}>{lowStockCount}</Text>
-                <Text style={styles.boxText}>Low Stock Items</Text>
+                <Text style={styles.boxText}>Low Stock Item/s</Text>
             </View>
 
             <View style={[styles.stockBox, { backgroundColor: '#FFB4B4' }]}>
                 <Text style={styles.boxHeadText}>{outOfStockCount}</Text>
-                <Text style={styles.boxText}>Out of Stock Items</Text>
+                <Text style={styles.boxText}>Out of Stock Item/s</Text>
             </View>
             
         </View>
