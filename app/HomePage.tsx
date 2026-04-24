@@ -11,6 +11,8 @@ export default function HomePage() {
     const [dailyTransactions, setDailyTransactions] = useState([]);
     const [lastFetchedDate, setLastFetchedDate] = useState<string | null>(null);
     const [refreshing, setRefreshing] = useState(false);
+    const [outOfStockCount, setOutOfStockCount] = useState(0);
+    const [lowStockCount, setLowStockCount] = useState(0);
     const today = new Date();
     const formattedDate = today.toLocaleDateString("en-GB", {
         day: "numeric",
@@ -43,6 +45,9 @@ export default function HomePage() {
           params: { page: 1, date: todayDate },
         });
         const txns = res.data.transactions || [];
+        setLowStockCount(res.data.low_stock_count || 0);
+        setOutOfStockCount(res.data.out_of_stock_count || 0);
+
         setDailyTransactions(txns);
         setCustomerCount(txns.length);
         setRevenue(txns.reduce((sum: number, t: any) => sum + Number(t.total_amount || 0), 0));
@@ -112,7 +117,18 @@ export default function HomePage() {
                 <Text style={styles.boxHeadText}>₱{revenue?.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? '0.00'}</Text>
                 <Text style={styles.boxText}>Revenue Today</Text>
             </View>
+            
         </View>
+        <View style={{ flexDirection: "row" }}>
+            <View style={styles.box}>
+                <Text style={styles.boxHeadText}>{outOfStockCount}</Text>
+                <Text style={styles.boxText}>Out of Stock</Text>
+            </View>
+            <View style={styles.box}>
+                <Text style={styles.boxHeadText}>{lowStockCount}</Text>
+                <Text style={styles.boxText}>Low Stock</Text>
+            </View>
+            </View>
         </View>
     </View>
 

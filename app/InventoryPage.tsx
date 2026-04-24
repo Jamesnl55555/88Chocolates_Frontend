@@ -177,7 +177,7 @@ export default function InventoryPage() {
     const renderItem = ({ item }: { item: any }) => {
     const isSelected = selectedProducts.some((p) => p.id === item.id);
     return (
-    <View style={styles.row}>
+    <View style={[styles.row, item.quantity <=10 && item.quantity > 0 ? { backgroundColor: '#dd942e' } : item.quantity <= 0 ? { backgroundColor: '#a00b0b' } : {}]}>
         <View style={{ justifyContent: "space-around", 
                         width: CELL_WIDTH, 
                         alignItems: "center", 
