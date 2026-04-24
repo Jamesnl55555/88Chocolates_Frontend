@@ -120,7 +120,6 @@ const editProfileMutation = useMutation({
     return (
         <View style={styles.container}>
             <View style={styles.card}>
-                {/*  */}
                 <Pressable onPress={() => setChangeProfileModalVisible(true)} 
                     style={styles.profile}>
                     {auth.user?.profile_image ? (
@@ -160,8 +159,8 @@ const editProfileMutation = useMutation({
                         </View>
 
                     <Text style={styles.subheading}>Email:</Text>
-                        <View style={styles.inputBox}>
-                            <TextInput value={auth.user?.email ?? "user@example.com"} editable={false} style={{ color: '#565656a5' }}/>
+                        <View style={[styles.inputBox, {backgroundColor: '#f5f5f5'}]}>
+                            <TextInput value={auth.user?.email ?? "user@example.com"} editable={false} style={{ color: '#666666', }}/>
                         </View>
                 </View>
 

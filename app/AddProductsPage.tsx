@@ -25,7 +25,7 @@ export default function AddProductsPage() {
     const [showUnitDropdown, setShowUnitDropdown] = useState(false);
 
     const units = ['g', 'kg', 'ml', 'L'];
-    const categories = ['Chocolates', 'Candies', 'Drinks', 'Canned Goods', 'Instant Noodles', 'Chip Snacks']; 
+    const categories = ['Chocolates', 'Candies', 'Drinks', 'Canned Goods', 'Instant Noodles', 'Chip Snacks', 'Miscalleneous']; 
 
     
     useEffect(() => {
@@ -80,51 +80,6 @@ export default function AddProductsPage() {
         }
     };
 
-    // function validateInputs() {
-    //     if (!name) {
-    //         setAlertHeader("Error");
-    //         setAlertMessage("Please input a valid product name.");
-    //         setAlertVisible(true);
-    //         return false;
-    //     }
-    //     if (!price || isNaN(Number(price))) {
-    //         setAlertHeader("Error");
-    //         setAlertMessage("Please input a valid price.");
-    //         setAlertVisible(true);
-    //         return false;
-    //     }
-    //     if (quantity === 0) {
-    //         setAlertHeader("Error");
-    //         setAlertMessage("Please set a quantity.");
-    //         setAlertVisible(true);
-    //         return false;
-    //     }
-    //     if (quantity < 0 || quantity > 9999) {
-    //         setAlertHeader("Error");
-    //         setAlertMessage("Quantity must be between 0 and 9999.");
-    //         setAlertVisible(true);
-    //         return false;
-    //     }
-    //     if (!category) {
-    //         setAlertHeader("Error");
-    //         setAlertMessage("Please select a category.");
-    //         setAlertVisible(true);
-    //         return false;
-    //     }
-    //     if (!netWeightNumber || isNaN(Number(netWeightNumber)) || Number(netWeightNumber) <= 0) {
-    //         setAlertHeader("Error");
-    //         setAlertMessage("Please input a valid net weight.");
-    //         setAlertVisible(true);
-    //         return false;
-    //     }
-    //     if (!netWeightUnit) {
-    //         setAlertHeader("Error");
-    //         setAlertMessage("Please select a net weight unit.");
-    //         setAlertVisible(true);
-    //         return false;
-    //     }
-    //     return true;
-    // }
 
     const addProduct = useMutation({
         mutationFn: ({ category, name, price, quantity }: any) =>
@@ -306,7 +261,10 @@ export default function AddProductsPage() {
                             <Text style={[styles.label, { alignSelf: 'center' }]}>Quantity:</Text>
 
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <TouchableOpacity onPress={decreaseQuantity} style={styles.qtyButton}>
+                                <TouchableOpacity onPress={decreaseQuantity} disabled={quantity <= 0} style={[
+                                                                                    styles.qtyButton,
+                                                                                    (quantity <= 0) && { opacity: 0.5 }
+                                                                                ]}>
                                     <Text style={styles.qtyText}>-</Text>
                                 </TouchableOpacity>
 
@@ -320,7 +278,7 @@ export default function AddProductsPage() {
                                 />
 
                                 <TouchableOpacity onPress={increaseQuantity} disabled={quantity === 9999} style={[styles.qtyButton, quantity === 9999 && { backgroundColor: '#c9bdbd',opacity: 0.5 }]}>
-                                    <Text style={styles.qtyText}>+</Text>
+                                    <Text style={styles.qtyText}>+</Text>    
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -421,23 +379,25 @@ const styles = StyleSheet.create({
         marginTop: 3,
     },
     qtyButton: {
-        backgroundColor: '#eee',
-        padding: 5,
+        backgroundColor: '#411c0eea',
+        paddingHorizontal: 3,
+        paddingVertical: 3,
         borderRadius: 5,
         width: 30,
         alignItems: 'center',
     },
     qtyText: {
-        fontSize: 18,
+        fontSize: 17,
         fontWeight: 'bold',
+        color: '#FFEDD9',
     },
     qtyInput: {
         borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 2,
+        padding: 5,
         width: 60,
         textAlign: 'center',
         borderRadius: 5,
+        marginHorizontal: 1
     },
     touchableOverlay: {
         flex: 1,

@@ -268,13 +268,15 @@ export default function MakeTransactionPage() {
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
                             <TouchableOpacity
                                 onPress={() => decreaseQuantity(item)}
-                                disabled={selectedItem?.quantity <= 1}
+                                disabled={selectedItem?.quantity <= 0}
                                 style={[
                                     styles.qtyButton,
-                                    (selectedItem?.quantity <= 1) && { opacity: 0.5 }
+                                    (selectedItem?.quantity <= 0) && { opacity: 0.5 }
                                 ]}
                                 >
-                                <Text style={styles.qtyText}>-</Text>
+                                <View style={{ backgroundColor: '#411c0eea', paddingHorizontal: 11, borderRadius: 5, paddingVertical: 2.5 }}>
+                                    <Text style={styles.qtyText}>-</Text>
+                                </View>
                             </TouchableOpacity>
 
                             <TextInput
@@ -291,7 +293,10 @@ export default function MakeTransactionPage() {
                                     selectedItem?.quantity >= item.quantity && { opacity: 0.5 }
                                 ]}
                                 >
-                                <Text style={styles.qtyText}>+</Text>
+                                <View style={{ backgroundColor: '#411c0eea', paddingHorizontal: 10, borderRadius: 5, paddingVertical: 3 }}>
+                                    <Text style={styles.qtyText}>+</Text>
+                                </View>
+                                
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -340,7 +345,7 @@ export default function MakeTransactionPage() {
                 </Svg>
             </View>
 
-<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'  }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'  }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20 }}>
             </View>
 
@@ -496,15 +501,17 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         padding: 5,
         width: 50,
-        textAlign: 'center'
+        textAlign: 'center',
+        marginHorizontal: -8
     },
     qtyButton: {
         paddingHorizontal: 10,
-        paddingVertical: 5
+        paddingVertical: 5,
     },
     qtyText: { 
         fontSize: 18, 
-        fontWeight: 'bold' 
+        fontWeight: 'bold', 
+        color: '#FFEDD9',
     },
     button: {
         padding: 15,

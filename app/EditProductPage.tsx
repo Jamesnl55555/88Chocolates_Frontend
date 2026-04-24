@@ -173,7 +173,7 @@ export default function EditProductModal() {
 
 
                 <Text style={styles.label}>Category:</Text>
-                <Text style={{ backgroundColor: '#f5f5f5', color: '#666',  borderWidth: 2, borderColor: '#411C0E', padding: 10, marginBottom: 3}}>{editProduct.category || 'N/A'}</Text>
+                <Text style={{ backgroundColor: '#f5f5f5', color: '#666666',  borderWidth: 2, borderColor: '#411C0E', padding: 10, marginBottom: 3}}>{editProduct.category || 'N/A'}</Text>
                 
                 <Text style={styles.label}>Name:</Text>
                 <TextInput
@@ -225,7 +225,7 @@ export default function EditProductModal() {
                         <Text style={[styles.label, { alignSelf: 'center' }]}>Quantity:</Text>
                         
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <TouchableOpacity onPress={() => decreaseQuantity()} style={styles.qtyButton}>
+                            <TouchableOpacity onPress={() => decreaseQuantity()} disabled={editProduct.quantity <= 0} style={[styles.qtyButton, (editProduct.quantity <= 0) && { opacity: 0.5 }]}>
                                 <Text style={styles.qtyText}>-</Text>
                             </TouchableOpacity>
 
@@ -367,8 +367,9 @@ const styles = StyleSheet.create({
         marginTop: 3,
     },
     qtyButton: {
-        backgroundColor: '#eee',
-        padding: 5,
+        backgroundColor: '#411c0eea',
+        paddingHorizontal: 3,
+        paddingVertical: 3,
         borderRadius: 5,
         width: 30,
         alignItems: 'center',
@@ -376,14 +377,15 @@ const styles = StyleSheet.create({
     qtyText: {
         fontSize: 18,
         fontWeight: 'bold',
+        color: '#FFEDD9',
     },
     qtyInput: {
         borderWidth: 1,
-        borderColor: '#ccc',
         padding: 5,
         width: 60,
         textAlign: 'center',
         borderRadius: 5,
+        marginHorizontal: 1
     },
     imageIconCamera: {
         position: 'absolute',
