@@ -212,7 +212,7 @@ export default function AddProductsPage() {
                     />
                     <View style={styles.netWeightQuantityContainer}>
                         <View>
-                            <Text style={styles.label}>Net Weight:</Text>
+                            <Text style={[styles.label, {fontSize: 13}]}>Net Weight (Optional):</Text>
 
                         <View style={styles.netWeightContainer}>
                         <TextInput

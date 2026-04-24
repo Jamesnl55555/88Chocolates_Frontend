@@ -41,14 +41,28 @@ export default function HomePage() {
 
       setRefreshing(true);
       try {
-        const res = await api.get('/api/fetchtransactions', {
+        const firstRes = await api.get('/api/fetchtransactions', {
           params: { page: 1, date: todayDate },
         });
-        const txns = res.data.transactions || [];
 
-        setDailyTransactions(txns);
-        setCustomerCount(txns.length);
-        setRevenue(txns.reduce((sum: number, t: any) => sum + Number(t.total_amount || 0), 0));
+        let allTxns = firstRes.data.transactions || [];
+        const lastPage = firstRes.data.last_page || 1;
+
+        const pageRequests = [];
+        for (let p = 2; p <= lastPage; p++) {
+          pageRequests.push(api.get('/api/fetchtransactions', {
+            params: { page: p, date: todayDate },
+          }));
+        }
+
+        const responses = await Promise.all(pageRequests);
+        responses.forEach(res => {
+          allTxns = [...allTxns, ...(res.data.transactions || [])];
+        });
+
+        setDailyTransactions(allTxns);
+        setCustomerCount(allTxns.length);
+        setRevenue(allTxns.reduce((sum: number, t: any) => sum + Number(t.total_amount || 0), 0));
         setLastFetchedDate(todayDate);
       } catch (err) {
         console.error('Error fetching daily transactions:', err);
@@ -155,12 +169,18 @@ export default function HomePage() {
             </View>
         </View>
 
-            <View style={[styles.stockBox, { backgroundColor: '#fefba1' }]}>
+            <View style={[styles.stockBox, lowStockCount > 0 ? 
+                        { backgroundColor: '#fefba1' } 
+                        : 
+                        {}]}>
                 <Text style={styles.boxHeadText}>{lowStockCount}</Text>
                 <Text style={styles.boxText}>Low Stock Item/s</Text>
             </View>
 
-            <View style={[styles.stockBox, { backgroundColor: '#FFB4B4' }]}>
+            <View style={[styles.stockBox, outOfStockCount > 0 ? 
+                        { backgroundColor: '#FFB4B4' } 
+                        : 
+                        {}]}>
                 <Text style={styles.boxHeadText}>{outOfStockCount}</Text>
                 <Text style={styles.boxText}>Out of Stock Item/s</Text>
             </View>
