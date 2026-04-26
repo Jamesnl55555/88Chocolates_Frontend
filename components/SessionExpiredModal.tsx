@@ -11,7 +11,10 @@ const SessionExpiredModal = ({ onLogin }: Props) => {
       <View style={styles.container}>
         <Text style={styles.headerText}>Session Expired</Text>
         <Text style={styles.message}>
-          Your session has expired for security reasons. Please log in again to continue.
+          Your session has expired for security reasons.
+        </Text>
+        <Text style={styles.message2}>
+          Please log in again to continue.
         </Text>
 
         <TouchableOpacity onPress={onLogin} style={styles.button}>
@@ -44,7 +47,7 @@ const styles = StyleSheet.create({
     borderRadius: 45,
     justifyContent: 'center',
     alignItems: 'center',
-    top: -40,
+    top: 10,
   },
   headerText: {
     fontSize: 20,
@@ -52,9 +55,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 20,
     textAlign: 'center',
-    color: '#443514',
+    color: '#5c3406',
   },
   message: {
+    fontSize: 15,
+    marginBottom: 5,
+    marginHorizontal: 25,
+    textAlign: 'center',
+    color: '#411C0E'
+  },
+  message2: {
     fontSize: 15,
     marginBottom: 25,
     marginHorizontal: 40,
