@@ -138,7 +138,7 @@ export default function TransactionsPage() {
       onPress={() => goToReceiptPage(item.transaction_number)}
     >
       <View style={styles.cell}>
-        <Text>{String(item.transaction_number).padStart(6, "0")}</Text>
+        <Text style={{fontWeight: 'bold'}}>{String(item.transaction_number).padStart(6, "0")}</Text>
       </View>
       <View style={styles.cell}>
         <Text>{formatTime(item.created_at)}</Text>
@@ -247,7 +247,7 @@ export default function TransactionsPage() {
 );
 }
 
-const CELL_WIDTH = 140;
+const CELL_WIDTH = 117.8;
 
 const styles = StyleSheet.create({
   calendarContainer: {
