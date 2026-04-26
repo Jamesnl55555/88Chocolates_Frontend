@@ -40,6 +40,7 @@ export default function LoginPage() {
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [resetConfirmPassError, setResetConfirmPassError] = useState<string | null>(null);
   const [resetPasswordError, setResetPasswordError] = useState<string | null>(null);
+  const [resetSuccess, setResetSuccess] = useState(false);
 
   // Animated shift for keyboard
   const contentTranslateY = useRef(new Animated.Value(0)).current;
@@ -178,9 +179,7 @@ export default function LoginPage() {
     mutationFn: ({ password, password_confirmation }: ResetPasswordPayload) =>
       api.post('/api/reset-password', { email: emailForReset, code, password, password_confirmation }).then(res => res.data),
     onSuccess: () => {
-      
-      alert('Password reset successful!');
-      setResetPasswordVisible(false);
+      setResetSuccess(true);
     },
     onError: () => {
       setResetConfirmPassError('Invalid confirmation');
@@ -311,6 +310,11 @@ export default function LoginPage() {
           }}
           confirmError={resetConfirmPassError}
           passwordError={resetPasswordError}
+          isSuccess={resetSuccess}
+          onSuccessConfirm={() => {
+            setResetSuccess(false);
+            setResetPasswordVisible(false);
+          }}
         />
       )}
     </View>

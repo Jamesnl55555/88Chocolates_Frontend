@@ -21,6 +21,8 @@ type Props = {
   onCancel?: () => void;
   confirmError?: string | null;
   passwordError?: string | null;
+  isSuccess?: boolean;
+  onSuccessConfirm?: () => void;
 };
 
 export default function ResetPasswordModal({
@@ -31,6 +33,8 @@ export default function ResetPasswordModal({
   onCancel,
   confirmError,
   passwordError,
+  isSuccess,
+  onSuccessConfirm,
 }: Props) {
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
@@ -70,7 +74,7 @@ export default function ResetPasswordModal({
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : -40}
         style={styles.modalContainer}
       >
         <Text style={styles.title}>Create New Password</Text>
@@ -125,6 +129,16 @@ export default function ResetPasswordModal({
           />
         </View>
       )}
+
+      {isSuccess && (
+        <View style={styles.modalOverlay}>
+          <AlertModal
+            message="Password reset successful! Please log in to continue."
+            headertext="Success"
+            onConfirm={() => onSuccessConfirm?.()}
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -142,8 +156,9 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   modalContainer: {
+    flex: 1,
     width: '90%',
-    minHeight: 350,
+    minHeight: 400,
     flexGrow: 0,
     backgroundColor: "#fff",
     borderRadius: 50,
