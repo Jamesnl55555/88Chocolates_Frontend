@@ -15,7 +15,6 @@ function LayoutContent() {
   const { splashDone, isLoading } = useApp();
   const { restoring, isAuthenticated, sessionExpiredVisible, dismissSessionExpired } = useAuth();
 
-  // Prevent rendering stack while restoring auth state
   if (restoring) return null;
 
   return (
@@ -31,21 +30,18 @@ function LayoutContent() {
         }}
       />
 
-      {/* Splash Overlay */}
       {!splashDone && (
         <View style={[styles.absoluteFillObject, { zIndex: 1000 }]}>
           <SplashScreen onFinish={() => {}} />
         </View>
       )}
 
-      {/* Global Loader Overlay */}
       {isLoading && (
         <View style={[styles.absoluteFillObject, { zIndex: 1001 }]}>
           <Loading onFinish={() => {}} />
         </View>
       )}
 
-      {/* Session Expired Modal */}
       {sessionExpiredVisible && (
         <View style={[styles.absoluteFillObject, { zIndex: 2002 }]}>
           <SessionExpiredModal

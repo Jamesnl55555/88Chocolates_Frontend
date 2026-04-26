@@ -1,8 +1,8 @@
 import AlertModal from "@/components/AlertModal";
 import CheckboxComponent from "@/components/CheckboxComponent";
 import ConfirmAlertModal from "@/components/ConfirmAlertModal";
-import { useRouter } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
     ActivityIndicator,

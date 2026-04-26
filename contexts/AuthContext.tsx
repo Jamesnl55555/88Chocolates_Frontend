@@ -1,6 +1,6 @@
 import { setLogoutHandler } from '@/utils/authEvents';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 
 export type User = {
   email: string;
@@ -8,6 +8,8 @@ export type User = {
   storeName: string;
   profile_image?: string | null;
 } | null;
+
+type LogoutType = 'manual' | 'expired' | 'invalid';
 
 export type AuthContextType = {
   userToken: string | null;
@@ -17,7 +19,7 @@ export type AuthContextType = {
   setUser: React.Dispatch<React.SetStateAction<User>>;
   signIn: (token: string, userData: User) => Promise<void>;
   signOut: () => Promise<void>;
-  updateUser: (userData: User) => Promise<void>; // NEW helper
+  updateUser: (userData: User) => Promise<void>;
   sessionExpiredVisible: boolean;
   dismissSessionExpired: () => void;
 };
@@ -29,24 +31,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [restoring, setRestoring] = useState(true);
   const [user, setUser] = useState<User>(null);
   const [sessionExpiredVisible, setSessionExpiredVisible] = useState(false);
+  const sessionExpiredTriggered = useRef(false);
 
-  const dismissSessionExpired = () => setSessionExpiredVisible(false);
+  const dismissSessionExpired = () => {
+    sessionExpiredTriggered.current = false;
+    setSessionExpiredVisible(false);
+  };
+
+  const signOut = async () => {
+    await AsyncStorage.removeItem('userToken');
+    await AsyncStorage.removeItem('user');
+    setUser(null);
+    setUserToken(null);
+  };
 
   useEffect(() => {
-    setLogoutHandler(() => {
+    setLogoutHandler((type?: LogoutType) => {
+      if (type === 'expired') {
+        if (sessionExpiredTriggered.current) return;
+
+        sessionExpiredTriggered.current = true;
+        signOut();
+        setSessionExpiredVisible(true);
+        return;
+      }
+
       signOut();
-      setSessionExpiredVisible(true);
     });
   }, []);
 
-  // Restore token & user from AsyncStorage
   useEffect(() => {
     (async () => {
       try {
         const token = await AsyncStorage.getItem('userToken');
         const userJson = await AsyncStorage.getItem('user');
+
         if (token) {
           setUserToken(token);
+
           if (userJson) {
             const parsedUser = JSON.parse(userJson);
             setUser({
@@ -57,36 +79,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             });
           }
         }
-      } catch (err) {
-        console.warn('Failed to restore session', err);
+      } catch {
+        console.warn('Failed to restore session');
       } finally {
         setRestoring(false);
       }
     })();
   }, []);
 
-  // Sign in: store token & user in AsyncStorage
   const signIn = async (token: string, userData: User) => {
-    if (!userData) throw new Error('User data must be provided');
+    if (!userData) return;
+
     await AsyncStorage.setItem('userToken', token);
     await AsyncStorage.setItem('user', JSON.stringify(userData));
+
     setUser(userData);
     setUserToken(token);
   };
 
-  
-
-  // Sign out: remove token & user from AsyncStorage
-  const signOut = async () => {
-    await AsyncStorage.removeItem('userToken');
-    await AsyncStorage.removeItem('user');
-    setUser(null);
-    setUserToken(null);
-  };
-
-  // NEW: Update user in memory AND AsyncStorage
   const updateUser = async (userData: User) => {
     if (!userData) return;
+
     setUser(userData);
     await AsyncStorage.setItem('user', JSON.stringify(userData));
   };

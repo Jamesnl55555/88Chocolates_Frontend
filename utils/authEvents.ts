@@ -1,9 +1,11 @@
-let logoutHandler: null | (() => void) = null;
+type LogoutType = 'manual' | 'expired' | 'invalid';
 
-export const setLogoutHandler = (fn: () => void) => {
+let logoutHandler: ((type?: LogoutType) => void) | null = null;
+
+export const setLogoutHandler = (fn: (type?: LogoutType) => void) => {
   logoutHandler = fn;
 };
 
-export const triggerLogout = () => {
-  logoutHandler?.();
+export const triggerLogout = (type?: LogoutType) => {
+  logoutHandler?.(type);
 };
