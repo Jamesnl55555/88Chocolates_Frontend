@@ -1,19 +1,19 @@
 import AppHeader from '@/components/AppHeader';
 import Loading from '@/components/Loader/Loading';
 import NavigationBar from '@/components/NavigationBar';
+import SessionExpiredModal from '@/components/SessionExpiredModal';
 import { AppProvider, useApp } from '@/contexts/AppContext';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import SplashScreen from '@/screens/SplashScreen';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Stack } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 const queryClient = new QueryClient();
 
 function LayoutContent() {
   const { splashDone, isLoading } = useApp();
-  const { restoring, isAuthenticated } = useAuth();
-  
+  const { restoring, isAuthenticated, sessionExpiredVisible, dismissSessionExpired } = useAuth();
 
   // Prevent rendering stack while restoring auth state
   if (restoring) return null;
@@ -44,6 +44,19 @@ function LayoutContent() {
           <Loading onFinish={() => {}} />
         </View>
       )}
+
+      {/* Session Expired Modal */}
+      {sessionExpiredVisible && (
+        <View style={[styles.absoluteFillObject, { zIndex: 2002 }]}>
+          <SessionExpiredModal
+            onLogin={() => {
+              dismissSessionExpired();
+              router.replace('/LoginPage');
+            }}
+          />
+        </View>
+      )}
+
       {isAuthenticated && <NavigationBar />}
     </View>
   );

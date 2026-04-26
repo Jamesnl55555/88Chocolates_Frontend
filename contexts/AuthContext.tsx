@@ -1,6 +1,5 @@
 import { setLogoutHandler } from '@/utils/authEvents';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export type User = {
@@ -19,6 +18,8 @@ export type AuthContextType = {
   signIn: (token: string, userData: User) => Promise<void>;
   signOut: () => Promise<void>;
   updateUser: (userData: User) => Promise<void>; // NEW helper
+  sessionExpiredVisible: boolean;
+  dismissSessionExpired: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,11 +28,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userToken, setUserToken] = useState<string | null>(null);
   const [restoring, setRestoring] = useState(true);
   const [user, setUser] = useState<User>(null);
+  const [sessionExpiredVisible, setSessionExpiredVisible] = useState(false);
+
+  const dismissSessionExpired = () => setSessionExpiredVisible(false);
 
   useEffect(() => {
     setLogoutHandler(() => {
       signOut();
-      router.replace('/LoginPage');
+      setSessionExpiredVisible(true);
     });
   }, []);
 
@@ -98,6 +102,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signIn,
         signOut,
         updateUser,
+        sessionExpiredVisible,
+        dismissSessionExpired,
       }}
     >
       {children}
