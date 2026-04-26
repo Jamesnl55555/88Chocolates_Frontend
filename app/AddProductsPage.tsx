@@ -5,6 +5,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState } from 'react';
 import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { uploadImage } from "../app/services/cloudinary";
+import { sanitizePrice } from '../utils/priceValidation';
 import api from './services/api';
 
 export default function AddProductsPage() {
@@ -290,11 +291,11 @@ export default function AddProductsPage() {
                             <View style={{ width: 135, borderWidth: 2, borderColor: '#411C0E', alignItems: 'center', flexDirection: 'row', borderRadius: 50, marginBottom: 12, }}>
                                 <Text style={{ fontWeight: 'bold', marginLeft: 10, color: '#411C0E',  }}>₱</Text>
                                     <TextInput
-                                    keyboardType="numeric"
-                                    value={price} 
+                                    keyboardType="decimal-pad"
+                                    value={price}
                                     style={{ width: 135,  }}
-                                    onChangeText={(text) => setPrice(limit4Digits(text))}
-                                    maxLength={4}
+                                    onChangeText={(text) => setPrice(sanitizePrice(text))}
+                                    maxLength={6}
                                 />
                             </View>
                             

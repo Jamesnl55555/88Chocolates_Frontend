@@ -4,6 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { sanitizePrice } from '../utils/priceValidation';
 import api from './services/api';
 import { uploadImage } from './services/cloudinary';
 
@@ -248,11 +249,11 @@ export default function EditProductModal() {
                         <View style={{ width: 100, borderWidth: 2, borderColor: '#411C0E', alignItems: 'center', flexDirection: 'row', borderRadius: 50, }}>
                                 <Text style={{ fontWeight: 'bold', marginLeft: 10, color: '#411C0E',  }}>₱</Text>
                                     <TextInput
-                                    keyboardType="numeric"
+                                    keyboardType="decimal-pad"
                                     value={String(editProduct.price)}
                                     style={{ width: 135,  }}
-                                    onChangeText={(text) => setEditProduct({ ...editProduct, price: text })}
-                                    maxLength={4}
+                                    onChangeText={(text) => setEditProduct({ ...editProduct, price: sanitizePrice(text) })}
+                                    maxLength={6}
                                 />
                             </View>
                     
