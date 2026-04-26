@@ -9,6 +9,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import AlertModal from "./AlertModal";
 
 type Props = {
   email: string;
@@ -22,6 +23,9 @@ export default function VerifyCodeModal({ email, onSubmit, isLoading, onCancel, 
   const [code, setCode] = useState("");
   const [canResend, setCanResend] = useState(true);
   const [timer, setTimer] = useState(30);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertHeader, setAlertHeader] = useState("");
 
   // Animated shift for keyboard
   const contentTranslateY = useRef(new Animated.Value(0)).current;
@@ -82,7 +86,12 @@ export default function VerifyCodeModal({ email, onSubmit, isLoading, onCancel, 
     }
   }, [code]);
   const handlePress = () => {
-    if (!code) return alert("Please enter the code sent to your email.");
+    if (!code) {
+      setAlertHeader("Empty Code");
+      setAlertMessage("Please enter the code sent to your email.");
+      setAlertVisible(true);
+      return;
+    }
     onSubmit(code);
   };
 
@@ -139,6 +148,16 @@ export default function VerifyCodeModal({ email, onSubmit, isLoading, onCancel, 
           </Pressable>
         )}
       </Animated.View>
+
+      {alertVisible && (
+        <View style={styles.modalOverlay}>
+          <AlertModal
+            message={alertMessage}
+            headertext={alertHeader}
+            onConfirm={() => setAlertVisible(false)}
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -169,10 +188,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: "bold",
+    fontWeight: 800,
     marginBottom: 10,
     paddingHorizontal: 10,
-    marginTop: '7%',
+    marginTop: '6%',
     color: '#411C0E',
   },
   subtitle: {
@@ -184,10 +203,10 @@ const styles = StyleSheet.create({
   },
   subheading: {
     fontSize: 16,
-    fontWeight: "900",
+    fontWeight: "800",
     color: "#411C0E",
-    marginTop: 10,
-    marginBottom: 8,
+    marginTop: 8,
+    marginBottom: 5,
     alignSelf: "flex-start",
   },
   inputWrapper: {
@@ -214,7 +233,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10,
-    marginBottom: 7,
+    marginBottom: 5,
   },
   buttonText: {
     color: "#fff",
@@ -224,10 +243,11 @@ const styles = StyleSheet.create({
   cancelContainer: {
     width: "60%",
     alignItems: "center",
-    marginVertical: 5
+    marginBottom: 8,
+    marginTop: 3,
   },
   cancelButton: {
-    color: "#B00B0BCC",
+    color: "#c70e0e",
     fontWeight: "600",
   },
   resendButton: {
