@@ -1,8 +1,8 @@
 import { validatePassword } from "@/utils/passwordValidation";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated,
   Keyboard,
-  KeyboardAvoidingView,
   Platform,
   Pressable,
   StyleSheet,
@@ -45,6 +45,36 @@ export default function ResetPasswordModal({
   const [alertHeader, setAlertHeader] = useState("");
   const [pError, setPError] = useState<string | null>(null);
 
+  // Animated shift for keyboard
+  const contentTranslateY = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSub = Keyboard.addListener(showEvent, (e) => {
+      const kbHeight = e.endCoordinates.height;
+      Animated.timing(contentTranslateY, {
+        toValue: -kbHeight / 2,
+        duration: 250,
+        useNativeDriver: true,
+      }).start();
+    });
+
+    const hideSub = Keyboard.addListener(hideEvent, () => {
+      Animated.timing(contentTranslateY, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: true,
+      }).start();
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
   const handlePress = () => {
     if (!password || !passwordConfirmation) {
       setAlertHeader("Error");
@@ -72,10 +102,11 @@ export default function ResetPasswordModal({
       {/* Dismiss keyboard on background press */}
       <Pressable style={StyleSheet.absoluteFill} onPress={Keyboard.dismiss} />
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : -40}
-        style={styles.modalContainer}
+      <Animated.View
+        style={[
+          styles.modalContainer,
+          { transform: [{ translateY: contentTranslateY }] },
+        ]}
       >
         <Text style={styles.title}>Create New Password</Text>
         <Text style={styles.subtitle}>Please enter your new password.</Text>
@@ -118,7 +149,7 @@ export default function ResetPasswordModal({
             <Text style={styles.cancelText}>Back to login</Text>
           </Pressable>
         )}
-      </KeyboardAvoidingView>
+      </Animated.View>
 
       {alertVisible && (
         <View style={styles.modalOverlay}>
@@ -168,18 +199,18 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
   },
-  title: { 
-    fontSize: 21, 
-    fontWeight: "800", 
-    marginTop: 15, 
+  title: {
+    fontSize: 21,
+    fontWeight: "800",
+    marginTop: 15,
     marginBottom: 7,
     color: '#411C0E',
   },
-  subtitle: { 
-    fontSize: 15, 
+  subtitle: {
+    fontSize: 15,
     color: '#411C0E',
-    textAlign: "center", 
-    marginBottom: 21, 
+    textAlign: "center",
+    marginBottom: 21,
   },
   inputWrapper: {
     flexDirection: "row",
@@ -200,16 +231,16 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     marginBottom: 3,
   },
-  input: { 
-    flex: 1, 
-    height: 40, 
-    color: "#222" 
+  input: {
+    flex: 1,
+    height: 40,
+    color: "#222"
   },
-  error: { 
-    color: "#a34e09", 
-    marginBottom: 10, 
-    fontSize: 12, 
-    alignSelf: "flex-start" 
+  error: {
+    color: "#a34e09",
+    marginBottom: 10,
+    fontSize: 12,
+    alignSelf: "flex-start"
   },
   button: {
     width: "60%",
@@ -221,19 +252,19 @@ const styles = StyleSheet.create({
     marginBottom: 7,
     marginTop: 10,
   },
-  buttonText: { 
-    color: "#fff", 
+  buttonText: {
+    color: "#fff",
     fontWeight: "800",
     fontSize: 15,
   },
-  cancelContainer: { 
-    width: "100%", 
-    alignItems: "center", 
-    marginTop: 5 
+  cancelContainer: {
+    width: "100%",
+    alignItems: "center",
+    marginTop: 5
   },
-  cancelText: { 
-    color: "#3c0af0", 
-    fontWeight: "600" 
+  cancelText: {
+    color: "#3c0af0",
+    fontWeight: "600"
   },
   alertOverlay: {
     position: 'absolute',

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated,
   Keyboard,
-  KeyboardAvoidingView,
   Platform,
   Pressable,
   StyleSheet,
@@ -22,6 +22,36 @@ export default function VerifyCodeModal({ email, onSubmit, isLoading, onCancel, 
   const [code, setCode] = useState("");
   const [canResend, setCanResend] = useState(true);
   const [timer, setTimer] = useState(30);
+
+  // Animated shift for keyboard
+  const contentTranslateY = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSub = Keyboard.addListener(showEvent, (e) => {
+      const kbHeight = e.endCoordinates.height;
+      Animated.timing(contentTranslateY, {
+        toValue: -kbHeight / 2,
+        duration: 250,
+        useNativeDriver: true,
+      }).start();
+    });
+
+    const hideSub = Keyboard.addListener(hideEvent, () => {
+      Animated.timing(contentTranslateY, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: true,
+      }).start();
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
   useEffect(() => {
   let interval: any;
@@ -61,10 +91,11 @@ export default function VerifyCodeModal({ email, onSubmit, isLoading, onCancel, 
       {/* Dismiss keyboard on background press */}
       <Pressable style={StyleSheet.absoluteFill} onPress={Keyboard.dismiss} />
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
-        style={styles.modalContainer}
+      <Animated.View
+        style={[
+          styles.modalContainer,
+          { transform: [{ translateY: contentTranslateY }] },
+        ]}
       >
         <Text style={styles.title}>Verify Code</Text>
         <Text style={styles.subtitle}>Enter the 6-digit code sent to {email}</Text>
@@ -107,7 +138,7 @@ export default function VerifyCodeModal({ email, onSubmit, isLoading, onCancel, 
             <Text style={styles.cancelButton}>Cancel</Text>
           </Pressable>
         )}
-      </KeyboardAvoidingView>
+      </Animated.View>
     </View>
   );
 }
@@ -136,20 +167,20 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
   },
-  title: { 
-    fontSize: 22, 
-    fontWeight: "bold", 
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
     marginBottom: 10,
-    paddingHorizontal: 10, 
+    paddingHorizontal: 10,
     marginTop: '7%',
     color: '#411C0E',
   },
-  subtitle: { 
-    fontSize: 15, 
-    color: "#411C0E", 
-    textAlign: "center", 
+  subtitle: {
+    fontSize: 15,
+    color: "#411C0E",
+    textAlign: "center",
     marginBottom: 15,
-    paddingHorizontal: 10, 
+    paddingHorizontal: 10,
   },
   subheading: {
     fontSize: 16,
@@ -171,8 +202,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   input: {
-    width: "100%", 
-    height: 40, 
+    width: "100%",
+    height: 40,
     color: "#565656",
   },
   button: {
@@ -185,18 +216,18 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 7,
   },
-  buttonText: { 
-    color: "#fff", 
+  buttonText: {
+    color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
   },
-  cancelContainer: { 
-    width: "60%", 
-    alignItems: "center", 
-    marginVertical: 5 
+  cancelContainer: {
+    width: "60%",
+    alignItems: "center",
+    marginVertical: 5
   },
-  cancelButton: { 
-    color: "#B00B0BCC", 
+  cancelButton: {
+    color: "#B00B0BCC",
     fontWeight: "600",
   },
   resendButton: {

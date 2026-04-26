@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated,
   Keyboard,
-  KeyboardAvoidingView,
   Platform,
   Pressable,
   StyleSheet,
@@ -20,6 +20,36 @@ type Props = {
 export default function ForgotPassModal({ onSubmit, onCancel, isLoading, emailError }: Props) {
   const [email, setEmail] = useState("");
 
+  // Animated shift for keyboard
+  const contentTranslateY = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSub = Keyboard.addListener(showEvent, (e) => {
+      const kbHeight = e.endCoordinates.height;
+      Animated.timing(contentTranslateY, {
+        toValue: -kbHeight / 2,
+        duration: 250,
+        useNativeDriver: true,
+      }).start();
+    });
+
+    const hideSub = Keyboard.addListener(hideEvent, () => {
+      Animated.timing(contentTranslateY, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: true,
+      }).start();
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
   const handlePress = () => {
     if (!email) return alert("Please enter your email.");
     onSubmit(email);
@@ -30,10 +60,14 @@ export default function ForgotPassModal({ onSubmit, onCancel, isLoading, emailEr
       {/* Background to dismiss keyboard */}
       <Pressable style={StyleSheet.absoluteFill} onPress={Keyboard.dismiss} />
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0} // adjust if modal top changes
-        style={styles.modalContainer}
+      <Animated.View
+        style={[
+          styles.modalContainer,
+          { 
+          justifyContent: 'center',
+          alignItems: 'center',
+          transform: [{ translateY: contentTranslateY }] },
+        ]}
       >
         <Text style={styles.title}>Forgot Password</Text>
         <Text style={styles.description}>
@@ -69,7 +103,7 @@ export default function ForgotPassModal({ onSubmit, onCancel, isLoading, emailEr
             <Text style={styles.cancelButton}>Back to login</Text>
           </Pressable>
         )}
-      </KeyboardAvoidingView>
+      </Animated.View>
     </View>
   );
 }
@@ -87,7 +121,7 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   modalContainer: {
-    width: 345,
+    width: '90%',
     minHeight: 350,
     maxHeight: 420,
     backgroundColor: "#fff",
@@ -98,20 +132,20 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
   },
-  title: { 
-    fontSize: 22, 
-    fontWeight: "bold", 
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
     marginBottom: 10,
-    paddingHorizontal: 10, 
+    paddingHorizontal: 10,
     marginTop: '7%',
     color: '#411C0E',
   },
-  description: { 
-    fontSize: 15, 
-    color: "#411C0E", 
-    textAlign: "center", 
+  description: {
+    fontSize: 15,
+    color: "#411C0E",
+    textAlign: "center",
     marginBottom: 15,
-    paddingHorizontal: 10, 
+    paddingHorizontal: 10,
   },
   subheading: {
     fontSize: 16,
@@ -132,9 +166,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 12,
   },
-  input: { 
-    width: "100%", 
-    height: 40, 
+  input: {
+    width: "100%",
+    height: 40,
     color: "#565656"
   },
   button: {
@@ -147,24 +181,24 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 7,
   },
-  buttonText: { 
-    color: "#fff", 
+  buttonText: {
+    color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
   },
-  cancelContainer: { 
-    width: "60%", 
-    alignItems: "center", 
-    marginTop: 5 
+  cancelContainer: {
+    width: "60%",
+    alignItems: "center",
+    marginTop: 5
   },
-  cancelButton: { 
-    color: "#1A00FF", 
+  cancelButton: {
+    color: "#1A00FF",
     fontWeight: "600",
   },
-  error: { 
-    color: "#a34e09", 
-    marginBottom: 10, 
-    fontSize: 12, 
-    alignSelf: "flex-start" 
+  error: {
+    color: "#a34e09",
+    marginBottom: 10,
+    fontSize: 12,
+    alignSelf: "flex-start"
   },
 });
