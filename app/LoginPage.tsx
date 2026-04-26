@@ -52,6 +52,7 @@ export default function LoginPage() {
     setEmailForReset('');
     setCode(''); 
     setRememberMeChecked(false); 
+    setEmailError(null);
   };
 
   useEffect(() => {
@@ -91,7 +92,10 @@ export default function LoginPage() {
 
   // Toggle functions
   const togglePasswordVisibility = () => setPasswordVisible(prev => !prev);
-  const toggleForgotPassVisible = () => setForgotPassVisible(prev => !prev);
+  const toggleForgotPassVisible = () => {
+    setEmailError(null);
+    setForgotPassVisible(prev => !prev);
+  };
 
   // LOGIN MUTATION
   const loginMutation = useMutation({

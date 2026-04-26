@@ -19,6 +19,7 @@ type Props = {
 
 export default function ForgotPassModal({ onSubmit, onCancel, isLoading, emailError }: Props) {
   const [email, setEmail] = useState("");
+  const [emptyError, setEmptyError] = useState<string | null>(null);
 
   // Animated shift for keyboard
   const contentTranslateY = useRef(new Animated.Value(0)).current;
@@ -51,7 +52,11 @@ export default function ForgotPassModal({ onSubmit, onCancel, isLoading, emailEr
   }, []);
 
   const handlePress = () => {
-    if (!email) return alert("Please enter your email.");
+    if (!email.trim()) {
+      setEmptyError("Please enter your email.");
+      return;
+    }
+    setEmptyError(null);
     onSubmit(email);
   };
 
@@ -86,7 +91,9 @@ export default function ForgotPassModal({ onSubmit, onCancel, isLoading, emailEr
           />
         </View>
 
-        {emailError && <Text style={styles.error}>{emailError}</Text>}
+        {(emptyError || emailError) && (
+          <Text style={styles.error}>{emptyError || emailError}</Text>
+        )}
 
         <Pressable
           style={styles.button}
@@ -123,18 +130,18 @@ const styles = StyleSheet.create({
   modalContainer: {
     width: '90%',
     minHeight: 350,
-    maxHeight: 420,
+    maxHeight: 450,
     backgroundColor: "#fff",
     borderRadius: 50,
     paddingHorizontal: 20,
     paddingTop: 15,
-    paddingBottom: 10,
+    paddingBottom: 15,
     justifyContent: "flex-start",
     alignItems: "center",
   },
   title: {
     fontSize: 22,
-    fontWeight: "bold",
+    fontWeight: 800,
     marginBottom: 10,
     paddingHorizontal: 10,
     marginTop: '7%',
@@ -162,7 +169,7 @@ const styles = StyleSheet.create({
     borderRadius: 45,
     borderColor: "#411C0E",
     borderWidth: 1,
-    marginBottom: 15,
+    marginBottom: 5,
     justifyContent: "center",
     paddingHorizontal: 12,
   },
@@ -178,7 +185,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 20,
     marginBottom: 7,
   },
   buttonText: {
@@ -194,10 +201,10 @@ const styles = StyleSheet.create({
   cancelButton: {
     color: "#1A00FF",
     fontWeight: "600",
+    marginBottom: 5,
   },
   error: {
-    color: "#a34e09",
-    marginBottom: 10,
+    color: 'red',
     fontSize: 12,
     alignSelf: "flex-start"
   },

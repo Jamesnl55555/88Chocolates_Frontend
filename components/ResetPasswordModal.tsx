@@ -43,7 +43,7 @@ export default function ResetPasswordModal({
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertHeader, setAlertHeader] = useState("");
-  const [pError, setPError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{ password?: string; passwordConfirmation?: string }>({});
 
   // Animated shift for keyboard
   const contentTranslateY = useRef(new Animated.Value(0)).current;
@@ -76,24 +76,30 @@ export default function ResetPasswordModal({
   }, []);
 
   const handlePress = () => {
+    const newErrors: { password?: string; passwordConfirmation?: string } = {};
+
     if (!password || !passwordConfirmation) {
-      setAlertHeader("Error");
-      setAlertMessage("Please fill both fields.");
-      setAlertVisible(true);
+      newErrors.password = 'Please fill in both fields.';
+      newErrors.passwordConfirmation = 'Please fill in both fields.';
+    }
+
+    if (password && passwordConfirmation && password !== passwordConfirmation) {
+      newErrors.passwordConfirmation = 'Passwords do not match.';
+    }
+
+    if (password) {
+      const passwordErrors = validatePassword(password);
+      if (passwordErrors.length > 0) {
+        newErrors.password = passwordErrors.join('\n');
+      }
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
-    if (password !== passwordConfirmation) {
-      setAlertHeader("Error");
-      setAlertMessage("Passwords do not match.");
-      setAlertVisible(true);
-      return;
-    }
-    const passwordErrors = validatePassword(password);
-    if (passwordErrors.length > 0) {
-      setPError(passwordErrors.join("\n"));
-      return;
-    }
-    
+
+    setErrors({});
     onSubmit(password, passwordConfirmation);
   };
 
@@ -120,25 +126,28 @@ export default function ResetPasswordModal({
             value={password}
             onChangeText={(text) => {
               setPassword(text);
-              setPError(null);
+              setErrors((prev) => ({ ...prev, password: undefined }));
             }}
           />
           <EyeComponent toggleVisibility={() => setIsPasswordVisible(!isPasswordVisible)} isVisible={isPasswordVisible} />
         </View>
-        {pError && <Text style={styles.error}>{pError}</Text>}
+        {errors.password && <Text style={[styles.error, {marginBottom: 8}]}>{errors.password}</Text>}
 
         <Text style={styles.label}>Confirm Password:</Text>
         <View style={styles.inputWrapper}>
           <TextInput
-            style={styles.input}
+            style={[styles.input, {marginTop: 10}]}
             placeholder="Confirm Password"
             secureTextEntry={!isConfirmPasswordVisible}
             value={passwordConfirmation}
-            onChangeText={setPasswordConfirmation}
+            onChangeText={(text) => {
+              setPasswordConfirmation(text);
+              setErrors((prev) => ({ ...prev, passwordConfirmation: undefined }));
+            }}
           />
           <EyeComponent toggleVisibility={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)} isVisible={isConfirmPasswordVisible} />
         </View>
-        {confirmError && <Text style={styles.error}>{confirmError}</Text>}
+        {errors.passwordConfirmation && <Text style={[styles.error, {marginBottom: 10}]}>{errors.passwordConfirmation}</Text>}
 
         <Pressable style={styles.button} onPress={handlePress} disabled={isLoading}>
           <Text style={styles.buttonText}>{isLoading ? "Resetting..." : "Change Password"}</Text>
@@ -187,9 +196,9 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   modalContainer: {
-    flex: 1,
     width: '90%',
-    minHeight: 400,
+    minHeight: 370,
+    maxHeight: 500,
     flexGrow: 0,
     backgroundColor: "#fff",
     borderRadius: 50,
@@ -220,7 +229,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#411C0E",
     paddingHorizontal: 12,
-    marginBottom: 20,
+    marginBottom: 5,
     width: "100%",
     height: 50,
   },
@@ -230,6 +239,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     alignSelf: "flex-start",
     marginBottom: 3,
+    
   },
   input: {
     flex: 1,
@@ -237,8 +247,7 @@ const styles = StyleSheet.create({
     color: "#222"
   },
   error: {
-    color: "#a34e09",
-    marginBottom: 10,
+    color: 'red',
     fontSize: 12,
     alignSelf: "flex-start"
   },
@@ -277,3 +286,4 @@ const styles = StyleSheet.create({
     zIndex: 2000,
   },
 });
+
