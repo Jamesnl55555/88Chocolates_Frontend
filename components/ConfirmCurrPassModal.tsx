@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#411C0E",
         paddingHorizontal: 12,
-        marginBottom: 10,
+        marginBottom: 5,
         width: "100%",
         height: 50,
     },
@@ -121,7 +121,8 @@ const styles = StyleSheet.create({
     },
     error: {
         color: 'red',
-        marginTop: 5,
-        textAlign: 'center',
+        marginBottom: 10,
+        textAlign: 'left',
+        fontSize: 12,
     }
 });

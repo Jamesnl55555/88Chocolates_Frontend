@@ -15,8 +15,6 @@ type Props = {
     isLoading: boolean;
 }
 type FormErrors = {
-  name?: string;
-  email?: string;
   password?: string;
   confirmPassword?: string;
 };
@@ -28,31 +26,63 @@ export default function ChangePassModal({ onSubmit, onCancel, isLoading }: Props
     const [isConfirmVisible, setIsConfirmVisible] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
 
+    const isButtonDisabled = isLoading || !password || !password_confirmation;
+
+    const validatePasswordField = (value: string) => {
+        if (!value) {
+            return 'Password is required.';
+        }
+        const passwordErrors = validatePassword(value);
+        if (passwordErrors.length > 0) {
+            return passwordErrors.join('\n');
+        }
+        return undefined;
+    };
+
+    const validateConfirmPasswordField = (pass: string, confirm: string) => {
+        if (!confirm) {
+            return 'Please confirm your password.';
+        }
+        if (pass && confirm && pass !== confirm) {
+            return 'Passwords do not match. Please try again.';
+        }
+        return undefined;
+    };
+
+    const handlePasswordBlur = () => {
+        const error = validatePasswordField(password);
+        setErrors((prev) => ({ ...prev, password: error }));
+
+        // Also re-validate confirm password if it already has a value
+        if (password_confirmation) {
+            const confirmError = validateConfirmPasswordField(password, password_confirmation);
+            setErrors((prev) => ({ ...prev, confirmPassword: confirmError }));
+        }
+    };
+
+    const handleConfirmPasswordBlur = () => {
+        const error = validateConfirmPasswordField(password, password_confirmation);
+        setErrors((prev) => ({ ...prev, confirmPassword: error }));
+    };
+
     const handleRegister = () => {
-        const newErrors: any = {};
-        if (!password) newErrors.password = 'Password is required.';
-        if (!password_confirmation)
-          newErrors.confirmPassword = 'Please confirm your password.';
-    
-        if (password) {
-          const passwordErrors = validatePassword(password);
-          if (passwordErrors.length > 0) {
-            newErrors.password = passwordErrors.join('\n');
-          }
-        }
-    
-        if (password && password_confirmation && password !== password_confirmation) {
-          newErrors.confirmPassword = 'Passwords do not match. Please try again.';
-        }
-    
+        const newErrors: FormErrors = {};
+
+        const passwordError = validatePasswordField(password);
+        if (passwordError) newErrors.password = passwordError;
+
+        const confirmError = validateConfirmPasswordField(password, password_confirmation);
+        if (confirmError) newErrors.confirmPassword = confirmError;
+
         if (Object.keys(newErrors).length > 0) {
-          setErrors(newErrors);
-          return;
+            setErrors(newErrors);
+            return;
         }
 
         setErrors({});
         onSubmit(password, password_confirmation);
     };
+
     return (
         <View style={styles.backdrop}>
             <View style={styles.container}>
@@ -66,12 +96,16 @@ export default function ChangePassModal({ onSubmit, onCancel, isLoading }: Props
             <View style={{ width: '100%' }}>
                 {/* Password */}
                 <Text style={styles.label}>Password:</Text>
-                <View style={styles.inputWrapper}>
+                <View style={[styles.inputWrapper, errors.password && styles.inputError]}>
                     <TextInput
                         style={styles.input}
                         placeholder="Password"
                         secureTextEntry={!isPasswordVisible}
-                        onChangeText={setPassword}
+                        onChangeText={(text) => {
+                            setPassword(text);
+                            setErrors((prev) => ({ ...prev, password: undefined }));
+                        }}
+                        onBlur={handlePasswordBlur}
                         value={password}
                     />
                     <EyeComponent
@@ -85,12 +119,16 @@ export default function ChangePassModal({ onSubmit, onCancel, isLoading }: Props
 
                 {/* Confirm Password */}
                 <Text style={styles.label}>Confirm Password:</Text>
-                <View style={styles.inputWrapper}>
+                <View style={[styles.inputWrapper, errors.confirmPassword && styles.inputError]}>
                     <TextInput
                         style={styles.input}
                         placeholder="Password"
                         secureTextEntry={!isConfirmVisible}
-                        onChangeText={setPasswordConfirmation}
+                        onChangeText={(text) => {
+                            setPasswordConfirmation(text);
+                            setErrors((prev) => ({ ...prev, confirmPassword: undefined }));
+                        }}
+                        onBlur={handleConfirmPasswordBlur}
                         value={password_confirmation}
                     />
                     <EyeComponent
@@ -105,15 +143,17 @@ export default function ChangePassModal({ onSubmit, onCancel, isLoading }: Props
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
-                    style={styles.confirmButton}
+                    style={[styles.confirmButton, isButtonDisabled && styles.confirmButtonDisabled]}
                     onPress={handleRegister}
-                    disabled={isLoading || !password || !password_confirmation}
+                    disabled={isButtonDisabled}
+                    activeOpacity={0.7}
                 >
                     <Text style={styles.buttonText}>{isLoading ? "Changing..." : "Change Password"}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.cancelButton}
                     onPress={onCancel}
+                    activeOpacity={0.7}
                 >
                     <Text style={styles.buttonText}>Cancel</Text>
                 </TouchableOpacity>
@@ -167,9 +207,12 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#411C0E",
         paddingHorizontal: 12,
-        marginBottom: 20,
+        marginBottom: 3,
         width: "100%",
         height: 50,
+    },
+    inputError: {
+        borderColor: 'red',
     },
     input: {
         flex: 1,
@@ -190,6 +233,9 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         marginTop: 10,
     },
+    confirmButtonDisabled: {
+        opacity: 0.5,
+    },
     cancelButton: {
         width: '60%',
         backgroundColor: '#565656CC',
@@ -207,7 +253,7 @@ const styles = StyleSheet.create({
     },
     error: {
         color: '#ff4d4d',
-        marginBottom: 8,
+        marginBottom: 10,
         fontSize: 12,
     }
 });
