@@ -123,12 +123,12 @@ export default function VerifyCodeModal({ email, onSubmit, isLoading, onCancel, 
         </View>
         
 
-        <Pressable style={styles.button} onPress={handlePress} disabled={isLoading}>
+        <Pressable style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]} onPress={handlePress} disabled={isLoading}>
           <Text style={styles.buttonText}>{isLoading ? "Verifying..." : "Verify Code"}</Text>
         </Pressable>
 
         <Pressable
-          style={styles.resendButton}
+          style={({ pressed }) => [styles.resendButton, pressed && styles.buttonPressed]}
           onPress={() => {
             if (!canResend) return;
 
@@ -143,7 +143,7 @@ export default function VerifyCodeModal({ email, onSubmit, isLoading, onCancel, 
         </Pressable>
 
         {onCancel && (
-          <Pressable style={styles.cancelContainer} onPress={onCancel}>
+          <Pressable style={({ pressed }) => [styles.cancelContainer, pressed && styles.buttonPressed]} onPress={onCancel}>
             <Text style={styles.cancelButton}>Cancel</Text>
           </Pressable>
         )}
@@ -234,6 +234,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 10,
     marginBottom: 5,
+  },
+  buttonPressed: {
+    opacity: 0.6,
   },
   buttonText: {
     color: "#fff",

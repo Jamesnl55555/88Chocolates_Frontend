@@ -262,7 +262,7 @@ export default function LoginPage() {
           </View>
 
           {/* Login Button */}
-          <Pressable style={styles.loginButton} onPress={handleLogin} disabled={loginMutation.isPending}>
+          <Pressable style={({ pressed }) => [styles.loginButton, pressed && styles.buttonPressed]} onPress={handleLogin} disabled={loginMutation.isPending}>
             <Text style={styles.buttonText}>{loginMutation.isPending ? 'Logging in...' : 'Log In'}</Text>
           </Pressable>
 
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   registerLink: { 
-    color: '#6251FF', 
+    color: '#9c91fe', 
     fontWeight: '500', 
     marginLeft: 4 
   },
@@ -399,6 +399,9 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     width: '65%',
     alignSelf: 'center',
+  },
+  buttonPressed: {
+    opacity: 0.6,
   },
   buttonText: { 
     color: '#411C0E', 

@@ -96,7 +96,7 @@ export default function ForgotPassModal({ onSubmit, onCancel, isLoading, emailEr
         )}
 
         <Pressable
-          style={styles.button}
+          style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
           onPress={handlePress}
           disabled={isLoading}
         >
@@ -106,7 +106,7 @@ export default function ForgotPassModal({ onSubmit, onCancel, isLoading, emailEr
         </Pressable>
 
         {onCancel && (
-          <Pressable style={styles.cancelContainer} onPress={onCancel}>
+          <Pressable style={({ pressed }) => [styles.cancelContainer, pressed && styles.buttonPressed]} onPress={onCancel}>
             <Text style={styles.cancelButton}>Back to login</Text>
           </Pressable>
         )}
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     fontWeight: 800,
     marginBottom: 10,
     paddingHorizontal: 10,
-    marginTop: '7%',
+    marginTop: '6%',
     color: '#411C0E',
   },
   description: {
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     color: "#411C0E",
     marginTop: 10,
-    marginBottom: 8,
+    marginBottom: 3,
     alignSelf: "flex-start",
   },
   inputWrapper: {
@@ -181,12 +181,15 @@ const styles = StyleSheet.create({
   button: {
     width: "60%",
     height: 50,
-    backgroundColor: "#411C0E",
+    backgroundColor: "#411C0ECC",
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
     marginBottom: 7,
+  },
+  buttonPressed: {
+    opacity: 0.6,
   },
   buttonText: {
     color: "#fff",
@@ -201,7 +204,7 @@ const styles = StyleSheet.create({
   cancelButton: {
     color: "#1A00FF",
     fontWeight: "600",
-    marginBottom: 5,
+    marginBottom: 2,
   },
   error: {
     color: 'red',

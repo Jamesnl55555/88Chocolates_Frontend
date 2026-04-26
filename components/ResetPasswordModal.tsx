@@ -131,12 +131,12 @@ export default function ResetPasswordModal({
           />
           <EyeComponent toggleVisibility={() => setIsPasswordVisible(!isPasswordVisible)} isVisible={isPasswordVisible} />
         </View>
-        {errors.password && <Text style={[styles.error, {marginBottom: 8}]}>{errors.password}</Text>}
+        {errors.password && <Text style={[styles.error,]}>{errors.password}</Text>}
 
-        <Text style={styles.label}>Confirm Password:</Text>
-        <View style={styles.inputWrapper}>
+        <Text style={[styles.label, {marginTop: 15}]}>Confirm Password:</Text>
+        <View style={[styles.inputWrapper]}>
           <TextInput
-            style={[styles.input, {marginTop: 10}]}
+            style={[styles.input]}
             placeholder="Confirm Password"
             secureTextEntry={!isConfirmPasswordVisible}
             value={passwordConfirmation}
@@ -147,14 +147,14 @@ export default function ResetPasswordModal({
           />
           <EyeComponent toggleVisibility={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)} isVisible={isConfirmPasswordVisible} />
         </View>
-        {errors.passwordConfirmation && <Text style={[styles.error, {marginBottom: 10}]}>{errors.passwordConfirmation}</Text>}
+        {errors.passwordConfirmation && <Text style={[styles.error, ]}>{errors.passwordConfirmation}</Text>}
 
-        <Pressable style={styles.button} onPress={handlePress} disabled={isLoading}>
+        <Pressable style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]} onPress={handlePress} disabled={isLoading}>
           <Text style={styles.buttonText}>{isLoading ? "Resetting..." : "Change Password"}</Text>
         </Pressable>
 
         {onCancel && (
-          <Pressable style={styles.cancelContainer} onPress={onCancel}>
+          <Pressable style={({ pressed }) => [styles.cancelContainer, pressed && styles.buttonPressed]} onPress={onCancel}>
             <Text style={styles.cancelText}>Back to login</Text>
           </Pressable>
         )}
@@ -239,7 +239,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
     alignSelf: "flex-start",
     marginBottom: 3,
-    
   },
   input: {
     flex: 1,
@@ -259,7 +258,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 7,
-    marginTop: 10,
+    marginTop: 18,
+  },
+  buttonPressed: {
+    opacity: 0.6,
   },
   buttonText: {
     color: "#fff",
@@ -269,7 +271,8 @@ const styles = StyleSheet.create({
   cancelContainer: {
     width: "100%",
     alignItems: "center",
-    marginTop: 5
+    marginTop: 4,
+    marginBottom: 2
   },
   cancelText: {
     color: "#3c0af0",

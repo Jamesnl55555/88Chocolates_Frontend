@@ -249,7 +249,7 @@ const RegisterPage: React.FC = () => {
 
             {/* Button */}
             <Pressable
-              style={styles.signUpButton}
+              style={({ pressed }) => [styles.signUpButton, pressed && styles.buttonPressed]}
               onPress={handleRegister}
               disabled={registerMutation.isPending}
             >
@@ -370,6 +370,9 @@ const styles = StyleSheet.create({
     width: '65%',
     alignSelf: 'center',
   },
+  buttonPressed: {
+    opacity: 0.6,
+  },
 
   buttonText: {
     color: '#411C0E', 
@@ -389,7 +392,7 @@ const styles = StyleSheet.create({
   },
 
   link: {
-    color: '#6251FF',
+    color: '#9c91fe', 
     fontWeight: '600',
   },
 
