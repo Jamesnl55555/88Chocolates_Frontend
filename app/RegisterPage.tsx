@@ -298,12 +298,12 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     alignItems: 'center',
-    paddingTop: 60,
+    paddingTop: 50,
     paddingBottom: 40,
   },
 
   logoContainer: {
-    marginBottom: 40,
+    marginBottom: 30,
     alignItems: 'center',
   },
 
