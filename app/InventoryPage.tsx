@@ -207,7 +207,7 @@ export default function InventoryPage() {
                         borderColor: "#411C0E", 
                         flexDirection: "row", 
                         height: "100%",
-                        paddingVertical: 5, paddingRight: 40,}}>
+                        paddingVertical: 5, paddingRight: 25,}}>
             <CheckboxComponent isChecked={isSelected} onPress={() => toggleSelect(item)} />
             <Text style={{fontWeight: 'bold'}}>{String(item.product_number).padStart(6, '0')}</Text>
         </View>
@@ -354,7 +354,7 @@ export default function InventoryPage() {
                             <Path d="M30 22L18 34M18 22L30 34" stroke="#411C0E" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                         </Svg>
                         <Text style={{ fontWeight: 'bold', fontSize: 16, textAlign: 'center', color: '#411C0E', marginTop: 15 }}>There&apos;s nothing here yet.</Text>
-                            <Text style={styles.emptyText}>Please add a product to proceed with a transaction.</Text>
+                            <Text style={styles.emptyText}>Please add a product to proceed.</Text>
                     </View>
                 ) : null
             }
@@ -390,7 +390,7 @@ export default function InventoryPage() {
     );
 }
 
-const CELL_WIDTH = 140;
+const CELL_WIDTH = 120;
 
 const styles = StyleSheet.create({
   navbar: { paddingHorizontal: 10, paddingTop: 10, backgroundColor: "#fff", zIndex: 1 },

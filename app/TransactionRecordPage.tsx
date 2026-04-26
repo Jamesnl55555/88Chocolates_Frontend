@@ -235,8 +235,7 @@ export default function TransactionsPage() {
                     <Path d="M30 22L18 34M18 22L30 34" stroke="#411C0E" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                 </Svg>
                 <Text style={{ fontWeight: 'bold', fontSize: 16, textAlign: 'center', color: '#411C0E', marginTop: 15 }}>There&apos;s nothing here yet.</Text>
-                    <Text style={styles.emptyText}>Please add a product to proceed</Text>
-                    <Text style={[styles.emptyText, {marginTop: 0}]}>with a transaction.</Text>
+                    <Text style={styles.emptyText}>Please make a transaction to proceed.</Text>
               </View>
             ) : null
           }
