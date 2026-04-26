@@ -118,7 +118,7 @@ export default function ChangePassModal({ onSubmit, onCancel, isLoading }: Props
                 )}
 
                 {/* Confirm Password */}
-                <Text style={styles.label}>Confirm Password:</Text>
+                <Text style={[styles.label, {marginTop: 15}]}>Confirm Password:</Text>
                 <View style={[styles.inputWrapper, errors.confirmPassword && styles.inputError]}>
                     <TextInput
                         style={styles.input}
@@ -223,6 +223,7 @@ const styles = StyleSheet.create({
         width: '120%',
         alignItems: 'center',
         justifyContent: 'center',
+        marginTop: 10
     },
     confirmButton: {
         width: '60%',
@@ -253,7 +254,6 @@ const styles = StyleSheet.create({
     },
     error: {
         color: '#ff4d4d',
-        marginBottom: 10,
         fontSize: 12,
     }
 });
