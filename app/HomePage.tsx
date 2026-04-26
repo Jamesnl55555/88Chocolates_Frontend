@@ -258,10 +258,12 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         color: '#411C0E',
+        textAlign: 'center'
     },
     boxText: {
         maxWidth: '100%',
         fontSize: 16,
         color: '#411C0E',
+        textAlign: 'center'
     },
 });

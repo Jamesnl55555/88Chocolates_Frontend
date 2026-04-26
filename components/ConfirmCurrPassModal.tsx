@@ -1,5 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+    Animated,
+    Keyboard,
+    Platform,
+    Pressable,
     StyleSheet,
     Text,
     TextInput,
@@ -7,6 +11,7 @@ import {
     View
 } from 'react-native';
 import EyeComponent from "./EyeComponent";
+
 type Props = {
     onSubmit: (password: string) => void;
     onCancel?: () => void;
@@ -17,31 +22,72 @@ type Props = {
 export default function ConfirmCurrPassModal( { onSubmit, onCancel, isLoading, error }: Props ) {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [password, setPassword] = useState("");
+
+    // Animated shift for keyboard
+    const contentTranslateY = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+        const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+        const showSub = Keyboard.addListener(showEvent, (e) => {
+            const kbHeight = e.endCoordinates.height;
+            Animated.timing(contentTranslateY, {
+                toValue: -kbHeight / 2,
+                duration: 250,
+                useNativeDriver: true,
+            }).start();
+        });
+
+        const hideSub = Keyboard.addListener(hideEvent, () => {
+            Animated.timing(contentTranslateY, {
+                toValue: 0,
+                duration: 250,
+                useNativeDriver: true,
+            }).start();
+        });
+
+        return () => {
+            showSub.remove();
+            hideSub.remove();
+        };
+    }, []);
+
     return (
         <View style={styles.backdrop}>
-            <View style={styles.container}>
-            <View style={styles.header}>
-                <Text style={{ fontSize: 20, fontWeight: 800, marginBottom: 9, color: '#411C0E'}}>Current Password</Text>
-                <Text style={{ color: '#411C0E', fontSize: 15 }}>Please enter your previous</Text>
-                <Text style={{ color: '#411C0E', fontSize: 15 }}> password from your account.</Text>
-            </View>
-            <View style={{width: '100%'}}>
-                <Text style={{marginBottom: 5, fontWeight: 800, color: '#411C0E'}}>Password:</Text>
-                <View style={styles.inputWrapper}>
-                    <TextInput style={styles.input} placeholder="***********" secureTextEntry={!isPasswordVisible} onChangeText={setPassword}/>
-                    <EyeComponent toggleVisibility= {() => {setIsPasswordVisible(!isPasswordVisible)}} isVisible={isPasswordVisible} />
+            <Pressable style={StyleSheet.absoluteFill} onPress={Keyboard.dismiss} />
+            <Animated.View
+                style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    transform: [{ translateY: contentTranslateY }],
+                }}
+            >
+                <View style={styles.container}>
+                    <View style={styles.header}>
+                        <Text style={{ fontSize: 20, fontWeight: 800, marginBottom: 9, color: '#411C0E'}}>Current Password</Text>
+                        <Text style={{ color: '#411C0E', fontSize: 15 }}>Please enter your previous</Text>
+                        <Text style={{ color: '#411C0E', fontSize: 15 }}> password from your account.</Text>
+                    </View>
+                    <View style={{width: '100%'}}>
+                        <Text style={{marginBottom: 5, fontWeight: 800, color: '#411C0E'}}>Password:</Text>
+                        <View style={styles.inputWrapper}>
+                            <TextInput style={styles.input} placeholder="***********" secureTextEntry={!isPasswordVisible} onChangeText={setPassword}/>
+                            <EyeComponent toggleVisibility= {() => {setIsPasswordVisible(!isPasswordVisible)}} isVisible={isPasswordVisible} />
+                        </View>
+                        {error && <Text style={styles.error}>{error}</Text>}
+                    </View>
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={[styles.confirmbutton]} onPress={() => onSubmit(password)} disabled={isLoading}>
+                            <Text style={styles.text}>{isLoading ? "Confirming..." : "Continue"}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.cancelbutton} onPress={onCancel}>
+                            <Text style={styles.text}>Cancel</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-                {error && <Text style={styles.error}>{error}</Text>}
-            </View>
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.confirmbutton} onPress={() => onSubmit(password)} disabled={isLoading}>
-                    <Text style={styles.text}>{isLoading ? "Confirming..." : "Continue"}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelbutton} onPress={onCancel}>
-                    <Text style={styles.text}>Cancel</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+            </Animated.View>
         </View>
     )
 }
@@ -91,17 +137,17 @@ const styles = StyleSheet.create({
         height: 50,
     },
     cancelbutton: {
-        width: '60%',
+        width: 180,
         backgroundColor: '#565656CC',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 50,
-        padding: 12,
-        marginTop: 5,
+        padding: 13,
+        marginTop: 8,
     },
     confirmbutton: {
-        width: '60%',
-        padding: 12,
+        width: 180,
+        padding: 13,
         backgroundColor: '#411C0ECC',
         justifyContent: 'center',
         alignItems: 'center',
@@ -126,3 +172,4 @@ const styles = StyleSheet.create({
         fontSize: 12,
     }
 });
+
